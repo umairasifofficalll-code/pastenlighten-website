@@ -17,10 +17,11 @@ ONE-TIME SETUP: CREATE AN ACCESS TOKEN
    If it is ever exposed, delete it on GitHub and create a new one.
 
 ADDING A VIDEO REVIEW
-1. Open https://pastenlighten.com/admin.html (it is not linked from the site and
-   is hidden from Google).
-2. Enter: GitHub owner (your username), repository name, branch (usually "main"),
-   and the token. Press Connect.
+1. Open https://umairasifofficalll-code.github.io/pastenlighten-website/admin.html
+   (later https://pastenlighten.com/admin.html, once the domain points to GitHub).
+   It is not linked from the site and is hidden from Google.
+2. Owner (umairasifofficalll-code), repository (pastenlighten-website) and branch (main)
+   are filled in already. Paste the token and press Connect.
 3. Choose "Upload a video file" (MP4 best, up to 50 MB) or "YouTube link"
    (for longer videos: upload to YouTube as Unlisted and paste the link).
 4. Fill in the guest's name, country, tour and travel month. Add a short quote
