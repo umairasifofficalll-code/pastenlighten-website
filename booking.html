@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Tour | Past Enlighten</title>
+  <meta name="description" content="Request a private or group tour of Lahore, Islamabad or northern Pakistan with Past Enlighten. Send your dates and group size and get a written quote.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://pastenlighten.com/booking.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Past Enlighten">
+  <meta property="og:title" content="Book a Tour | Past Enlighten">
+  <meta property="og:description" content="Request a private or group tour of Lahore, Islamabad or northern Pakistan. We confirm price and inclusions in writing before you pay.">
+  <meta property="og:url" content="https://pastenlighten.com/booking.html">
+  <meta name="theme-color" content="#061a14">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:{950:'#061a14',900:'#0a261e',800:'#0f382c',700:'#164e3f',600:'#1e6b57',100:'#e5f3ee',50:'#f2f9f6'},accent:{gold:'#d97706',amber:'#f59e0b',light:'#fef3c7',dark:'#b45309'}},fontFamily:{cinzel:['"Cinzel"','serif'],sans:['"Plus Jakarta Sans"','sans-serif']}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { color: #1f2937; background-color: #faf8f5; }
+    .bg-brand-950 { background-color: #061a14 !important; color: #fff !important; }
+    .field { width: 100%; border: 1px solid #d6d3d1; background: #fff; border-radius: 12px; padding: .65rem .8rem; font-size: .9rem; outline: none; transition: border-color .15s, box-shadow .15s; }
+    .field:focus { border-color: #1e6b57; box-shadow: 0 0 0 3px rgba(30,107,87,.15); }
+    .field[aria-invalid="true"] { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,.12); }
+    .label { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #475569; margin-bottom: .35rem; }
+    .hint { font-size: .75rem; color: #64748b; margin-top: .3rem; }
+    .err { font-size: .75rem; color: #b91c1c; margin-top: .3rem; display: none; }
+    .err.show { display: block; }
+    .choice { display: flex; align-items: center; gap: .5rem; border: 1px solid #d6d3d1; border-radius: 12px; padding: .6rem .75rem; background: #fff; cursor: pointer; font-size: .85rem; font-weight: 600; transition: border-color .15s, background .15s; }
+    .choice:has(input:checked) { border-color: #0f382c; background: #e5f3ee; }
+    .choice input { accent-color: #0f382c; }
+    .step-num { width: 1.75rem; height: 1.75rem; border-radius: 999px; background: #0f382c; color: #f59e0b; font-weight: 800; font-size: .8rem; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+    .stepper { display: flex; align-items: stretch; border: 1px solid #d6d3d1; border-radius: 12px; overflow: hidden; background: #fff; }
+    .stepper button { width: 2.5rem; font-size: 1.1rem; font-weight: 700; color: #0f382c; background: #f5f5f4; }
+    .stepper button:hover { background: #e7e5e4; }
+    .stepper input { width: 100%; text-align: center; border: 0; outline: none; font-weight: 700; padding: .55rem 0; }
+    .pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body class="font-sans antialiased">
+  <a href="#bookingForm" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 bg-white text-brand-900 px-3 py-2 rounded-lg font-bold">Skip to booking form</a>
+
+  <header class="bg-white border-b border-stone-200 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <a href="index.html" class="font-cinzel text-xl font-bold tracking-wider text-brand-900">Past Enlighten</a>
+      <nav class="hidden md:flex gap-5 text-sm font-medium text-slate-700" aria-label="Main">
+        <a href="index.html" class="hover:text-brand-800">Home</a>
+        <a href="index.html#destinations" class="hover:text-brand-800">Tours</a>
+        <a href="blog/index.html" class="hover:text-brand-800">Travel Blog</a>
+        <a href="reviews.html" class="hover:text-brand-800">Reviews</a>
+        <a href="index.html#faq" class="hover:text-brand-800">FAQ</a>
+        <a href="booking.html" class="text-brand-800 font-bold border-b-2 border-brand-800" aria-current="page">Book</a>
+      </nav>
+      <a href="https://wa.me/923344770455" class="hidden sm:inline-flex items-center gap-2 bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-full"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      <button id="menuBtn" class="md:hidden p-2 rounded-lg text-slate-700" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav"><i class="fa-solid fa-bars text-lg"></i></button>
+    </div>
+    <nav id="mobileNav" class="hidden md:hidden border-t border-stone-200 px-4 py-3 space-y-2 text-sm font-medium" aria-label="Mobile">
+      <a href="index.html" class="block">Home</a><a href="index.html#destinations" class="block">Tours</a><a href="blog/index.html" class="block">Travel Blog</a><a href="reviews.html" class="block">Reviews</a><a href="index.html#faq" class="block">FAQ</a><a href="booking.html" class="block font-bold text-brand-800">Book</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="bg-brand-950 text-white relative overflow-hidden">
+      <img src="images/badshahi-courtyard-sm.webp" srcset="images/badshahi-courtyard-sm.webp 720w, images/badshahi-courtyard.webp 1600w" sizes="100vw" alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover opacity-25" fetchpriority="high">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#061a14] via-[#061a14]/85 to-[#061a14]/40" aria-hidden="true"></div>
+      <div class="relative max-w-6xl mx-auto px-4 py-10 sm:py-14">
+        <nav class="text-xs text-slate-300" aria-label="Breadcrumb"><a href="index.html" class="underline">Home</a> / Book a tour</nav>
+        <p class="mt-4 text-amber-400 font-bold tracking-widest text-[11px] uppercase">Booking request</p>
+        <h1 class="font-cinzel text-3xl sm:text-5xl font-extrabold leading-tight mt-2">Book your tour</h1>
+        <p class="mt-3 max-w-2xl text-slate-200 leading-relaxed">Tell us which tour, when, and who's coming. Bilawal and the team reply with availability and a written quote. Nothing is charged until you agree to the price and inclusions.</p>
+        <ol class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl text-sm">
+          <li class="flex items-start gap-3 bg-white/10 border border-white/15 rounded-xl p-3"><span class="step-num">1</span><span><strong class="block text-white">Send this form</strong><span class="text-slate-300">by WhatsApp or email</span></span></li>
+          <li class="flex items-start gap-3 bg-white/10 border border-white/15 rounded-xl p-3"><span class="step-num">2</span><span><strong class="block text-white">Get a written quote</strong><span class="text-slate-300">price, pickup &amp; inclusions</span></span></li>
+          <li class="flex items-start gap-3 bg-white/10 border border-white/15 rounded-xl p-3"><span class="step-num">3</span><span><strong class="block text-white">Confirm &amp; travel</strong><span class="text-slate-300">only once you're happy</span></span></li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:py-10 grid lg:grid-cols-[1fr_340px] gap-8 items-start">
+      <!-- FORM -->
+      <form id="bookingForm" class="space-y-6" novalidate>
+        <input type="text" name="website" class="pe-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <fieldset class="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 shadow-sm">
+          <legend class="sr-only">Your tour</legend>
+          <h2 class="font-cinzel text-xl font-bold text-brand-900 flex items-center gap-2"><span class="step-num">1</span> Your tour</h2>
+          <div class="mt-4">
+            <label class="label" for="tour">Tour</label>
+            <select id="tour" name="tour" class="field" required aria-describedby="tourErr tourInfo"></select>
+            <p id="tourErr" class="err">Please choose a tour, or "Custom itinerary".</p>
+            <p id="tourInfo" class="hint"></p>
+          </div>
+          <div class="mt-4 grid sm:grid-cols-2 gap-3">
+            <div>
+              <span class="label">Tour style</span>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="choice"><input type="radio" name="style" value="Private" checked> Private</label>
+                <label class="choice"><input type="radio" name="style" value="Small group"> Small group</label>
+              </div>
+            </div>
+            <div>
+              <label class="label" for="transport">Transport</label>
+              <select id="transport" name="transport" class="field">
+                <option value="Please include transport">Please include transport</option>
+                <option value="4x4 / mountain vehicle">4x4 / mountain vehicle</option>
+                <option value="Van or coaster for a group">Van or coaster for a group</option>
+                <option value="Guide only, we have our own transport">Guide only, we have our own transport</option>
+              </select>
+            </div>
+          </div>
+          <div id="customWrap" class="mt-4 hidden">
+            <label class="label" for="customPlaces">Places you'd like to include</label>
+            <textarea id="customPlaces" name="customPlaces" rows="2" class="field" placeholder="e.g. Lahore 2 days, then Hunza and Skardu"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset class="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 shadow-sm">
+          <legend class="sr-only">Dates and group</legend>
+          <h2 class="font-cinzel text-xl font-bold text-brand-900 flex items-center gap-2"><span class="step-num">2</span> Dates &amp; group</h2>
+          <div class="mt-4 grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="label" for="date">Preferred start date</label>
+              <input id="date" name="date" type="date" class="field" required aria-describedby="dateErr seasonNote">
+              <p id="dateErr" class="err">Please choose a date from today onwards.</p>
+              <label class="mt-2 flex items-center gap-2 text-sm text-slate-600"><input id="flexible" name="flexible" type="checkbox" class="accent-brand-800"> My dates are flexible</label>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label" for="adults">Adults</label>
+                <div class="stepper"><button type="button" data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><input id="adults" name="adults" type="number" min="1" max="40" value="2" inputmode="numeric"><button type="button" data-step="adults" data-d="1" aria-label="More adults">+</button></div>
+              </div>
+              <div>
+                <label class="label" for="children">Children</label>
+                <div class="stepper"><button type="button" data-step="children" data-d="-1" aria-label="Fewer children">−</button><input id="children" name="children" type="number" min="0" max="20" value="0" inputmode="numeric"><button type="button" data-step="children" data-d="1" aria-label="More children">+</button></div>
+              </div>
+            </div>
+          </div>
+          <p id="seasonNote" class="hidden mt-3 text-sm rounded-xl bg-amber-50 border border-amber-200 text-amber-900 p-3"></p>
+          <div class="mt-4 grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="label" for="pickup">Pickup point</label>
+              <input id="pickup" name="pickup" class="field" placeholder="Hotel name, airport, or area">
+            </div>
+            <div id="stayWrap">
+              <label class="label" for="stay">Accommodation</label>
+              <select id="stay" name="stay" class="field">
+                <option value="Please arrange hotels">Please arrange hotels</option>
+                <option value="I will book my own">I will book my own</option>
+                <option value="Not sure yet">Not sure yet</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 shadow-sm">
+          <legend class="sr-only">Your details</legend>
+          <h2 class="font-cinzel text-xl font-bold text-brand-900 flex items-center gap-2"><span class="step-num">3</span> Your details</h2>
+          <div class="mt-4 grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="label" for="name">Full name</label>
+              <input id="name" name="name" class="field" autocomplete="name" required aria-describedby="nameErr">
+              <p id="nameErr" class="err">Please enter your name.</p>
+            </div>
+            <div>
+              <label class="label" for="country">Country you're travelling from</label>
+              <input id="country" name="country" class="field" autocomplete="country-name" placeholder="e.g. United Kingdom">
+            </div>
+            <div>
+              <label class="label" for="phone">WhatsApp / phone</label>
+              <input id="phone" name="phone" type="tel" class="field" autocomplete="tel" placeholder="+44 7700 900123" required aria-describedby="phoneErr phoneHint">
+              <p id="phoneHint" class="hint">Include your country code so we can reply on WhatsApp.</p>
+              <p id="phoneErr" class="err">Please enter a phone number with country code, e.g. +92 300 1234567.</p>
+            </div>
+            <div>
+              <label class="label" for="email">Email <span class="normal-case font-medium text-slate-400">(optional)</span></label>
+              <input id="email" name="email" type="email" class="field" autocomplete="email" aria-describedby="emailErr">
+              <p id="emailErr" class="err">That email address doesn't look right.</p>
+            </div>
+            <div>
+              <label class="label" for="language">Guide language</label>
+              <select id="language" name="language" class="field">
+                <option>English</option><option>Urdu</option><option>Punjabi</option><option value="Other (please mention in notes)">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="label" for="heard">How did you find us? <span class="normal-case font-medium text-slate-400">(optional)</span></label>
+              <select id="heard" name="heard" class="field">
+                <option value="">Choose…</option><option>TripAdvisor</option><option>Google search</option><option>Instagram / Facebook</option><option>Friend or family</option><option>Hotel or travel agent</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="label" for="notes">Anything else? <span class="normal-case font-medium text-slate-400">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="3" class="field" placeholder="Dietary needs, mobility or accessibility, photography focus, celebrations, flight times…"></textarea>
+          </div>
+        </fieldset>
+
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 shadow-sm">
+          <label class="flex items-start gap-3 text-sm text-slate-700">
+            <input id="consent" type="checkbox" class="mt-1 accent-brand-800" required aria-describedby="consentErr">
+            <span>I understand this is a request, not a confirmed booking. Past Enlighten will reply with availability and a written price before I pay anything.</span>
+          </label>
+          <p id="consentErr" class="err">Please tick this box to continue.</p>
+          <div class="mt-5 flex flex-col sm:flex-row gap-3">
+            <button type="submit" data-via="whatsapp" class="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl shadow"><i class="fa-brands fa-whatsapp text-lg"></i> Send on WhatsApp</button>
+            <button type="submit" data-via="email" class="flex-1 inline-flex items-center justify-center gap-2 bg-brand-800 hover:bg-brand-900 text-white font-bold px-5 py-3 rounded-xl shadow"><i class="fa-solid fa-envelope"></i> Send by email</button>
+          </div>
+          <p class="hint mt-3">WhatsApp opens with your request already written; just press send. Email opens your mail app. We usually reply the same day (Pakistan time, UTC+5).</p>
+          <p class="hint mt-1">We keep the details you send so we can handle your booking. See our <a href="privacy.html" class="underline">privacy notice</a>.</p>
+        </div>
+      </form>
+
+      <!-- SUMMARY -->
+      <aside class="lg:sticky lg:top-20 space-y-4" aria-label="Booking summary">
+        <div class="bg-brand-900 text-white rounded-2xl p-5 shadow-lg">
+          <p class="text-[11px] font-bold tracking-widest uppercase text-amber-400">Your request</p>
+          <h2 id="sumTour" class="font-cinzel text-lg font-bold mt-1">Choose a tour</h2>
+          <dl class="mt-3 space-y-2 text-sm">
+            <div class="flex justify-between gap-3"><dt class="text-slate-300">Length</dt><dd id="sumDuration" class="text-right font-semibold">—</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-300">Starts from</dt><dd id="sumStart" class="text-right font-semibold">—</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-300">Date</dt><dd id="sumDate" class="text-right font-semibold">—</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-300">Travellers</dt><dd id="sumPeople" class="text-right font-semibold">2 adults</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-300">Style</dt><dd id="sumStyle" class="text-right font-semibold">Private</dd></div>
+          </dl>
+          <div class="mt-4 pt-4 border-t border-white/15 text-sm">
+            <p class="text-slate-300">Price</p>
+            <p class="font-semibold">Quoted in writing for your dates and group size.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-stone-200 p-5 text-sm text-slate-700 shadow-sm">
+          <h3 class="font-bold text-brand-900">Prefer to talk first?</h3>
+          <ul class="mt-2 space-y-2">
+            <li><a class="text-brand-800 font-semibold hover:underline" href="https://wa.me/923344770455"><i class="fa-brands fa-whatsapp mr-1.5 text-emerald-600"></i>+92 334 4770455</a></li>
+            <li><a class="text-brand-800 font-semibold hover:underline" href="mailto:infopastenlighten@gmail.com"><i class="fa-solid fa-envelope mr-1.5 text-accent-gold"></i>infopastenlighten@gmail.com</a></li>
+            <li class="text-slate-500"><i class="fa-solid fa-location-dot mr-1.5 text-accent-gold"></i>Fort Road, Walled City, Lahore</li>
+          </ul>
+          <p class="mt-3 text-xs text-slate-500">Your form is saved on this device while you fill it in, so you won't lose it if you leave the page.</p>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Sent state -->
+    <section id="sentPanel" class="hidden max-w-2xl mx-auto px-4 pb-14" aria-live="polite">
+      <div class="bg-white rounded-2xl border border-emerald-200 p-6 sm:p-8 shadow-sm text-center">
+        <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-2xl"><i class="fa-solid fa-paper-plane"></i></div>
+        <h2 class="font-cinzel text-2xl font-bold text-brand-900 mt-4">Almost done: press send</h2>
+        <p id="sentText" class="text-slate-600 mt-2"></p>
+        <p id="sentRef" class="hidden mt-2 text-sm font-semibold text-emerald-800"></p>
+        <p class="text-slate-600 mt-2 text-sm">If nothing opened, copy your request below and send it to <strong>+92 334 4770455</strong> on WhatsApp or to <strong>infopastenlighten@gmail.com</strong>.</p>
+        <textarea id="sentMessage" rows="9" class="field mt-4 text-left text-sm" readonly></textarea>
+        <div class="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
+          <button id="copyBtn" type="button" class="inline-flex items-center justify-center gap-2 border border-stone-300 font-bold px-5 py-2.5 rounded-xl"><i class="fa-regular fa-copy"></i> Copy request</button>
+          <button id="editBtn" type="button" class="inline-flex items-center justify-center gap-2 bg-brand-800 text-white font-bold px-5 py-2.5 rounded-xl">Edit my request</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-brand-950 text-slate-400 text-xs">
+    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-wrap justify-between gap-2"><span>&copy; 2026 Past Enlighten Tour Guides. All rights reserved.</span><span><a href="reviews.html" class="underline">Reviews</a> &middot; Fort Road, Walled City, Lahore &middot; +92 334 4770455</span></div>
+  </footer>
+
+<script src="js/pe-backend.js"></script>
+<script>
+(function () {
+  'use strict';
+  var WHATSAPP = '923344770455';
+  var EMAIL = 'infopastenlighten@gmail.com';
+  var DRAFT_KEY = 'pe_booking_draft_v1';
+
+  // Tours offered. Names follow the website; no prices here, because the team confirms a written quote.
+  // To add a tour, add a line. id is what ?tour= links use.
+  var TOURS = [
+    { group: 'Lahore', id: 'lahore-heritage-walk', name: 'Lahore Fort & Walled City Heritage Walk', duration: 'Half day or full day', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'lahore-full-day', name: 'Lahore Full Day Heritage Tour (incl. Wagah Border)', duration: 'Full day, 8–9 hours', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'walled-city-rickshaw', name: 'Walled City & Rangila Rickshaw', duration: 'Half day, 4–5 hours', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'museums-fort', name: 'Museums & Fort Tour', duration: 'Half day, 4–5 hours', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'sufi-night', name: 'Night Sufi Shrine Tour', duration: 'Evening, about 4 hours', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'shopping', name: 'Lahore Shopping & Bazaars Tour', duration: 'Evening, 4–5 hours', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'shahdara', name: 'Shahdara Complex: Tombs of Jahangir & Noor Jahan', duration: 'Half day', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'sheikhupura', name: 'Sheikhupura Fort & Hiran Minar Excursion', duration: 'Full day', start: 'Lahore', multi: false },
+    { group: 'Islamabad', id: 'islamabad', name: 'Islamabad & Rawalpindi Full Day City Tour', duration: 'Full day', start: 'Islamabad', multi: false },
+    { group: 'Northern Pakistan', id: 'naran-kaghan', name: 'Naran Kaghan & Lake Saif-ul-Malook', duration: '4 days / 3 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'swat', name: 'Swat Valley & Malam Jabba', duration: '3 days / 2 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'neelum', name: 'Neelum Valley & Sharda (Kashmir)', duration: '5 days / 4 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'hunza', name: 'Hunza Valley Tour', duration: '4–5 days', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'skardu', name: 'Skardu & Deosai Tour', duration: '5–7 days', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'fairy-meadows', name: 'Fairy Meadows & Nanga Parbat Base Camp', duration: '3 days / 2 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'grand-16', name: 'Grand Northern Pakistan Tour (16 days)', duration: '16 days / 15 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'South Punjab', id: 'bahawalpur', name: 'Bahawalpur & Cholistan Desert', duration: '3–4 days', start: 'Lahore', multi: true },
+    { group: 'South Punjab', id: 'harappa-multan', name: 'Lahore – Harappa – Multan', duration: '5 days', start: 'Lahore', multi: true },
+    { group: 'Something else', id: 'custom', name: 'Custom itinerary: help me plan', duration: 'You choose', start: 'You choose', multi: true }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $('bookingForm');
+  var tourSel = $('tour');
+
+  // ---- build tour list
+  var ph = new Option('Choose a tour…', ''); ph.disabled = true; ph.selected = true; tourSel.add(ph);
+  var groups = {};
+  TOURS.forEach(function (t) {
+    if (!groups[t.group]) { groups[t.group] = document.createElement('optgroup'); groups[t.group].label = t.group; tourSel.appendChild(groups[t.group]); }
+    groups[t.group].appendChild(new Option(t.name, t.id));
+  });
+  var tourById = function (id) { return TOURS.find(function (t) { return t.id === id; }); };
+
+  // ---- dates
+  var todayISO = (function () { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); })();
+  $('date').min = todayISO;
+
+  // ---- storage (per-device convenience only)
+  function loadDraft() { try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { return null; } }
+  function saveDraft() {
+    try {
+      var d = {}; new FormData(form).forEach(function (v, k) { d[k] = v; });
+      d.flexible = $('flexible').checked;
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+    } catch (e) {}
+  }
+  function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+
+  var draft = loadDraft();
+  if (draft) {
+    Object.keys(draft).forEach(function (k) {
+      var el = form.elements[k];
+      if (!el) return;
+      if (el instanceof RadioNodeList) { Array.prototype.forEach.call(el, function (r) { r.checked = r.value === draft[k]; }); }
+      else if (el.type === 'checkbox') el.checked = !!draft[k];
+      else if (k !== 'date' || draft[k] >= todayISO) el.value = draft[k];
+    });
+  }
+  // ?tour= from links elsewhere on the site wins over a saved draft
+  var params = new URLSearchParams(location.search);
+  var wanted = params.get('tour');
+  if (wanted && tourById(wanted)) tourSel.value = wanted;
+  if (params.get('date') && params.get('date') >= todayISO) $('date').value = params.get('date');
+
+  // ---- steppers
+  document.querySelectorAll('[data-step]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var input = $(b.dataset.step), min = +input.min, max = +input.max;
+      input.value = Math.min(max, Math.max(min, (parseInt(input.value, 10) || 0) + (+b.dataset.d)));
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+
+  // ---- summary + contextual hints
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function people() {
+    var a = Math.max(1, parseInt($('adults').value, 10) || 1), c = Math.max(0, parseInt($('children').value, 10) || 0);
+    return a + ' adult' + (a > 1 ? 's' : '') + (c ? ', ' + c + ' child' + (c > 1 ? 'ren' : '') : '');
+  }
+  function update() {
+    var t = tourById(tourSel.value);
+    $('sumTour').textContent = t ? t.name : 'Choose a tour';
+    $('sumDuration').textContent = t ? t.duration : '—';
+    $('sumStart').textContent = t ? t.start : '—';
+    $('sumDate').textContent = fmtDate($('date').value) + ($('flexible').checked && $('date').value ? ' (flexible)' : '');
+    $('sumPeople').textContent = people();
+    var st = form.querySelector('input[name="style"]:checked');
+    $('sumStyle').textContent = st ? st.value : '—';
+    $('tourInfo').textContent = t ? (t.duration + ' · starts from ' + t.start) : '';
+    $('customWrap').classList.toggle('hidden', !(t && t.id === 'custom'));
+    $('stayWrap').classList.toggle('hidden', !(t && t.multi));
+    // seasonal note for mountain tours (roads/passes can close in winter)
+    var note = $('seasonNote'), m = $('date').value ? new Date($('date').value + 'T00:00:00').getMonth() : -1;
+    if (t && t.north && m >= 0 && (m >= 10 || m <= 3)) {
+      note.textContent = 'Heads-up: ' + fmtDate($('date').value).replace(/^\w+, /, '') + ' is outside the main northern season (May–October). Some passes, lakes and high roads can be closed by snow. We will suggest what is possible on your dates.';
+      note.classList.remove('hidden');
+    } else note.classList.add('hidden');
+  }
+  form.addEventListener('input', function () { update(); saveDraft(); });
+  form.addEventListener('change', function () { update(); saveDraft(); });
+  update();
+
+  // ---- mobile menu
+  $('menuBtn').addEventListener('click', function () {
+    var open = $('mobileNav').classList.toggle('hidden') === false;
+    this.setAttribute('aria-expanded', String(open));
+  });
+
+  // ---- validation
+  function setErr(id, bad) {
+    var input = $(id), err = $(id + 'Err');
+    if (input) input.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (err) err.classList.toggle('show', bad);
+    return bad;
+  }
+  function validate() {
+    var bad = [];
+    if (setErr('tour', !tourSel.value)) bad.push('tour');
+    if (setErr('date', !$('date').value || $('date').value < todayISO)) bad.push('date');
+    if (setErr('name', $('name').value.trim().length < 2)) bad.push('name');
+    var digits = $('phone').value.replace(/\D/g, '');
+    if (setErr('phone', digits.length < 8 || digits.length > 15)) bad.push('phone');
+    var em = $('email').value.trim();
+    if (setErr('email', !!em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))) bad.push('email');
+    if (setErr('consent', !$('consent').checked)) bad.push('consent');
+    if (bad.length) { $(bad[0]).focus(); $(bad[0]).scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    return !bad.length;
+  }
+
+  // ---- compose message
+  function message() {
+    var t = tourById(tourSel.value) || { name: tourSel.value, duration: '' };
+    var v = function (id) { return ($(id).value || '').trim(); };
+    var style = (form.querySelector('input[name="style"]:checked') || {}).value || '';
+    var lines = [
+      'Hello Past Enlighten! I would like to book a tour.',
+      '',
+      '*Tour:* ' + t.name + (t.duration ? ' (' + t.duration + ')' : ''),
+      t.id === 'custom' && v('customPlaces') ? '*Places:* ' + v('customPlaces') : null,
+      '*Style:* ' + style,
+      '*Start date:* ' + fmtDate(v('date')) + ($('flexible').checked ? ' (dates are flexible)' : ''),
+      '*Travellers:* ' + people(),
+      '*Transport:* ' + v('transport'),
+      t.multi ? '*Accommodation:* ' + v('stay') : null,
+      v('pickup') ? '*Pickup:* ' + v('pickup') : null,
+      '*Guide language:* ' + v('language'),
+      '',
+      '*Name:* ' + v('name'),
+      v('country') ? '*From:* ' + v('country') : null,
+      '*WhatsApp/phone:* ' + v('phone'),
+      v('email') ? '*Email:* ' + v('email') : null,
+      v('heard') ? '*Found you via:* ' + v('heard') : null,
+      v('notes') ? '*Notes:* ' + v('notes') : null,
+      '',
+      'Please send availability and a written quote.'
+    ];
+    // drop empty optional lines but keep intentional blank separators single
+    return lines.filter(function (l) { return l !== null; }).join('\n').trim();
+  }
+
+  var lastVia = 'whatsapp';
+  form.querySelectorAll('button[type="submit"]').forEach(function (b) {
+    b.addEventListener('click', function () { lastVia = b.dataset.via; });
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) return;
+    var text = message();
+    var t = tourById(tourSel.value);
+    // Save a copy for the admin dashboard (runs in the background; never blocks WhatsApp/email)
+    if (window.PEBackend) {
+      var val = function (id) { return ($(id).value || '').trim(); };
+      window.PEBackend.save('booking', {
+        tour: t ? t.name : tourSel.value, tour_id: tourSel.value,
+        style: (form.querySelector('input[name="style"]:checked') || {}).value || '',
+        transport: val('transport'), custom_places: t && t.id === 'custom' ? val('customPlaces') : '',
+        date: val('date'), flexible: $('flexible').checked,
+        adults: parseInt($('adults').value, 10) || 1, children: parseInt($('children').value, 10) || 0,
+        pickup: val('pickup'), stay: t && t.multi ? val('stay') : '',
+        name: val('name'), country: val('country'), phone: val('phone'), email: val('email'),
+        language: val('language'), heard: val('heard'), notes: val('notes'), consent: $('consent').checked
+      }, form);
+    }
+    if (lastVia === 'email') {
+      var subject = 'Tour booking request: ' + (t ? t.name : 'Tour') + ', ' + $('date').value;
+      location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text.replace(/\*/g, ''));
+      $('sentText').textContent = 'Your email app should have opened with your request filled in. Press send to reach us.';
+    } else {
+      window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+      $('sentText').textContent = 'WhatsApp should have opened with your request filled in. Press send to reach us.';
+    }
+    if (typeof window.gtag === 'function') window.gtag('event', 'booking_request', { method: lastVia, tour: t ? t.id : '' });
+    $('sentRef').classList.add('hidden');
+    $('sentMessage').value = text;
+    form.parentElement.classList.add('hidden');
+    $('sentPanel').classList.remove('hidden');
+    window.scrollTo({ top: $('sentPanel').offsetTop - 80, behavior: 'smooth' });
+  });
+
+  document.addEventListener('pe:saved', function (e) {
+    var d = e.detail || {};
+    if (d.ok && d.reference && d.reference !== 'PE-000000') {
+      $('sentRef').textContent = 'Saved with reference ' + d.reference + '. Mention it if you contact us.';
+      $('sentRef').classList.remove('hidden');
+    }
+  });
+  $('copyBtn').addEventListener('click', function () {
+    var ta = $('sentMessage'), btn = this;
+    var done = function () { btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; };
+    if (navigator.clipboard) navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); document.execCommand('copy'); done(); });
+    else { ta.select(); document.execCommand('copy'); done(); }
+  });
+  $('editBtn').addEventListener('click', function () {
+    $('sentPanel').classList.add('hidden');
+    form.parentElement.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  // Once a request has been sent, start fresh next visit
+  window.addEventListener('pagehide', function () { if (!$('sentPanel').classList.contains('hidden')) clearDraft(); });
+})();
+</script>
+</body>
+</html>

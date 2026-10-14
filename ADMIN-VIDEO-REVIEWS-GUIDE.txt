@@ -1,0 +1,43 @@
+PAST ENLIGHTEN — VIDEO REVIEWS: ADMIN GUIDE
+
+WHO CAN ADD VIDEOS
+Only people with write access to the website's GitHub repository. Visitors to the
+site cannot upload anything. The admin page has no password of its own: it signs in
+with a GitHub access token, and GitHub checks that the token can change the repository.
+
+ONE-TIME SETUP: CREATE AN ACCESS TOKEN
+1. Sign in to GitHub with the account that owns the website repository.
+2. Settings > Developer settings > Personal access tokens > Fine-grained tokens >
+   Generate new token.
+3. Name it "Video reviews" and set an expiry date (e.g. 1 year).
+4. Repository access: "Only select repositories" > choose the website repository.
+5. Permissions > Repository permissions > Contents: "Read and write". Nothing else.
+6. Generate, copy the token and keep it somewhere safe (e.g. a password manager).
+   Never paste it into the website code, WhatsApp or email.
+   If it is ever exposed, delete it on GitHub and create a new one.
+
+ADDING A VIDEO REVIEW
+1. Open https://pastenlighten.com/admin.html (it is not linked from the site and
+   is hidden from Google).
+2. Enter: GitHub owner (your username), repository name, branch (usually "main"),
+   and the token. Press Connect.
+3. Choose "Upload a video file" (MP4 best, up to 50 MB) or "YouTube link"
+   (for longer videos: upload to YouTube as Unlisted and paste the link).
+4. Fill in the guest's name, country, tour and travel month. Add a short quote
+   only if the guest actually says it in the video.
+5. Tick both checklist boxes. Only publish videos that:
+   - the guest agreed can appear on the website, and
+   - you have watched from start to finish, with nothing offensive, private
+     (phone numbers, faces of people who didn't agree) or misleading.
+6. Press "Publish video review". It appears on the Reviews page within 1–2 minutes.
+
+MANAGING VIDEOS
+In the list at the bottom of the admin page you can move videos up/down,
+Hide/Show them, or Delete them (this also removes an uploaded file).
+
+GOOD TO KNOW
+- Keep uploaded videos short (30–90 seconds) and compressed. GitHub refuses
+  files over 100 MB, and GitHub Pages works best when the whole site stays under 1 GB.
+  For many or long videos, use YouTube links instead.
+- Every change is saved in the repository history, so mistakes can be undone on GitHub.
+- The list of videos lives in data/video-reviews.json; uploaded files go in videos/.

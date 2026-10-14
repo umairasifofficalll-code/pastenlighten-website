@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Reviews Admin | Past Enlighten</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#061a14">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:{950:'#061a14',900:'#0a261e',800:'#0f382c',700:'#164e3f',600:'#1e6b57',100:'#e5f3ee',50:'#f2f9f6'},accent:{gold:'#d97706',amber:'#f59e0b'}},fontFamily:{cinzel:['"Cinzel"','serif'],sans:['"Plus Jakarta Sans"','sans-serif']}}}}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { color: #1f2937; background: #f5f5f4; }
+    .bg-brand-950 { background-color: #061a14 !important; color: #fff !important; }
+    .field { width: 100%; border: 1px solid #d6d3d1; background: #fff; border-radius: 10px; padding: .6rem .75rem; font-size: .9rem; outline: none; }
+    .field:focus { border-color: #1e6b57; box-shadow: 0 0 0 3px rgba(30,107,87,.15); }
+    .label { display: block; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #475569; margin-bottom: .3rem; }
+    .card { background: #fff; border: 1px solid #e7e5e4; border-radius: 16px; padding: 1.25rem; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .45rem; font-weight: 700; border-radius: 10px; padding: .6rem 1rem; font-size: .875rem; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: #0f382c; color: #fff; } .btn-primary:hover:not(:disabled) { background: #0a261e; }
+    .btn-ghost { border: 1px solid #d6d3d1; background: #fff; } .btn-ghost:hover:not(:disabled) { background: #f5f5f4; }
+    .btn-danger { border: 1px solid #fecaca; color: #b91c1c; background: #fff; } .btn-danger:hover:not(:disabled) { background: #fef2f2; }
+    .seg { display: inline-flex; border: 1px solid #d6d3d1; border-radius: 10px; overflow: hidden; }
+    .seg label { padding: .5rem .9rem; font-size: .85rem; font-weight: 700; cursor: pointer; }
+    .seg input { position: absolute; opacity: 0; }
+    .seg label:has(input:checked) { background: #0f382c; color: #fff; }
+    .seg label:has(input:focus-visible) { outline: 2px solid #f59e0b; outline-offset: -2px; }
+    .drop { border: 2px dashed #d6d3d1; border-radius: 14px; padding: 1.5rem; text-align: center; background: #fafaf9; cursor: pointer; }
+    .drop.over { border-color: #1e6b57; background: #e5f3ee; }
+    .bar { height: 8px; background: #e7e5e4; border-radius: 999px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; width: 0; background: #1e6b57; transition: width .2s; }
+  </style>
+</head>
+<body class="font-sans antialiased">
+  <header class="bg-brand-950 text-white">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+      <div>
+        <p class="text-[11px] font-bold tracking-widest uppercase text-amber-400">Admin only</p>
+        <h1 class="font-cinzel text-xl font-bold">Video reviews manager</h1>
+      </div>
+      <div class="flex items-center gap-3 text-sm">
+        <span id="whoami" class="hidden text-slate-300"></span>
+        <a href="reviews.html" target="_blank" rel="noopener" class="underline text-amber-200">View reviews page</a>
+        <button id="signOut" class="hidden btn btn-ghost !text-brand-900 !py-1.5">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+    <div id="status" role="status" aria-live="polite" class="hidden rounded-xl p-3 text-sm"></div>
+
+    <!-- 1. CONNECT -->
+    <section id="connectCard" class="card">
+      <h2 class="font-bold text-lg text-brand-900">Sign in with GitHub</h2>
+      <p class="text-sm text-slate-600 mt-1">This page has no password of its own. It only works with a GitHub access token that can write to the website's repository, so only the site's administrators can add or remove videos. Visitors can't upload anything.</p>
+      <form id="connectForm" class="mt-4 grid sm:grid-cols-3 gap-3">
+        <div><label class="label" for="owner">GitHub owner</label><input id="owner" class="field" placeholder="your-username" required autocomplete="off"></div>
+        <div><label class="label" for="repo">Repository</label><input id="repo" class="field" placeholder="pastenlighten-website" required autocomplete="off"></div>
+        <div><label class="label" for="branch">Branch</label><input id="branch" class="field" value="main" required autocomplete="off"></div>
+        <div class="sm:col-span-3"><label class="label" for="token">Access token</label><input id="token" type="password" class="field" placeholder="github_pat_…" required autocomplete="off" spellcheck="false"></div>
+        <label class="sm:col-span-3 flex items-center gap-2 text-sm text-slate-700"><input id="remember" type="checkbox" class="accent-brand-800"> Remember me on this device (don't tick on a shared computer)</label>
+        <div class="sm:col-span-3"><button class="btn btn-primary" type="submit"><i class="fa-brands fa-github"></i> Connect</button></div>
+      </form>
+      <details class="mt-5 text-sm text-slate-700">
+        <summary class="cursor-pointer font-bold text-brand-800">How do I get an access token?</summary>
+        <ol class="list-decimal pl-5 mt-2 space-y-1">
+          <li>Sign in to GitHub with the account that owns the website repository.</li>
+          <li>Go to <strong>Settings → Developer settings → Personal access tokens → Fine-grained tokens</strong> and choose <strong>Generate new token</strong>.</li>
+          <li>Give it a name (e.g. "Video reviews") and an expiry date.</li>
+          <li>Under <strong>Repository access</strong>, choose <strong>Only select repositories</strong> and pick the website repository only.</li>
+          <li>Under <strong>Permissions → Repository permissions</strong>, set <strong>Contents</strong> to <strong>Read and write</strong>. Nothing else is needed.</li>
+          <li>Generate the token, copy it, and paste it above. Never share it or put it in the website's code. If it leaks, delete it on GitHub and make a new one.</li>
+        </ol>
+      </details>
+    </section>
+
+    <div id="adminArea" class="hidden space-y-6">
+      <!-- 2. ADD -->
+      <section class="card">
+        <h2 class="font-bold text-lg text-brand-900">Add a video review</h2>
+        <form id="addForm" class="mt-4 space-y-4" novalidate>
+          <div class="seg" role="radiogroup" aria-label="Video source">
+            <label><input type="radio" name="src" value="file" checked> Upload a video file</label>
+            <label><input type="radio" name="src" value="youtube"> YouTube link</label>
+          </div>
+
+          <div id="fileWrap">
+            <label id="drop" class="drop" for="file">
+              <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-700"></i>
+              <span class="block font-bold mt-1">Choose a video or drag it here</span>
+              <span class="block text-xs text-slate-500 mt-1">MP4 (best), WebM or MOV · up to 50 MB · for longer videos, upload to YouTube (unlisted is fine) and use the YouTube option</span>
+            </label>
+            <input id="file" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" class="sr-only">
+            <div id="previewWrap" class="hidden mt-3 grid sm:grid-cols-[280px_1fr] gap-3 items-start">
+              <video id="preview" class="w-full rounded-xl bg-black aspect-video" controls playsinline></video>
+              <div class="text-sm text-slate-600"><p id="fileInfo" class="font-semibold text-slate-800"></p><p class="mt-1">Watch the whole video before publishing.</p><button type="button" id="clearFile" class="btn btn-ghost mt-2 !py-1.5">Choose a different file</button></div>
+            </div>
+          </div>
+
+          <div id="ytWrap" class="hidden">
+            <label class="label" for="ytUrl">YouTube link</label>
+            <input id="ytUrl" class="field" placeholder="https://www.youtube.com/watch?v=… or https://youtu.be/…">
+            <div id="ytPreview" class="hidden mt-3 max-w-md"></div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div><label class="label" for="gName">Guest name (as it should appear)</label><input id="gName" class="field" maxlength="60" placeholder="e.g. Sarah from Manchester → Sarah"></div>
+            <div><label class="label" for="gCountry">Country</label><input id="gCountry" class="field" maxlength="40"></div>
+            <div><label class="label" for="gTour">Tour</label>
+              <select id="gTour" class="field">
+                <option>Lahore heritage tour</option><option>Lahore Walled City / rickshaw tour</option><option>Lahore Sufi night tour</option><option>Lahore shopping tour</option><option>Islamabad city tour</option><option>Naran Kaghan</option><option>Swat &amp; Malam Jabba</option><option>Neelum Valley</option><option>Hunza</option><option>Skardu &amp; Deosai</option><option>Fairy Meadows</option><option>Grand Northern 16-day tour</option><option>Custom tour</option>
+              </select>
+            </div>
+            <div><label class="label" for="gDate">When they travelled</label><input id="gDate" type="month" class="field"></div>
+            <div class="sm:col-span-2"><label class="label" for="gQuote">Short quote from the video (optional)</label><input id="gQuote" class="field" maxlength="200" placeholder="A sentence the guest actually says in the video"></div>
+          </div>
+
+          <fieldset class="rounded-xl bg-amber-50 border border-amber-200 p-4 space-y-2 text-sm">
+            <legend class="sr-only">Publishing checklist</legend>
+            <p class="font-bold text-amber-900">Before publishing</p>
+            <label class="flex items-start gap-2"><input id="chkConsent" type="checkbox" class="mt-1 accent-brand-800"> The guest gave permission for this video to appear on the website.</label>
+            <label class="flex items-start gap-2"><input id="chkWatched" type="checkbox" class="mt-1 accent-brand-800"> I watched the whole video. It is a real guest and has nothing offensive, private or misleading in it.</label>
+            <label class="flex items-start gap-2"><input id="chkPublish" type="checkbox" class="mt-1 accent-brand-800" checked> Show it on the website straight away (untick to save it hidden).</label>
+          </fieldset>
+
+          <div id="progressWrap" class="hidden"><div class="bar"><span id="progress"></span></div><p id="progressText" class="text-xs text-slate-500 mt-1"></p></div>
+          <button id="addBtn" class="btn btn-primary" type="submit"><i class="fa-solid fa-upload"></i> Publish video review</button>
+        </form>
+      </section>
+
+      <!-- 3. MANAGE -->
+      <section class="card">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="font-bold text-lg text-brand-900">Published and hidden videos</h2>
+          <button id="refresh" class="btn btn-ghost !py-1.5" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+        <p class="text-sm text-slate-500 mt-1">Changes appear on the live site within 1–2 minutes, once GitHub Pages has updated.</p>
+        <ul id="list" class="mt-4 divide-y divide-stone-200"></ul>
+        <p id="listEmpty" class="hidden text-sm text-slate-500 mt-4">No video reviews yet.</p>
+      </section>
+    </div>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var DATA_PATH = 'data/video-reviews.json';
+  var VIDEO_DIR = 'videos';
+  var MAX_BYTES = 50 * 1024 * 1024;
+  var API = 'https://api.github.com';
+  var STORE = 'pe_admin_conn_v1';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var conn = null;   // { owner, repo, branch, token }
+  var busy = false;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function status(msg, kind) {
+    var el = $('status');
+    el.className = 'rounded-xl p-3 text-sm ' + (kind === 'error' ? 'bg-red-50 border border-red-200 text-red-800' : kind === 'ok' ? 'bg-emerald-50 border border-emerald-200 text-emerald-900' : 'bg-slate-100 border border-slate-200 text-slate-700');
+    el.textContent = msg; el.classList.remove('hidden');
+    if (kind === 'error') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function storage(remember) { try { return remember ? localStorage : sessionStorage; } catch (e) { return null; } }
+  function saveConn(c, remember) {
+    try { localStorage.removeItem(STORE); sessionStorage.removeItem(STORE); } catch (e) {}
+    var s = storage(remember); if (s) try { s.setItem(STORE, JSON.stringify(c)); } catch (e) {}
+  }
+  function loadConn() {
+    try { return JSON.parse(sessionStorage.getItem(STORE) || localStorage.getItem(STORE) || 'null'); } catch (e) { return null; }
+  }
+
+  // ---------- GitHub API ----------
+  function gh(method, path, body) {
+    return fetch(API + path, {
+      method: method,
+      headers: { 'Authorization': 'Bearer ' + conn.token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+      cache: 'no-store'
+    }).then(function (r) {
+      if (r.status === 204) return null;
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok) { var e = new Error(j.message || ('GitHub error ' + r.status)); e.status = r.status; throw e; }
+        return j;
+      });
+    });
+  }
+  function repoPath(p) { return '/repos/' + encodeURIComponent(conn.owner) + '/' + encodeURIComponent(conn.repo) + (p || ''); }
+  function contentsPath(file) { return repoPath('/contents/' + file.split('/').map(encodeURIComponent).join('/')); }
+  function b64FromText(t) { var bytes = new TextEncoder().encode(t), bin = ''; for (var i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
+  function textFromB64(b) { var bin = atob(b.replace(/\s/g, '')), bytes = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
+
+  function readData() {
+    return gh('GET', contentsPath(DATA_PATH) + '?ref=' + encodeURIComponent(conn.branch))
+      .then(function (j) { var d = JSON.parse(textFromB64(j.content || '') || '{}'); if (!Array.isArray(d.videos)) d.videos = []; return { data: d, sha: j.sha }; })
+      .catch(function (e) { if (e.status === 404) return { data: { videos: [] }, sha: null }; throw e; });
+  }
+  function writeData(data, sha, message) {
+    var body = { message: message, content: b64FromText(JSON.stringify(data, null, 2) + '\n'), branch: conn.branch };
+    if (sha) body.sha = sha;
+    return gh('PUT', contentsPath(DATA_PATH), body);
+  }
+  // Read-modify-write the list, retrying once if someone else changed it at the same time.
+  function updateData(mutate, message) {
+    var attempt = function (n) {
+      return readData().then(function (r) { mutate(r.data); return writeData(r.data, r.sha, message); })
+        .catch(function (e) { if (e.status === 409 && n < 1) return attempt(n + 1); throw e; });
+    };
+    return attempt(0);
+  }
+  // Upload a file with progress (fetch can't report upload progress)
+  function putFile(path, base64, message, onProgress) {
+    return new Promise(function (resolve, reject) {
+      var x = new XMLHttpRequest();
+      x.open('PUT', API + contentsPath(path));
+      x.setRequestHeader('Authorization', 'Bearer ' + conn.token);
+      x.setRequestHeader('Accept', 'application/vnd.github+json');
+      x.setRequestHeader('X-GitHub-Api-Version', '2022-11-28');
+      x.setRequestHeader('Content-Type', 'application/json');
+      x.upload.onprogress = function (e) { if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total); };
+      x.onload = function () {
+        var j = {}; try { j = JSON.parse(x.responseText || '{}'); } catch (e) {}
+        if (x.status >= 200 && x.status < 300) resolve(j); else { var er = new Error(j.message || ('Upload failed (' + x.status + ')')); er.status = x.status; reject(er); }
+      };
+      x.onerror = function () { reject(new Error('Network error during upload. Check your connection and try again.')); };
+      x.send(JSON.stringify({ message: message, content: base64, branch: conn.branch }));
+    });
+  }
+
+  function friendly(e) {
+    if (e.status === 401) return 'GitHub rejected the token. It may be wrong or expired. Sign out and connect with a new token.';
+    if (e.status === 403) return 'This token is not allowed to change the repository. Give it "Contents: Read and write" for this repository. (' + e.message + ')';
+    if (e.status === 404) return 'Repository or branch not found, or the token cannot see it. Check owner, repository and branch.';
+    if (e.status === 413 || /too large/i.test(e.message)) return 'The file is too large for GitHub. Use a smaller file or a YouTube link.';
+    if (e.status === 422 && /sha/i.test(e.message)) return 'The list changed while you were editing. Press Refresh and try again.';
+    return e.message || 'Something went wrong.';
+  }
+  function lock(on) {
+    busy = on;
+    document.querySelectorAll('#adminArea button, #adminArea input, #adminArea select').forEach(function (el) { if (el.id !== 'preview') el.disabled = on; });
+  }
+
+  // ---------- connect ----------
+  // Site defaults so the admin only has to paste a token. Change these if the repository moves.
+  var DEFAULT_OWNER = 'umairasifofficalll-code';
+  var DEFAULT_REPO = 'pastenlighten-website';
+  var DEFAULT_BRANCH = 'main';
+  (function prefill() {
+    var saved = loadConn();
+    var h = location.hostname, m = h.match(/^([a-z0-9-]+)\.github\.io$/i);
+    var pathRepo = m && location.pathname.split('/')[1] && !/\.html$/.test(location.pathname.split('/')[1]) ? location.pathname.split('/')[1] : '';
+    $('owner').value = (saved && saved.owner) || DEFAULT_OWNER || (m ? m[1] : '');
+    $('repo').value = (saved && saved.repo) || DEFAULT_REPO || pathRepo || (m ? m[1] + '.github.io' : '');
+    $('branch').value = (saved && saved.branch) || DEFAULT_BRANCH;
+    if (saved && saved.token) { conn = saved; try { $('remember').checked = !!localStorage.getItem(STORE); } catch (e) {} verify(); }
+  })();
+
+  $('connectForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    conn = { owner: $('owner').value.trim(), repo: $('repo').value.trim(), branch: $('branch').value.trim() || 'main', token: $('token').value.trim() };
+    if (!conn.owner || !conn.repo || !conn.token) return status('Fill in owner, repository and token.', 'error');
+    verify(true);
+  });
+
+  function verify(fresh) {
+    status('Checking access…');
+    Promise.all([gh('GET', '/user'), gh('GET', repoPath())]).then(function (res) {
+      var user = res[0], repo = res[1];
+      if (!repo.permissions || !(repo.permissions.push || repo.permissions.admin || repo.permissions.maintain)) {
+        var err = new Error('This account cannot write to ' + repo.full_name + '.'); err.status = 403; throw err;
+      }
+      return gh('GET', repoPath('/branches/' + encodeURIComponent(conn.branch))).then(function () { return user; });
+    }).then(function (user) {
+      if (fresh) saveConn(conn, $('remember').checked);
+      $('token').value = '';
+      $('whoami').textContent = 'Signed in as ' + user.login;
+      $('whoami').classList.remove('hidden'); $('signOut').classList.remove('hidden');
+      $('connectCard').classList.add('hidden'); $('adminArea').classList.remove('hidden');
+      status('Connected to ' + conn.owner + '/' + conn.repo + ' (' + conn.branch + ').', 'ok');
+      loadList();
+    }).catch(function (e) {
+      conn = null; saveConn(null, false);
+      try { localStorage.removeItem(STORE); sessionStorage.removeItem(STORE); } catch (x) {}
+      status(friendly(e), 'error');
+    });
+  }
+  $('signOut').addEventListener('click', function () {
+    try { localStorage.removeItem(STORE); sessionStorage.removeItem(STORE); } catch (e) {}
+    conn = null; location.reload();
+  });
+
+  // ---------- add form ----------
+  var chosenFile = null, previewUrl = null;
+  function srcMode() { return document.querySelector('input[name="src"]:checked').value; }
+  document.querySelectorAll('input[name="src"]').forEach(function (r) {
+    r.addEventListener('change', function () { $('fileWrap').classList.toggle('hidden', srcMode() !== 'file'); $('ytWrap').classList.toggle('hidden', srcMode() !== 'youtube'); });
+  });
+  function setFile(f) {
+    if (!f) return;
+    var okType = /^video\/(mp4|webm|quicktime)$/.test(f.type) || /\.(mp4|webm|mov)$/i.test(f.name);
+    if (!okType) return status('Please choose an MP4, WebM or MOV video.', 'error');
+    if (f.size > MAX_BYTES) return status('That video is ' + (f.size / 1048576).toFixed(1) + ' MB. The limit is 50 MB. Compress it or upload it to YouTube and use the YouTube option.', 'error');
+    chosenFile = f;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(f);
+    $('preview').src = previewUrl;
+    $('fileInfo').textContent = f.name + ' · ' + (f.size / 1048576).toFixed(1) + ' MB';
+    $('previewWrap').classList.remove('hidden'); $('drop').classList.add('hidden');
+    $('status').classList.add('hidden');
+  }
+  $('file').addEventListener('change', function () { setFile(this.files[0]); });
+  ['dragenter', 'dragover'].forEach(function (ev) { $('drop').addEventListener(ev, function (e) { e.preventDefault(); $('drop').classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { $('drop').addEventListener(ev, function (e) { e.preventDefault(); $('drop').classList.remove('over'); }); });
+  $('drop').addEventListener('drop', function (e) { setFile(e.dataTransfer.files[0]); });
+  $('clearFile').addEventListener('click', function () {
+    chosenFile = null; $('file').value = ''; $('preview').removeAttribute('src'); $('preview').load();
+    $('previewWrap').classList.add('hidden'); $('drop').classList.remove('hidden');
+  });
+
+  function parseYouTube(u) {
+    u = (u || '').trim();
+    var m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : (/^[A-Za-z0-9_-]{11}$/.test(u) ? u : '');
+  }
+  $('ytUrl').addEventListener('input', function () {
+    var id = parseYouTube(this.value);
+    $('ytPreview').classList.toggle('hidden', !id);
+    $('ytPreview').innerHTML = id ? '<iframe class="w-full aspect-video rounded-xl" src="https://www.youtube-nocookie.com/embed/' + id + '" title="Preview" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>' : '';
+  });
+
+  function slug(s) { return String(s || 'guest').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'guest'; }
+  function fileToBase64(f) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { var s = String(r.result); resolve(s.slice(s.indexOf(',') + 1)); };
+      r.onerror = function () { reject(new Error('Could not read the file.')); };
+      r.readAsDataURL(f);
+    });
+  }
+  function progress(frac, text) {
+    $('progressWrap').classList.remove('hidden');
+    $('progress').style.width = Math.round(frac * 100) + '%';
+    $('progressText').textContent = text;
+  }
+
+  $('addForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (busy || !conn) return;
+    var mode = srcMode(), ytid = parseYouTube($('ytUrl').value);
+    if (mode === 'file' && !chosenFile) return status('Choose a video file first.', 'error');
+    if (mode === 'youtube' && !ytid) return status('That doesn\'t look like a YouTube video link.', 'error');
+    if ($('gName').value.trim().length < 2) { $('gName').focus(); return status('Add the guest\'s name.', 'error'); }
+    if (!$('chkConsent').checked || !$('chkWatched').checked) return status('Tick both checklist boxes before publishing. Only publish videos you have watched in full, from guests who agreed.', 'error');
+
+    var now = new Date(), stamp = now.toISOString().slice(0, 10);
+    var id = stamp + '-' + slug($('gName').value) + '-' + Math.random().toString(36).slice(2, 7);
+    var entry = {
+      id: id,
+      type: mode,
+      name: $('gName').value.trim(),
+      country: $('gCountry').value.trim(),
+      tour: $('gTour').value,
+      date: $('gDate').value,
+      quote: $('gQuote').value.trim(),
+      consent: true,
+      published: $('chkPublish').checked,
+      addedAt: now.toISOString(),
+      addedBy: $('whoami').textContent.replace('Signed in as ', '')
+    };
+    lock(true);
+    var step;
+    if (mode === 'file') {
+      var ext = (chosenFile.name.match(/\.(mp4|webm|mov)$/i) || ['.mp4'])[0].toLowerCase();
+      entry.src = VIDEO_DIR + '/' + id + ext;
+      progress(0.02, 'Preparing video…');
+      step = fileToBase64(chosenFile).then(function (b64) {
+        return putFile(entry.src, b64, 'Add video review: ' + entry.name, function (f) { progress(0.05 + f * 0.85, 'Uploading… ' + Math.round(f * 100) + '%'); });
+      });
+    } else {
+      entry.youtubeId = ytid;
+      step = Promise.resolve();
+    }
+    step.then(function () {
+      progress(0.95, 'Updating the reviews list…');
+      return updateData(function (d) { d.videos.unshift(entry); }, 'Publish video review: ' + entry.name);
+    }).then(function () {
+      progress(1, 'Done.');
+      status('Saved. ' + (entry.published ? 'It will appear on the reviews page within 1–2 minutes.' : 'It is saved as hidden. Show it from the list below when ready.'), 'ok');
+      $('addForm').reset(); $('clearFile').click(); $('ytPreview').innerHTML = ''; $('ytPreview').classList.add('hidden');
+      $('fileWrap').classList.remove('hidden'); $('ytWrap').classList.add('hidden');
+      setTimeout(function () { $('progressWrap').classList.add('hidden'); }, 1500);
+      return loadList();
+    }).catch(function (err) {
+      status(friendly(err) + (entry.src ? ' (If the upload finished, the video file may already be in the repository; you can delete it from the videos folder on GitHub.)' : ''), 'error');
+      $('progressWrap').classList.add('hidden');
+    }).then(function () { lock(false); });
+  });
+
+  // ---------- manage list ----------
+  var current = [];
+  function loadList() {
+    return readData().then(function (r) { current = r.data.videos; renderList(); }).catch(function (e) { status(friendly(e), 'error'); });
+  }
+  function thumb(v) {
+    if (v.type === 'youtube') return '<img src="https://i.ytimg.com/vi/' + esc(v.youtubeId) + '/mqdefault.jpg" alt="" class="w-full h-full object-cover">';
+    return '<video src="' + esc(rawUrl(v.src)) + '#t=0.1" preload="metadata" muted class="w-full h-full object-cover"></video>';
+  }
+  // Preview from the repository so brand-new uploads show before GitHub Pages finishes publishing
+  function rawUrl(p) { return 'https://raw.githubusercontent.com/' + encodeURIComponent(conn.owner) + '/' + encodeURIComponent(conn.repo) + '/' + encodeURIComponent(conn.branch) + '/' + p; }
+  function renderList() {
+    $('listEmpty').classList.toggle('hidden', current.length > 0);
+    $('list').innerHTML = current.map(function (v, i) {
+      return '<li class="py-3 flex flex-col sm:flex-row sm:items-center gap-3" data-id="' + esc(v.id) + '">' +
+        '<div class="w-full sm:w-40 aspect-video rounded-lg overflow-hidden bg-black flex-none">' + thumb(v) + '</div>' +
+        '<div class="flex-1 min-w-0"><p class="font-bold text-slate-800">' + esc(v.name) + ' <span class="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-full ' + (v.published === false ? 'bg-slate-200 text-slate-600">Hidden' : 'bg-emerald-100 text-emerald-800">Live') + '</span></p>' +
+        '<p class="text-xs text-slate-500">' + esc([v.country, v.tour, v.type === 'youtube' ? 'YouTube' : 'Uploaded file'].filter(Boolean).join(' · ')) + '</p>' +
+        (v.quote ? '<p class="text-sm text-slate-600 truncate">“' + esc(v.quote) + '”</p>' : '') + '</div>' +
+        '<div class="flex flex-wrap gap-1.5">' +
+          '<button class="btn btn-ghost !px-2.5 !py-1.5" data-act="up" ' + (i === 0 ? 'disabled' : '') + ' aria-label="Move up"><i class="fa-solid fa-arrow-up"></i></button>' +
+          '<button class="btn btn-ghost !px-2.5 !py-1.5" data-act="down" ' + (i === current.length - 1 ? 'disabled' : '') + ' aria-label="Move down"><i class="fa-solid fa-arrow-down"></i></button>' +
+          '<button class="btn btn-ghost !py-1.5" data-act="toggle">' + (v.published === false ? 'Show' : 'Hide') + '</button>' +
+          '<button class="btn btn-danger !py-1.5" data-act="delete">Delete</button>' +
+        '</div></li>';
+    }).join('');
+  }
+  $('refresh').addEventListener('click', function () { if (!busy) { status('Refreshing…'); loadList().then(function () { status('List is up to date.', 'ok'); }); } });
+  $('list').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b || busy) return;
+    var id = b.closest('li').dataset.id, act = b.dataset.act;
+    var v = current.find(function (x) { return x.id === id; }); if (!v) return;
+    if (act === 'delete' && !confirm('Delete the video review from ' + v.name + '? ' + (v.type === 'file' ? 'The video file will also be removed from the repository.' : '') )) return;
+    lock(true); status('Saving…');
+    var after = Promise.resolve();
+    var msg = { up: 'Reorder video reviews', down: 'Reorder video reviews', toggle: (v.published === false ? 'Show' : 'Hide') + ' video review: ' + v.name, delete: 'Remove video review: ' + v.name }[act];
+    updateData(function (d) {
+      var i = d.videos.findIndex(function (x) { return x.id === id; });
+      if (i < 0) return;
+      if (act === 'up' && i > 0) d.videos.splice(i - 1, 0, d.videos.splice(i, 1)[0]);
+      if (act === 'down' && i < d.videos.length - 1) d.videos.splice(i + 1, 0, d.videos.splice(i, 1)[0]);
+      if (act === 'toggle') d.videos[i].published = d.videos[i].published === false;
+      if (act === 'delete') d.videos.splice(i, 1);
+    }, msg).then(function () {
+      // Remove the video file after the list no longer points at it
+      if (act === 'delete' && v.type === 'file' && /^videos\/[A-Za-z0-9._-]+$/.test(v.src || '')) {
+        after = gh('GET', repoPath('/contents/' + VIDEO_DIR) + '?ref=' + encodeURIComponent(conn.branch)).then(function (files) {
+          var f = (files || []).find(function (x) { return x.path === v.src; });
+          if (f) return gh('DELETE', contentsPath(v.src), { message: 'Delete video file: ' + v.src, sha: f.sha, branch: conn.branch });
+        });
+      }
+      return after;
+    }).then(function () {
+      status(act === 'delete' ? 'Deleted.' : 'Saved.', 'ok');
+      return loadList();
+    }).catch(function (err) { status(friendly(err), 'error'); return loadList(); })
+      .then(function () { lock(false); });
+  });
+})();
+</script>
+</body>
+</html>
