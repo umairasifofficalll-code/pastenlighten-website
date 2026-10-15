@@ -2005,6 +2005,9 @@ main article a:hover { color: #92400e; }
         <button onclick="openBookingModal('AI Consultation')" class="bg-accent-light text-brand-900 font-semibold px-2 py-0.5 rounded-full border border-accent-gold/40">
           📅 Book Now
         </button>
+        <button onclick="sendQuickPrompt('What should a first-time visitor know about Lahore?')" class="bg-white text-slate-700 px-2 py-0.5 rounded-full border border-stone-300 hover:bg-brand-50">
+          🧭 Lahore tips
+        </button>
       </div>
 
       <div id="chatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs bg-slate-50 custom-scrollbar">
@@ -2447,8 +2450,43 @@ main article a:hover { color: #92400e; }
 
     // Offline fallback for Noor: answers from the tour data on this page when the /api/chat
     // backend is not available (for example on GitHub Pages, which only serves static files).
+    // Lahore visitor knowledge for Noor (same facts as blog/lahore-travel-guide-essential-tips.html).
+    // Each topic: words that trigger it, and Noor's answer. Checked before tour matching.
+    const LAHORE_GUIDE_URL = 'blog/lahore-travel-guide-essential-tips.html';
+    const LAHORE_GUIDE = [
+      { keys: /\b(best time|when (should|to) (i )?(go|visit)|weather|season|month|temperature|hot|cold|monsoon|rain|fog|winter|summer)\b/,
+        answer: 'Best time to visit Lahore: November to March, when days are mild (about 20–26°C) and good for walking. February–March and November are especially pleasant.\n• April–June: hot to very hot (high 30s °C), so sightsee early morning or late afternoon.\n• July–September: monsoon, humid with heavy rain, especially July–August.\n• December–January: foggy mornings.\nFor mountain trips, the north is best from May to October.' },
+      { keys: /\b(get(ting)? around|transport|metro|orange line|bus|taxi|uber|careem|ride.?hailing|rickshaw|airport|train|railway|station|traffic|how (do i|to) get)\b/,
+        answer: 'Getting to and around Lahore:\n• Air: Allama Iqbal International Airport.\n• Train: Lahore Junction links Islamabad/Rawalpindi, Karachi and Peshawar.\n• Road: intercity coaches and motorways to Islamabad and across Punjab.\n• In the city: Metrobus, Orange Line metro train, buses and app-based ride-hailing. Agree taxi or rickshaw fares before you set off.\n• The Walled City is best on foot, and traffic often makes journeys longer than maps suggest.\nOur tours include transport, so you don\'t need to arrange any of this.' },
+      { keys: /\b(money|currency|rupee|pkr|cash|card|atm|exchange|tip|tipping|pay(ment)?)\b/,
+        answer: 'Money in Lahore:\n• Currency: Pakistani rupee (PKR, ₨).\n• Cards work at larger hotels, malls and established restaurants.\n• Bazaars, street food, small shops and rickshaws are mostly cash, so carry small notes.\n• Tell your bank you\'ll use your card in Pakistan.\n• Tipping isn\'t compulsory but is appreciated for good service.' },
+      { keys: /\b(dress|wear|clothes|clothing|scarf|head ?cover|shoes|etiquette|customs|culture|modest|photo(graph)?s? (allowed|rules)|alcohol)\b/,
+        answer: 'Dress and etiquette:\n• Dress modestly, especially at mosques, shrines and gurdwaras, with shoulders and knees covered.\n• Women should bring a scarf to cover their hair at religious sites.\n• Shoes come off before prayer areas, so slip-ons and socks are handy.\n• Ask before photographing people, especially worshippers and women, and never photograph checkpoints or military sites.\n• Public drinking of alcohol is restricted.' },
+      { keys: /\b(food|eat|dish|dishes|cuisine|restaurant|nihari|paya|kebab|chargha|halwa puri|paratha|lassi|breakfast|street food|hungry|vegetarian)\b/,
+        answer: 'Lahori food to try: slow-cooked nihari and paya, seekh kebabs, spiced whole chicken chargha, halwa puri for breakfast, flaky parathas and a cold lassi.\nTip: choose busy, well-established places and drink sealed bottled or treated water.\nWe can add a food stop such as Fort Road Food Street to your Lahore tour.' },
+      { keys: /\b(safe|safety|danger|dangerous|secure|security|scam|crime|smog|pollution|air quality|health)\b/,
+        answer: 'Staying safe in Lahore:\n• Check your own government\'s current travel advice before booking and before you travel.\n• Keep valuables secure in crowded bazaars.\n• Use pre-arranged or app-based transport after dark.\n• Summer heat and winter smog can be tough, so drink water, take breaks, and check air quality if you have breathing problems.\nOn a private tour your guide plans routes and timings and stays with you throughout.' },
+      { keys: /\b(emergency|ambulance|police|fire|rescue|1122|hospital|help number|helpline)\b/,
+        answer: 'Emergency numbers in Lahore (Punjab):\n• Rescue 1122: ambulance, rescue and fire\n• Police: 15\n• Fire brigade: 16\nSave them in your phone before you arrive and confirm them with your hotel.' },
+      { keys: /\b(urdu|phrase|phrases|language|say hello|how to say|thank you|greeting|speak|english)\b/,
+        answer: 'Useful Urdu phrases:\n• Assalam-o-Alaikum: hello\n• Walaikum Assalam: reply to a greeting\n• Shukriya: thank you\n• Maaf kijiye: excuse me / sorry\n• Kitne ka hai?: how much is it?\n• Khuda Hafiz: goodbye\nPunjabi and Urdu are the local languages, and English is widely understood in hotels and shops. Our guides speak English, Urdu and Punjabi.' },
+      { keys: /\b(history|historical|timeline|mughal|sikh|ranjit singh|british|founded|old is lahore|lahore resolution|1947)\b/,
+        answer: 'Lahore in brief:\n• 11th century: a major centre under the Ghaznavids\n• Late 1500s: Emperor Akbar strengthens the city and rebuilds the fort\n• 1641–42: Shalimar Gardens laid out under Shah Jahan\n• 1673: Badshahi Mosque completed under Aurangzeb\n• 1799: capital of Maharaja Ranjit Singh\'s Sikh Empire\n• 1849: the British annex Punjab\n• 1940: the Lahore Resolution, marked by Minar-e-Pakistan\n• 1947: part of the newly created Pakistan' },
+      { keys: /\b(what to see|things to do|places to visit|attractions|sights|sightseeing|must see|top places|first.?time|first visit|itinerary|visit in lahore)\b/,
+        answer: 'Top sights for a first visit to Lahore:\n• Lahore Fort (UNESCO): Sheesh Mahal and the Picture Wall\n• Badshahi Mosque (1673)\n• Wazir Khan Mosque: famous painted tilework\n• Delhi Gate and the Shahi Hammam royal baths\n• Shalimar Gardens (1641–42)\n• Lahore Museum\n• Minar-e-Pakistan in Greater Iqbal Park\n• Wagah Border flag-lowering ceremony (about 45 min drive)\nOur Lahore Full Day tour links most of these in one day.' }
+    ];
+    function lahoreGuideAnswer(q) {
+      const hit = LAHORE_GUIDE.find(t => t.keys.test(q));
+      if (!hit) return null;
+      let url = LAHORE_GUIDE_URL;
+      try { url = new URL(LAHORE_GUIDE_URL, location.href).href; } catch (_) {}
+      return { answer: hit.answer, actions: ['Book a Lahore tour', 'Talk to team on WhatsApp'], sources: [{ url, title: 'Lahore travel guide' }] };
+    }
+
     function localNoorAnswer(question) {
       const q = String(question || '').toLowerCase();
+      const guide = lahoreGuideAnswer(q);
+      if (guide) return guide;
       const tours = (TOUR_DATA && TOUR_DATA.tours) || [];
       const pricing = (TOUR_DATA && TOUR_DATA.pricing) || [];
       const words = q.split(/[^a-z0-9]+/).filter(w => w.length > 3 && !['tour','tours','about','tell','what','which','with','your','have','price','prices','cost','much','days','does','offer','want','would','like','please'].includes(w));
@@ -2487,7 +2525,7 @@ main article a:hover { color: #92400e; }
         return { answer: 'Prices depend on the tour, group size and dates. Tell me which tour you are interested in (for example "Lahore full day" or "Hunza"), or message the team for a written quote.', actions };
       }
       return {
-        answer: 'I can share details about our Lahore, Islamabad, northern Pakistan and South Punjab tours. Try asking about a place, like "Lahore Fort", "Hunza" or "Skardu" — or message the team on WhatsApp for anything else.',
+        answer: 'I can share details about our Lahore, Islamabad, northern Pakistan and South Punjab tours, and practical Lahore tips: best time to visit, getting around, money, what to wear, food, safety, emergency numbers and useful Urdu phrases. Try asking "When is the best time to visit Lahore?" or "Tell me about Hunza", or message the team on WhatsApp for anything else.',
         actions: ['Talk to team on WhatsApp']
       };
     }
@@ -2572,6 +2610,7 @@ main article a:hover { color: #92400e; }
         pending.remove();
         const local = localNoorAnswer(text);
         appendRobotMessage(local.answer, local.actions);
+        if (local.sources) appendChatSources(local.sources);
       } finally {
         input.disabled = false;
         if (sendButton) sendButton.disabled = false;
@@ -2624,7 +2663,7 @@ main article a:hover { color: #92400e; }
             button.className = 'bg-stone-100 border border-stone-300 px-2 py-1 rounded-full text-[10px]';
             button.textContent = label;
             button.addEventListener('click', () => {
-              if (/book|booking|reserve|form/i.test(label)) openBookingModal(label);
+              if (/book|booking|reserve|form/i.test(label)) openBookingModal(/lahore/i.test(label) ? 'L1 • Lahore Full Day Heritage Tour' : label);
               else sendQuickPrompt(label);
             });
             actionRow.appendChild(button);
