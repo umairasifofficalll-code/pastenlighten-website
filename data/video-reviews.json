@@ -1,3 +1,20 @@
 {
-  "videos": []
+  "videos": [
+    {
+      "id": "2026-10-15-guests-lahore-tour",
+      "type": "file",
+      "src": "videos/guest-review-lahore.mp4",
+      "poster": "videos/guest-review-lahore-poster.webp",
+      "portrait": true,
+      "name": "Guests on our Lahore tour",
+      "country": "",
+      "tour": "Lahore heritage tour",
+      "date": "",
+      "quote": "",
+      "consent": true,
+      "published": true,
+      "addedAt": "2026-10-15T12:20:00+05:00",
+      "addedBy": "site owner (permission confirmed by owner)"
+    }
+  ]
 }

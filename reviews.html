@@ -95,6 +95,18 @@
       </div>
     </section>
 
+    <!-- Moments from our tours (photos) -->
+    <section class="max-w-6xl mx-auto px-4 pt-10" aria-labelledby="momentsHeading">
+      <p class="text-accent-gold font-bold tracking-widest text-[11px] uppercase">On the road with our guests</p>
+      <h2 id="momentsHeading" class="font-cinzel text-2xl font-bold text-brand-900 mt-1">Moments from our tours</h2>
+      <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <figure class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+          <img src="images/youtuber-tour-photo-sm.webp" srcset="images/youtuber-tour-photo-sm.webp 600w, images/youtuber-tour-photo.webp 1200w" sizes="(min-width:1024px) 380px, (min-width:640px) 50vw, 100vw" alt="A travel YouTuber and his Past Enlighten guide at a railway heritage site in Lahore, with a mosque minaret behind" class="w-full aspect-[3/4] object-cover" loading="lazy" decoding="async">
+          <figcaption class="p-4 text-sm text-slate-700"><strong class="block text-brand-900">Touring Lahore with a travel YouTuber</strong>Our guide with a travel YouTuber after exploring Lahore together.</figcaption>
+        </figure>
+      </div>
+    </section>
+
     <!-- Video reviews (content managed only through admin.html / the GitHub repository) -->
     <section id="videoReviews" class="hidden max-w-6xl mx-auto px-4 pt-10" aria-labelledby="videoHeading">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
@@ -314,7 +326,7 @@
         '<img src="https://i.ytimg.com/vi/' + ytId(v.youtubeId) + '/hqdefault.jpg" alt="" class="w-full h-full object-cover opacity-90 group-hover:opacity-100" loading="lazy">' +
         '<span class="absolute inset-0 flex items-center justify-center"><span class="w-16 h-16 rounded-full bg-black/60 group-hover:bg-red-600 text-white flex items-center justify-center text-2xl transition"><i class="fa-solid fa-play ml-1"></i></span></span></button>';
     } else if (v.type === 'file' && safeVideoPath(v.src)) {
-      media = '<video class="w-full aspect-video bg-black" controls playsinline preload="metadata" aria-label="' + label + '"' +
+      media = '<video class="w-full bg-black" style="aspect-ratio:' + (v.portrait ? '9/16;max-height:560px' : '16/9') + '" controls playsinline preload="metadata" aria-label="' + label + '"' +
         (v.poster && /^videos\/[A-Za-z0-9._-]+\.(jpg|jpeg|png|webp)$/i.test(v.poster) ? ' poster="' + esc(v.poster) + '"' : '') +
         '><source src="' + esc(safeVideoPath(v.src)) + '#t=0.1" type="' + (/\.webm$/i.test(v.src) ? 'video/webm' : 'video/mp4') + '">Your browser can\'t play this video.</video>';
     } else return '';
@@ -342,6 +354,11 @@
     f.setAttribute('allowfullscreen', '');
     b.replaceWith(f);
   });
+  // Show phone (portrait) videos tall instead of letterboxed, whatever the admin entered
+  document.addEventListener('loadedmetadata', function (e) {
+    var v = e.target;
+    if (v.tagName === 'VIDEO' && v.closest('#videoGrid') && v.videoHeight > v.videoWidth) v.style.aspectRatio = '9/16', v.style.maxHeight = '560px';
+  }, true);
   // Only one uploaded video plays at a time
   document.addEventListener('play', function (e) {
     if (e.target.tagName !== 'VIDEO') return;
