@@ -204,11 +204,14 @@
             <span>I understand this is a request, not a confirmed booking. Past Enlighten will reply with availability and a written price before I pay anything.</span>
           </label>
           <p id="consentErr" class="err">Please tick this box to continue.</p>
-          <div class="mt-5 flex flex-col sm:flex-row gap-3">
+          <button id="siteSubmit" type="submit" data-via="site" class="mt-5 w-full inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-brand-950 font-bold text-lg px-5 py-3.5 rounded-xl shadow disabled:opacity-60"><i class="fa-solid fa-paper-plane"></i> <span>Submit booking request</span></button>
+          <p id="submitErr" class="err" role="alert">We couldn't send your request just now. Please use WhatsApp or email below, your details are already filled in.</p>
+          <p class="hint mt-3 text-center">Or send it yourself, already written for you:</p>
+          <div class="mt-2 flex flex-col sm:flex-row gap-3">
             <button type="submit" data-via="whatsapp" class="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl shadow"><i class="fa-brands fa-whatsapp text-lg"></i> Send on WhatsApp</button>
             <button type="submit" data-via="email" class="flex-1 inline-flex items-center justify-center gap-2 bg-brand-800 hover:bg-brand-900 text-white font-bold px-5 py-3 rounded-xl shadow"><i class="fa-solid fa-envelope"></i> Send by email</button>
           </div>
-          <p class="hint mt-3">WhatsApp opens with your request already written; just press send. Email opens your mail app. We usually reply the same day (Pakistan time, UTC+5).</p>
+          <p class="hint mt-3">Submit sends your request straight to our team. WhatsApp and email open with it already written; just press send. We usually reply the same day (Pakistan time, UTC+5).</p>
           <p class="hint mt-1">We keep the details you send so we can handle your booking. See our <a href="privacy.html" class="underline">privacy notice</a>.</p>
         </div>
       </form>
@@ -246,10 +249,10 @@
     <section id="sentPanel" class="hidden max-w-2xl mx-auto px-4 pb-14" aria-live="polite">
       <div class="bg-white rounded-2xl border border-emerald-200 p-6 sm:p-8 shadow-sm text-center">
         <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-2xl"><i class="fa-solid fa-paper-plane"></i></div>
-        <h2 class="font-cinzel text-2xl font-bold text-brand-900 mt-4">Almost done: press send</h2>
+        <h2 id="sentTitle" class="font-cinzel text-2xl font-bold text-brand-900 mt-4">Almost done: press send</h2>
         <p id="sentText" class="text-slate-600 mt-2"></p>
         <p id="sentRef" class="hidden mt-2 text-sm font-semibold text-emerald-800"></p>
-        <p class="text-slate-600 mt-2 text-sm">If nothing opened, copy your request below and send it to <strong>+92 334 4770455</strong> on WhatsApp or to <strong>infopastenlighten@gmail.com</strong>.</p>
+        <p id="sentHelp" class="text-slate-600 mt-2 text-sm">If nothing opened, copy your request below and send it to <strong>+92 334 4770455</strong> on WhatsApp or to <strong>infopastenlighten@gmail.com</strong>.</p>
         <textarea id="sentMessage" rows="9" class="field mt-4 text-left text-sm" readonly></textarea>
         <div class="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
           <button id="copyBtn" type="button" class="inline-flex items-center justify-center gap-2 border border-stone-300 font-bold px-5 py-2.5 rounded-xl"><i class="fa-regular fa-copy"></i> Copy request</button>
@@ -439,19 +442,13 @@
     return lines.filter(function (l) { return l !== null; }).join('\n').trim();
   }
 
-  var lastVia = 'whatsapp';
+  var lastVia = 'site';
   form.querySelectorAll('button[type="submit"]').forEach(function (b) {
     b.addEventListener('click', function () { lastVia = b.dataset.via; });
   });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!validate()) return;
-    var text = message();
-    var t = tourById(tourSel.value);
-    // Save a copy for the admin dashboard (runs in the background; never blocks WhatsApp/email)
-    if (window.PEBackend) {
+  function bookingData(t) {
       var val = function (id) { return ($(id).value || '').trim(); };
-      window.PEBackend.save('booking', {
+      return {
         tour: t ? t.name : tourSel.value, tour_id: tourSel.value,
         style: (form.querySelector('input[name="style"]:checked') || {}).value || '',
         transport: val('transport'), custom_places: t && t.id === 'custom' ? val('customPlaces') : '',
@@ -459,9 +456,49 @@
         adults: parseInt($('adults').value, 10) || 1, children: parseInt($('children').value, 10) || 0,
         pickup: val('pickup'), stay: t && t.multi ? val('stay') : '',
         name: val('name'), country: val('country'), phone: val('phone'), email: val('email'),
-        language: val('language'), heard: val('heard'), notes: val('notes'), consent: $('consent').checked
-      }, form);
+        language: val('language'), heard: val('heard'), notes: val('notes'), consent: $('consent').checked, via: lastVia
+      };
+  }
+  function showSent() {
+    form.parentElement.classList.add('hidden');
+    $('sentPanel').classList.remove('hidden');
+    window.scrollTo({ top: $('sentPanel').offsetTop - 80, behavior: 'smooth' });
+  }
+  var busy = false;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    $('submitErr').classList.remove('show');
+    if (busy || !validate()) return;
+    var text = message();
+    var t = tourById(tourSel.value);
+    $('sentMessage').value = text;
+    $('sentRef').classList.add('hidden');
+
+    if (lastVia === 'site') {
+      // Submit straight to the admin dashboard and wait for the reply
+      var btn = $('siteSubmit'), label = btn.querySelector('span');
+      busy = true; btn.disabled = true; label.textContent = 'Sending…';
+      var p = window.PEBackend ? window.PEBackend.save('booking', bookingData(t), form) : Promise.resolve(null);
+      p.then(function (j) {
+        busy = false; btn.disabled = false; label.textContent = 'Submit booking request';
+        if (!j || !j.ok) { $('submitErr').classList.add('show'); return; }
+        $('sentTitle').textContent = 'Request received, thank you!';
+        $('sentText').textContent = 'Our team will contact you on WhatsApp or email, usually the same day (Pakistan time, UTC+5).';
+        $('sentHelp').textContent = 'A copy of your request is below. You can also send it to +92 334 4770455 on WhatsApp if you want a faster reply.';
+        if (j.reference && j.reference !== 'PE-000000') {
+          $('sentRef').textContent = 'Your reference: ' + j.reference;
+          $('sentRef').classList.remove('hidden');
+        }
+        if (typeof window.gtag === 'function') window.gtag('event', 'booking_request', { method: 'site', tour: t ? t.id : '' });
+        showSent();
+      });
+      return;
     }
+
+    // WhatsApp / email: save a copy in the background, never blocking the app opening
+    if (window.PEBackend) window.PEBackend.save('booking', bookingData(t), form);
+    $('sentTitle').textContent = 'Almost done: press send';
+    $('sentHelp').textContent = 'If nothing opened, copy your request below and send it to +92 334 4770455 on WhatsApp or to infopastenlighten@gmail.com.';
     if (lastVia === 'email') {
       var subject = 'Tour booking request: ' + (t ? t.name : 'Tour') + ', ' + $('date').value;
       location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text.replace(/\*/g, ''));
@@ -471,11 +508,7 @@
       $('sentText').textContent = 'WhatsApp should have opened with your request filled in. Press send to reach us.';
     }
     if (typeof window.gtag === 'function') window.gtag('event', 'booking_request', { method: lastVia, tour: t ? t.id : '' });
-    $('sentRef').classList.add('hidden');
-    $('sentMessage').value = text;
-    form.parentElement.classList.add('hidden');
-    $('sentPanel').classList.remove('hidden');
-    window.scrollTo({ top: $('sentPanel').offsetTop - 80, behavior: 'smooth' });
+    showSent();
   });
 
   document.addEventListener('pe:saved', function (e) {
