@@ -316,6 +316,13 @@ html.dark-mode .compare-mini-card{background:#0b1b16;border-color:#355248}.html-
 html.dark-mode .recent-item{background:#10221c;border-color:#274239}
 .timeline{position:relative;border-left:2px solid #d97706;margin-left:8px;padding-left:18px}.timeline-item{position:relative;padding-bottom:13px}.timeline-item:before{content:'';position:absolute;left:-25px;top:2px;width:10px;height:10px;border-radius:50%;background:#d97706;border:2px solid #fff}.quote-total{font-size:1.5rem;font-weight:900;color:#0f382c}.dark-toggle{width:34px;height:34px;border-radius:10px;border:1px solid #d6d3d1;background:#fff;display:inline-flex;align-items:center;justify-content:center}
 html.dark-mode .dark-toggle{background:#10221c;color:#fff;border-color:#355248}
+#noorAvatar.speaking{animation:noorTalk .9s ease-in-out infinite;box-shadow:0 0 0 2px rgba(245,158,11,.6)}
+@keyframes noorTalk{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+#noorMicBtn.listening{background:#dc2626;border-color:#dc2626;color:#fff;animation:noorTalk 1s ease-in-out infinite}
+.noor-listen{margin-top:6px;display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#0f382c;opacity:.75}
+.noor-listen:hover{opacity:1;text-decoration:underline}
+html.dark-mode .noor-listen{color:#7dd3b0}
+@media (prefers-reduced-motion: reduce){#noorAvatar.speaking,#noorMicBtn.listening{animation:none}}
 /* Dark theme: header, translucent panels, form fields, tinted chips and text that would vanish on dark */
 html.dark-mode nav.sticky,html.dark-mode .bg-white\/95{background:rgba(16,34,28,.96)!important;color:#e5e7eb}
 html.dark-mode #mobileMenu,html.dark-mode #mobileNav{background:#10221c!important}
@@ -1995,18 +2002,23 @@ main article a:hover { color: #92400e; }
     >
       <div class="bg-gradient-to-r from-brand-900 to-brand-800 text-white p-3 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-full bg-white/10 p-1 flex items-center justify-center">
+          <div id="noorAvatar" class="w-8 h-8 rounded-full bg-white/10 p-1 flex items-center justify-center">
             🤖
           </div>
           <div>
             <h4 class="font-bold text-xs tracking-wide">Noor the Tour Bot</h4>
-            <p class="text-[10px] text-stone-300">Past Enlighten AI Guide</p>
+            <p id="noorStatus" class="text-[10px] text-stone-300">Past Enlighten AI Guide</p>
           </div>
         </div>
 
-        <button onclick="toggleChatbot()" class="text-stone-300 hover:text-white text-xs p-1">
-          <i class="fa-solid fa-minus"></i>
-        </button>
+        <div class="flex items-center gap-1">
+          <button id="noorVoiceBtn" type="button" onclick="toggleNoorVoice()" class="hidden text-stone-200 hover:text-white text-xs w-7 h-7 rounded-full hover:bg-white/10" aria-pressed="true" aria-label="Noor's voice is on. Click to mute" title="Mute Noor">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+          <button onclick="toggleChatbot()" class="text-stone-300 hover:text-white text-xs p-1" aria-label="Minimise chat">
+            <i class="fa-solid fa-minus"></i>
+          </button>
+        </div>
       </div>
 
       <div class="bg-stone-50 border-b border-stone-200 p-2 flex items-center gap-1.5 overflow-x-auto text-[11px] whitespace-nowrap custom-scrollbar">
@@ -2044,6 +2056,9 @@ main article a:hover { color: #92400e; }
             placeholder="Ask Noor about places, dates, prices..." 
             class="flex-1 bg-stone-100 text-slate-800 text-xs px-3 py-2 rounded-full border border-stone-300 focus:outline-none focus:ring-2 focus:ring-brand-700"
           />
+          <button id="noorMicBtn" type="button" onclick="toggleNoorListening()" class="hidden w-8 h-8 rounded-full bg-stone-100 border border-stone-300 text-brand-800 flex-shrink-0 items-center justify-center transition" aria-label="Ask Noor by voice" title="Speak to Noor">
+            <i class="fa-solid fa-microphone text-xs"></i>
+          </button>
           <button 
             type="submit" 
             class="w-8 h-8 rounded-full bg-brand-800 text-white flex items-center justify-center transition shadow"
@@ -2528,7 +2543,8 @@ main article a:hover { color: #92400e; }
 
     function toggleChatbot() {
       dismissGreetingBubble();
-      document.getElementById('chatbotWindow').classList.toggle('hidden');
+      const hidden = document.getElementById('chatbotWindow').classList.toggle('hidden');
+      if (hidden && window.NoorVoice) { NoorVoice.stop(); NoorVoice.stopListening(); }
     }
 
     function triggerRobotHelp(promptMsg) {
@@ -2657,6 +2673,10 @@ main article a:hover { color: #92400e; }
         });
         if (actionRow.childElementCount) bubble.appendChild(actionRow);
       }
+      if (window.NoorVoice && NoorVoice.supported) {
+        bubble.appendChild(NoorVoice.listenButton(String(msg ?? '')));
+        NoorVoice.speak(String(msg ?? ''));
+      }
       div.appendChild(avatar);
       div.appendChild(bubble);
       c.appendChild(div);
@@ -2684,6 +2704,155 @@ main article a:hover { color: #92400e; }
       c.appendChild(node);
       c.scrollTop = c.scrollHeight;
     }
+
+    /* ===== NOOR VOICE: speaks answers, listens to questions (browser Web Speech API, no server) ===== */
+    const NoorVoice = (() => {
+      const synth = window.speechSynthesis;
+      const supported = !!(synth && window.SpeechSynthesisUtterance);
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let enabled = true, voices = [], recognizer = null, listening = false, activeBtn = null;
+      try { enabled = localStorage.getItem('pe_noor_voice') !== '0'; } catch (_) {}
+
+      function loadVoices() { voices = supported ? synth.getVoices() : []; }
+      if (supported) { loadVoices(); if ('onvoiceschanged' in synth) synth.onvoiceschanged = loadVoices; }
+
+      const FEMALE = /(female|woman|zira|aria|jenny|libby|sonia|natasha|samantha|karen|moira|tessa|serena|fiona|victoria|google uk english female|google us english|neerja|swara|uzma|gul)/i;
+      function pickVoice(lang) {
+        const base = lang.slice(0, 2);
+        const pool = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(base));
+        if (!pool.length) return null;
+        const prefer = l => pool.filter(v => v.lang.toLowerCase().replace('_', '-').startsWith(l));
+        const ordered = base === 'en' ? [...prefer('en-gb'), ...prefer('en-in'), ...prefer('en-us'), ...pool] : pool;
+        return ordered.find(v => FEMALE.test(v.name) && !/male(?!.*female)/i.test(v.name.replace(/female/i, ''))) || ordered.find(v => FEMALE.test(v.name)) || ordered[0];
+      }
+
+      // Turn chat text into something pleasant to hear
+      function clean(text) {
+        return String(text || '')
+          .replace(/https?:\/\/\S+/g, ' ')
+          .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
+          .replace(/[*_#`>|]/g, ' ')
+          .replace(/^\s*[•\-–]\s*/gm, '. ')
+          .replace(/\bPKR\b/g, 'rupees').replace(/₨/g, 'rupees ')
+          .replace(/\s*\n+\s*/g, '. ')
+          .replace(/(\.\s*){2,}/g, '. ')
+          .replace(/([:;,!?])\s*\.\s/g, '$1 ')
+          .replace(/\s{2,}/g, ' ').trim();
+      }
+      // Chrome stops long utterances after ~15s, so speak in sentence-sized pieces
+      function chunks(text) {
+        const parts = text.match(/[^.!?؟۔]+[.!?؟۔]*/g) || [text];
+        const out = []; let cur = '';
+        parts.forEach(p => { if ((cur + p).length > 220 && cur) { out.push(cur); cur = p; } else cur += p; });
+        if (cur.trim()) out.push(cur);
+        return out.map(x => x.trim()).filter(Boolean);
+      }
+
+      function setSpeaking(on) {
+        document.getElementById('noorAvatar')?.classList.toggle('speaking', on);
+        const st = document.getElementById('noorStatus');
+        if (st) st.textContent = on ? 'Speaking…' : (listening ? 'Listening…' : 'Past Enlighten AI Guide');
+        if (!on && activeBtn) { activeBtn.innerHTML = '<i class="fa-solid fa-play"></i> Listen'; activeBtn = null; }
+      }
+
+      function stop() { if (supported) synth.cancel(); setSpeaking(false); }
+
+      function say(text, btn) {
+        if (!supported) return;
+        synth.cancel();
+        const spoken = clean(text);
+        if (!spoken) return;
+        const urdu = /[\u0600-\u06FF]/.test(spoken);
+        const lang = urdu ? 'ur-PK' : 'en-GB';
+        const voice = pickVoice(lang) || (urdu ? pickVoice('hi-IN') : null);
+        const list = chunks(spoken);
+        if (btn) { activeBtn = btn; btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop'; }
+        list.forEach((piece, i) => {
+          const u = new SpeechSynthesisUtterance(piece);
+          u.lang = voice ? voice.lang : lang;
+          if (voice) u.voice = voice;
+          u.rate = 1; u.pitch = 1.08;
+          if (i === 0) u.onstart = () => setSpeaking(true);
+          if (i === list.length - 1) { u.onend = () => setSpeaking(false); }
+          u.onerror = () => setSpeaking(false);
+          synth.speak(u);
+        });
+      }
+
+      function speak(text) { if (enabled) say(text); }
+
+      function listenButton(text) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'noor-listen';
+        b.setAttribute('aria-label', 'Listen to this answer');
+        b.innerHTML = '<i class="fa-solid fa-play"></i> Listen';
+        b.addEventListener('click', () => { if (activeBtn === b) stop(); else say(text, b); });
+        return b;
+      }
+
+      function updateVoiceBtn() {
+        const b = document.getElementById('noorVoiceBtn'); if (!b) return;
+        b.innerHTML = enabled ? '<i class="fa-solid fa-volume-high"></i>' : '<i class="fa-solid fa-volume-xmark"></i>';
+        b.setAttribute('aria-pressed', String(enabled));
+        b.setAttribute('aria-label', enabled ? "Noor's voice is on. Click to mute" : "Noor's voice is off. Click to unmute");
+        b.title = enabled ? 'Mute Noor' : 'Let Noor speak';
+      }
+      function toggle() {
+        enabled = !enabled;
+        try { localStorage.setItem('pe_noor_voice', enabled ? '1' : '0'); } catch (_) {}
+        if (!enabled) stop(); else say("Hello! I'm Noor. I'll read my answers out loud for you.");
+        updateVoiceBtn();
+      }
+
+      // ---- listening (speech to text)
+      function stopListening() { if (recognizer && listening) recognizer.stop(); }
+      function startListening() {
+        if (!Recognition) return;
+        stop();
+        recognizer = new Recognition();
+        recognizer.lang = (document.documentElement.lang || '').startsWith('ur') ? 'ur-PK' : 'en-US';
+        recognizer.interimResults = true; recognizer.maxAlternatives = 1;
+        const input = document.getElementById('chatInput');
+        const mic = document.getElementById('noorMicBtn');
+        let finalText = '';
+        recognizer.onstart = () => { listening = true; mic?.classList.add('listening'); mic?.setAttribute('aria-label', 'Stop listening');
+          const st = document.getElementById('noorStatus'); if (st) st.textContent = 'Listening…'; if (input) input.placeholder = 'Listening… speak now'; };
+        recognizer.onresult = e => {
+          let interim = ''; finalText = '';
+          for (const r of e.results) { if (r.isFinal) finalText += r[0].transcript; else interim += r[0].transcript; }
+          if (input) input.value = (finalText || interim).trim();
+        };
+        recognizer.onerror = e => {
+          if (e.error === 'not-allowed' || e.error === 'service-not-allowed')
+            appendRobotMessage('I could not use your microphone. Please allow microphone access in your browser, or type your question instead.');
+        };
+        recognizer.onend = () => {
+          listening = false; mic?.classList.remove('listening'); mic?.setAttribute('aria-label', 'Ask Noor by voice');
+          const st = document.getElementById('noorStatus'); if (st) st.textContent = 'Past Enlighten AI Guide';
+          if (input) input.placeholder = 'Ask Noor about places, dates, prices...';
+          if (input && input.value.trim() && finalText.trim()) handleUserMessage({ preventDefault() {} });
+        };
+        try { recognizer.start(); } catch (_) {}
+      }
+
+      function init() {
+        if (supported) {
+          document.getElementById('noorVoiceBtn')?.classList.remove('hidden');
+          updateVoiceBtn();
+          // Listen button on the welcome message
+          const first = document.querySelector('#chatMessages > div .bg-white');
+          if (first) first.appendChild(listenButton(first.innerText));
+        }
+        if (Recognition) { const m = document.getElementById('noorMicBtn'); if (m) { m.classList.remove('hidden'); m.classList.add('flex'); } }
+        window.addEventListener('pagehide', stop);
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+      return { supported, speak, say, stop, listenButton, toggle, startListening, stopListening, isListening: () => listening };
+    })();
+    window.NoorVoice = NoorVoice;
+    function toggleNoorVoice() { NoorVoice.toggle(); }
+    function toggleNoorListening() { NoorVoice.isListening() ? NoorVoice.stopListening() : NoorVoice.startListening(); }
 
     /* ===== FRONTEND ENHANCEMENT LOGIC ===== */
 const frontendState={compare:[],wishlist:new Set(JSON.parse(localStorage.getItem('pe_wishlist')||'[]')),recent:JSON.parse(localStorage.getItem('pe_recent')||'[]'),quickRegion:'all'};
