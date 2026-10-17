@@ -372,6 +372,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/pe-backend.js"></script>
+<script src="js/booking-confirm.js" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
 <style id="map-render-fix">
   #tourMap { width: 100%; max-width: 100%; overflow: hidden; }
@@ -2284,13 +2285,13 @@ main article a:hover { color: #92400e; }
       e.preventDefault();
       const val = id => (document.getElementById(id)?.value || '').trim();
       const dests = Array.from(document.querySelectorAll('input[name="custDest"]:checked')).map(cb => cb.value).join(', ');
-      if (window.PEBackend) window.PEBackend.save('custom_tour', {
+      const saved = window.PEBackend ? window.PEBackend.save('custom_tour', {
         name: val('custName'), phone: val('custPhone'), start_city: val('custStartCity'), format: val('custFormat'),
         transport: val('custTransport'), days: parseInt(val('custDays'), 10) || 1, guests: parseInt(val('custGuests'), 10) || 1,
         destinations: Array.from(document.querySelectorAll('input[name="custDest"]:checked')).map(cb => cb.value),
         notes: val('custNotes')
-      }, e.target);
-      openWhatsApp([
+      }, e.target) : null;
+      const waLines = [
         'Hello Past Enlighten!',
         '*Custom Tour Request*',
         `*Name:* ${val('custName')}`,
@@ -2303,7 +2304,15 @@ main article a:hover { color: #92400e; }
         `*Destinations:* ${dests || 'Not selected'}`,
         val('custNotes') ? `*Preferences:* ${val('custNotes')}` : '',
         'Please send me a quote with the price and inclusions.'
-      ]);
+      ];
+      openWhatsApp(waLines);
+      if (window.PEConfirm) window.PEConfirm.show({
+        channel: 'whatsapp', title: 'Custom tour request ready!', name: val('custName'), saved,
+        message: 'WhatsApp has opened with your custom tour plan already written. Press Send there so our team can build your quote.',
+        details: [['Starting city', val('custStartCity')], ['Length', (val('custDays') || '1') + ' day(s)'], ['Guests', val('custGuests')],
+                  ['Destinations', dests || 'Not selected yet'], ['Name', val('custName')], ['Phone', val('custPhone')]],
+        whatsappText: waLines.filter(Boolean).join('\n')
+      });
     }
 
     function toggleFaq(id) {
@@ -2422,13 +2431,12 @@ main article a:hover { color: #92400e; }
     function handleBookingSubmit(e) {
       e.preventDefault();
       const val = id => (document.getElementById(id)?.value || '').trim();
-      if (window.PEBackend) window.PEBackend.save('quick_booking', {
+      const saved = window.PEBackend ? window.PEBackend.save('quick_booking', {
         name: val('bookingName'), phone: val('bookingPhone'), date: val('bookingDate'),
         guests: parseInt(val('bookingGuests'), 10) || 1, tour: val('modalTourSelect'), notes: val('bookingNotes')
-      }, e.target);
+      }, e.target) : null;
       closeBookingModal();
-      showToast('Opening WhatsApp to send your booking request…');
-      openWhatsApp([
+      const waLines = [
         'Hello Bilawal!',
         '*Tour Booking Request*',
         `*Name:* ${val('bookingName')}`,
@@ -2437,7 +2445,15 @@ main article a:hover { color: #92400e; }
         `*Guests:* ${val('bookingGuests')}`,
         `*Tour:* ${val('modalTourSelect')}`,
         val('bookingNotes') ? `*Notes:* ${val('bookingNotes')}` : ''
-      ]);
+      ];
+      openWhatsApp(waLines);
+      if (window.PEConfirm) window.PEConfirm.show({
+        channel: 'whatsapp', name: val('bookingName'), saved,
+        details: [['Tour', val('modalTourSelect')], ['Date', val('bookingDate')], ['Guests', val('bookingGuests')],
+                  ['Name', val('bookingName')], ['Phone', val('bookingPhone')]],
+        whatsappText: waLines.filter(Boolean).join('\n')
+      });
+      else showToast('Opening WhatsApp to send your booking request…');
     }
 
     let toastTimer;

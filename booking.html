@@ -273,6 +273,7 @@
   </footer>
 
 <script src="js/pe-backend.js"></script>
+<script src="js/booking-confirm.js"></script>
 <script>
 (function () {
   'use strict';
@@ -465,6 +466,24 @@
         language: val('language'), heard: val('heard'), notes: val('notes'), consent: $('consent').checked, via: lastVia
       };
   }
+  function confirmDetails(t) {
+    var v = function (id) { return ($(id).value || '').trim(); };
+    return [
+      ['Tour', t ? t.name : tourSel.value],
+      ['Start date', fmtDate(v('date')) + ($('flexible').checked ? ' (flexible)' : '')],
+      ['Travellers', people()],
+      ['Name', v('name')],
+      ['WhatsApp / phone', v('phone')],
+      ['Email', v('email')]
+    ];
+  }
+  function popup(channel, t, text, saved, ref) {
+    if (!window.PEConfirm) return;
+    window.PEConfirm.show({
+      channel: channel, name: ($('name').value || '').trim(), details: confirmDetails(t),
+      saved: saved, reference: ref, whatsappText: channel === 'email' ? null : text
+    });
+  }
   function showSent() {
     form.parentElement.classList.add('hidden');
     $('sentPanel').classList.remove('hidden');
@@ -497,12 +516,13 @@
         }
         if (typeof window.gtag === 'function') window.gtag('event', 'booking_request', { method: 'site', tour: t ? t.id : '' });
         showSent();
+        popup('site', t, text, null, j.reference);
       });
       return;
     }
 
     // WhatsApp / email: save a copy in the background, never blocking the app opening
-    if (window.PEBackend) window.PEBackend.save('booking', bookingData(t), form);
+    var saved = window.PEBackend ? window.PEBackend.save('booking', bookingData(t), form) : null;
     $('sentTitle').textContent = 'Almost done: press send';
     $('sentHelp').textContent = 'If nothing opened, copy your request below and send it to +92 334 4770455 on WhatsApp or to infopastenlighten@gmail.com.';
     if (lastVia === 'email') {
@@ -515,6 +535,7 @@
     }
     if (typeof window.gtag === 'function') window.gtag('event', 'booking_request', { method: lastVia, tour: t ? t.id : '' });
     showSent();
+    popup(lastVia === 'email' ? 'email' : 'whatsapp', t, text, saved);
   });
 
   document.addEventListener('pe:saved', function (e) {
