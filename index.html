@@ -339,10 +339,14 @@ html.dark-mode .text-slate-500{color:#a8b3c1!important}
 html.dark-mode .text-brand-700,html.dark-mode .text-brand-800{color:#7dd3b0!important}
 html.dark-mode .text-brand-950:not([class*="bg-accent"]):not([class*="bg-amber"]){color:#f3f4f6!important}
 html.dark-mode .text-accent-dark,html.dark-mode .text-amber-700,html.dark-mode .text-amber-800{color:#fbbf24!important}
-html.dark-mode .text-emerald-600,html.dark-mode .text-emerald-700{color:#34d399!important}
+html.dark-mode .text-emerald-600,html.dark-mode .text-emerald-700,html.dark-mode .text-emerald-800,html.dark-mode .text-emerald-900{color:#34d399!important}
+html.dark-mode .hover\:text-emerald-800:hover{color:#6ee7b7!important}
 html.dark-mode .hover\:text-brand-800:hover,html.dark-mode .hover\:text-brand-900:hover{color:#a7f3d0!important}
 html.dark-mode input,html.dark-mode select,html.dark-mode textarea{color:#e5e7eb;color-scheme:dark}
 html.dark-mode ::placeholder{color:#8b98a5}
+html.dark-mode .bg-accent-light{background:rgba(245,158,11,.2)!important;color:#fde68a!important;border-color:rgba(245,158,11,.55)!important}
+html.dark-mode .bg-accent-light.hover\:bg-amber-100:hover{background:rgba(245,158,11,.32)!important}
+html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.text-brand-900{color:#061a14!important}
 .skip-link{position:fixed;left:10px;top:10px;z-index:110;transform:translateY(-150%);background:#fff;color:#0f382c;padding:8px 12px;border-radius:8px;font-weight:800}.skip-link:focus{transform:translateY(0)}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 
@@ -379,7 +383,7 @@ html.dark-mode ::placeholder{color:#8b98a5}
 .bg-brand-950 h1, .bg-brand-950 h2, .bg-brand-950 h3, .bg-brand-950 p { color: #ffffff; }
 .bg-brand-950 .text-slate-200 { color: #e2e8f0 !important; }
 .bg-brand-950 .text-amber-400, .bg-brand-950 .text-amber-300 { color: #fbbf24 !important; }
-.bg-brand-950 a:not(.bg-brand-800) { color: #fef3c7; }
+.bg-brand-950 a:not([class*="bg-"]) { color: #fef3c7; }
 .bg-brand-950 a.bg-brand-800 { background-color: #164e3f !important; color: #ffffff !important; }
 body { color: #1f2937; background-color: #faf8f5; }
 main article, main .prose, main .article-content { color: #1f2937; }
