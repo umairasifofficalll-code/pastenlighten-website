@@ -1,0 +1,66 @@
+/* Past Enlighten dark theme for every page except the homepage (which has its own copy).
+   Activated by <html class="dark-mode">, set by js/theme.js and the small inline script in <head>. */
+
+/* Toggle button (shown on every page) */
+.dark-toggle{width:38px;height:38px;border-radius:12px;border:1px solid #d6d3d1;background:#fff;color:#0f382c;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+.dark-toggle:hover{transform:translateY(-1px)}
+.dark-toggle:focus-visible{outline:2px solid #d97706;outline-offset:2px}
+#peThemeBtn{position:fixed;left:20px;bottom:20px;z-index:45}
+@media(max-width:767px){#peThemeBtn{left:12px;bottom:84px}}
+html.dark-mode .dark-toggle{background:#10221c;color:#fde68a;border-color:#355248}
+
+html.dark-mode{color-scheme:dark}
+html.dark-mode body{background:#081510!important;color:#e5e7eb!important}
+
+/* Surfaces */
+html.dark-mode .bg-white,html.dark-mode .bg-white\/95,html.dark-mode .bg-white\/90{background:#10221c!important;color:#e5e7eb}
+html.dark-mode .bg-stone-50,html.dark-mode .bg-stone-100,html.dark-mode .bg-warmgray,html.dark-mode .bg-slate-50,html.dark-mode .bg-slate-100,html.dark-mode .bg-stone-200,html.dark-mode .bg-stone-300,html.dark-mode .bg-\[\#faf8f5\]{background:#0b1b16!important}
+html.dark-mode .bg-amber-50,html.dark-mode .bg-amber-100,html.dark-mode .bg-amber-200,html.dark-mode .bg-accent-light{background:rgba(245,158,11,.16)!important}
+html.dark-mode .bg-emerald-50,html.dark-mode .bg-emerald-100{background:rgba(16,185,129,.14)!important}
+html.dark-mode .bg-brand-50,html.dark-mode .bg-brand-100{background:rgba(52,140,110,.22)!important}
+html.dark-mode .hover\:bg-stone-50:hover,html.dark-mode .hover\:bg-stone-100:hover,html.dark-mode .hover\:bg-stone-200:hover,html.dark-mode .hover\:bg-brand-50:hover,html.dark-mode .hover\:bg-white:hover{background:#1b3a2f!important}
+html.dark-mode .hover\:bg-amber-50:hover,html.dark-mode .hover\:bg-amber-100:hover{background:rgba(245,158,11,.26)!important}
+html.dark-mode .shadow-sm,html.dark-mode .shadow,html.dark-mode .shadow-md{box-shadow:0 1px 3px rgba(0,0,0,.5)!important}
+
+/* Borders */
+html.dark-mode .border-stone-100,html.dark-mode .border-stone-200,html.dark-mode .border-stone-300,html.dark-mode .border-slate-200,html.dark-mode .border-slate-300,html.dark-mode .border-amber-200,html.dark-mode .border-emerald-200,html.dark-mode .border-brand-100,html.dark-mode .border-brand-800\/10,html.dark-mode .divide-stone-200>*{border-color:#274239!important}
+
+/* Text */
+html.dark-mode .text-brand-900,html.dark-mode .text-slate-900,html.dark-mode .text-slate-800{color:#f3f4f6!important}
+html.dark-mode .text-slate-700,html.dark-mode .text-slate-600,html.dark-mode .text-stone-600,html.dark-mode .text-stone-700{color:#d1d5db!important}
+html.dark-mode .text-slate-500{color:#a8b3c1!important}
+html.dark-mode .text-brand-700,html.dark-mode .text-brand-800{color:#7dd3b0!important}
+html.dark-mode .text-brand-950:not([class*="bg-accent"]):not([class*="bg-amber"]):not([class*="bg-emerald"]){color:#f3f4f6!important}
+html.dark-mode .text-amber-700,html.dark-mode .text-amber-800,html.dark-mode .text-amber-900,html.dark-mode .text-accent-dark{color:#fbbf24!important}
+html.dark-mode .text-emerald-600,html.dark-mode .text-emerald-700,html.dark-mode .text-emerald-800,html.dark-mode .text-emerald-900{color:#34d399!important}
+html.dark-mode .hover\:text-brand-800:hover,html.dark-mode .hover\:text-brand-900:hover,html.dark-mode .hover\:text-brand-700:hover{color:#a7f3d0!important}
+/* keep dark text on solid gold/amber buttons */
+html.dark-mode [class*="bg-amber-4"].text-brand-900,html.dark-mode [class*="bg-amber-5"].text-brand-900,html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.text-brand-900{color:#061a14!important}
+html.dark-mode .bg-accent-light{color:#fde68a!important;border-color:rgba(245,158,11,.55)!important}
+
+/* Articles (blog, privacy) */
+html.dark-mode main article,html.dark-mode main .prose,html.dark-mode main .article-content{color:#e5e7eb!important}
+html.dark-mode main article h1,html.dark-mode main article h2,html.dark-mode main article h3,html.dark-mode main article h4,html.dark-mode article h2{color:#f3f4f6!important}
+html.dark-mode main article p,html.dark-mode main article li,html.dark-mode article p,html.dark-mode article li,html.dark-mode article td,html.dark-mode article th{color:#d1d5db!important}
+html.dark-mode main article a,html.dark-mode article a{color:#7dd3b0!important}
+html.dark-mode main article a:hover,html.dark-mode article a:hover{color:#fbbf24!important}
+html.dark-mode article strong,html.dark-mode article b{color:#f3f4f6}
+html.dark-mode article blockquote{border-color:#d97706;color:#e5e7eb}
+html.dark-mode article table,html.dark-mode article th,html.dark-mode article td{border-color:#274239!important}
+
+/* Forms (booking, reviews) */
+html.dark-mode .field,html.dark-mode input:not([type=checkbox]):not([type=radio]):not([type=range]),html.dark-mode select,html.dark-mode textarea{background:#0b1b16!important;color:#e5e7eb!important;border-color:#355248!important}
+html.dark-mode ::placeholder{color:#8b98a5!important}
+html.dark-mode .label{color:#cbd5e1!important}
+html.dark-mode .hint{color:#a8b3c1!important}
+html.dark-mode .err{color:#f87171!important}
+html.dark-mode .choice{background:#0b1b16!important;border-color:#355248!important;color:#e5e7eb}
+html.dark-mode .choice:has(input:checked){background:rgba(52,140,110,.28)!important;border-color:#34d399!important}
+html.dark-mode .stepper{background:#0b1b16!important;border-color:#355248!important}
+html.dark-mode .stepper button{background:#142a22!important;color:#e5e7eb!important}
+html.dark-mode .stepper button:hover{background:#1b3a2f!important}
+html.dark-mode .stepper input{background:transparent!important;border:0!important}
+html.dark-mode .chip{background:#10221c!important;border-color:#355248!important;color:#e5e7eb!important}
+html.dark-mode .chip[aria-pressed="true"]{background:#1e6b57!important;border-color:#1e6b57!important;color:#fff!important}
+html.dark-mode .stars label{color:#4b5d56}
+html.dark-mode .stars label:hover,html.dark-mode .stars label:hover~label,html.dark-mode .stars input:checked~label{color:#f59e0b}
