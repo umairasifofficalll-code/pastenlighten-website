@@ -38,7 +38,12 @@
     .pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}
     .review-text { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
     .review-text.open { -webkit-line-clamp: unset; display: block; }
-  </style>
+      .ig-btn{background:linear-gradient(45deg,#f58529,#dd2a7b 50%,#8134af)}
+    .ig-btn:hover{filter:brightness(1.08)}
+    #igGrid .instagram-media{margin:0!important;min-width:0!important;width:100%!important;max-width:100%!important;border-radius:16px!important}
+    .ig-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;aspect-ratio:9/14;background:#fff;border:1px solid #e7e5e4;border-radius:16px;color:#0f382c;font-weight:700;text-decoration:none;text-align:center;padding:16px}
+    .ig-fallback i{font-size:42px;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);-webkit-background-clip:text;background-clip:text;color:transparent}
+</style>
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -121,6 +126,18 @@
       </div>
       <div id="videoGrid" class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       <div class="mt-4 text-center"><button id="videoMore" type="button" class="hidden chip">Show more videos</button></div>
+    </section>
+
+    <!-- Instagram reels. To add more: paste the reel/post link into INSTAGRAM_POSTS below -->
+    <section id="instagram" class="max-w-6xl mx-auto px-4 pt-10" aria-labelledby="igHeading">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div>
+          <p class="text-accent-gold font-bold tracking-widest text-[11px] uppercase">From our Instagram</p>
+          <h2 id="igHeading" class="font-cinzel text-2xl font-bold text-brand-900 mt-1">Reels from the road</h2>
+        </div>
+        <a href="https://www.instagram.com/pastenlighten/" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 self-start sm:self-auto text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow ig-btn"><i class="fa-brands fa-instagram text-base"></i> Follow @pastenlighten</a>
+      </div>
+      <div id="igGrid" class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start"></div>
     </section>
 
     <!-- Reviews list -->
@@ -413,6 +430,48 @@
     $('rvSent').classList.remove('hidden');
     if (typeof window.gtag === 'function') window.gtag('event', 'review_feedback', { method: via, rating: Number(rating) });
   });
+})();
+</script>
+<script>
+/* Instagram reels & posts: add a link to this list and it appears on the page */
+(function () {
+  'use strict';
+  var INSTAGRAM_POSTS = [
+    'https://www.instagram.com/reel/DRzyKu8iIhl/',
+    'https://www.instagram.com/reel/DQUSmerCHsR/'
+  ];
+  var grid = document.getElementById('igGrid');
+  if (!grid) return;
+  INSTAGRAM_POSTS.forEach(function (raw) {
+    var m = String(raw).match(/instagram\.com\/(reel|p|tv)\/([A-Za-z0-9_-]+)/);
+    if (!m) return;
+    var url = 'https://www.instagram.com/' + m[1] + '/' + m[2] + '/';
+    var wrap = document.createElement('div');
+    var bq = document.createElement('blockquote');
+    bq.className = 'instagram-media';
+    bq.setAttribute('data-instgrm-permalink', url + '?utm_source=ig_embed');
+    bq.setAttribute('data-instgrm-version', '14');
+    // Shown until Instagram loads (or if it is blocked)
+    var a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'ig-fallback';
+    a.innerHTML = '<i class="fa-brands fa-instagram"></i><span>Watch this ' + (m[1] === 'p' ? 'post' : 'reel') + ' on Instagram</span>';
+    bq.appendChild(a);
+    wrap.appendChild(bq);
+    grid.appendChild(wrap);
+  });
+  // Load Instagram's embed script only when the section is about to be seen
+  var loaded = false;
+  function load() {
+    if (loaded) return; loaded = true;
+    var sc = document.createElement('script');
+    sc.async = true; sc.src = 'https://www.instagram.com/embed.js';
+    sc.onload = function () { if (window.instgrm) window.instgrm.Embeds.process(); };
+    document.body.appendChild(sc);
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); } }, { rootMargin: '600px' });
+    io.observe(grid);
+  } else load();
 })();
 </script>
 </body>
