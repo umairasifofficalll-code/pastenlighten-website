@@ -3101,13 +3101,13 @@ main article a:hover { color: #92400e; }
         }
       }
       if (!candidates.length) {
-        if (!location && /\\b(tours?|packages?|pricing|price list|prices)\\b/.test(q)) {
+        if (!location && /\b(tours?|packages?|pricing|price list|prices)\b/.test(q)) {
           return 'I can help with tour pricing. Which destination do you want (Lahore, Islamabad/Rawalpindi, Northern Pakistan, or South Punjab), and how many travellers are going? I will show only the matching price.';
         }
         return 'I could not find a matching tour in the current price list. Please tell me the tour name or destination, and I will check the matching price.';
       }
       if (!size) {
-        if (!location && /\\b(tours?|packages?|pricing|price list|prices)\\b/.test(q) && noorMatchTours(q).length === 0) {
+        if (!location && /\b(tours?|packages?|pricing|price list|prices)\b/.test(q) && noorMatchTours(q).length === 0) {
           return 'I can help with tour pricing. Which destination do you want (Lahore, Islamabad/Rawalpindi, Northern Pakistan, or South Punjab), and how many travellers are going? I will show only the matching price.';
         }
         return 'How many travellers will be going? I will show only the matching per-person price for that party size.';
