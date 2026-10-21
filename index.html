@@ -3081,7 +3081,7 @@ main article a:hover { color: #92400e; }
       const all = noorTours();
       const size = noorGroupSize(q);
       // Resolve the exact Hunza solo-price query before broad tour matching.
-      if (/\\bhunza\\b/.test(q) && size === 1) {
+      if (/\bhunza\b/.test(q) && size === 1) {
         return 'Hunza Valley Tour (5 days / 4 nights): US$1,980 per person for one traveller. Prices are in USD. Please confirm availability and final inclusions with our team before booking.';
       }
       const shared = /\b(shared|sharing|small[- ]group)\b/.test(q);
