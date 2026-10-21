@@ -3083,14 +3083,14 @@ main article a:hover { color: #92400e; }
       // A general "tour pricing" request should immediately list every tour's solo price.
       // Only do this when no particular destination or tour is named.
       const genericPricingRequest =
-        /\\b(tour(?:ing)?\\s*(?:price|prices|pricing)|tour\\s+costs?|price\\s+list|all\\s+tours|all\\s+prices|tour\\s+pricing)\\b/.test(q) ||
-        /\\b(pricing|prices)\\b/.test(q) && /\\b(show|list|give|tell|what are|all)\\b/.test(q) && /\\btours?\\b/.test(q);
+        /\b(tour(?:ing)?\s*(?:price|prices|pricing)|tour\s+costs?|price\s+list|all\s+tours|all\s+prices|tour\s+pricing)\b/.test(q) ||
+        /\b(pricing|prices)\b/.test(q) && /\b(show|list|give|tell|what are|all)\b/.test(q) && /\btours?\b/.test(q);
       const specificDestinationOrTour =
-        /\\b(lahore|islamabad|rawalpindi|pindi|hunza|skardu|gilgit|naran|swat|neelum|kashmir|fairy meadows|deosai|bahawalpur|cholistan|multan|harappa|heritage walk|walled city|rickshaw|museum|museums|sufi|shahdara|sheikhupura|grand northern|grand north|nanga parbat)\\b/.test(q);
+        /\b(lahore|islamabad|rawalpindi|pindi|hunza|skardu|gilgit|naran|swat|neelum|kashmir|fairy meadows|deosai|bahawalpur|cholistan|multan|harappa|heritage walk|walled city|rickshaw|museum|museums|sufi|shahdara|sheikhupura|grand northern|grand north|nanga parbat)\b/.test(q);
       if (genericPricingRequest && !specificDestinationOrTour) {
         const lines = all.map(t => '• ' + t.name + ' (' + t.duration + '): ' + usd(t.solo) + ' per person');
-        return 'All tour prices — solo traveller, per person (USD):\\n\\n' + lines.join('\\n') +
-          '\\n\\nThese are solo-traveller prices. Prices per person are lower for groups of 2 or more. Children under 5 pay 50% of the adult price. Ask for a specific tour and group size to get the matching price.';
+        return 'All tour prices — solo traveller, per person (USD):\n\n' + lines.join('\n') +
+          '\n\nThese are solo-traveller prices. Prices per person are lower for groups of 2 or more. Children under 5 pay 50% of the adult price. Ask for a specific tour and group size to get the matching price.';
       }
       // Resolve the exact Hunza solo-price query before broad tour matching.
       if (/\bhunza\b/.test(q) && size === 1) {
