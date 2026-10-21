@@ -3107,6 +3107,72 @@ main article a:hover { color: #92400e; }
       if (is(/\bspeak(ing)? to a human\b/, /\btalk(ing)? to a human\b/, /\breal person\b/, /\bhuman agent\b/, /\bspeak(ing)? to someone\b/, /\bcontact.*team\b/, /\btalk to.*(person|staff|team|agent)\b/, /\bconnect me\b/, /\bcustomer support\b/, /\bcontact (the )?(company|office|staff)\b/)) {
         return 'Of course! You can speak directly with our team:\n' + contact + '\nTell us which tour you are interested in and your travel dates, and we will help with your questions.';
       }
+      // Expanded customer FAQ bank: common natural-language variants for the 61-question checklist.
+      if (is(/\\bwhat tours do you offer for solo travellers?\\b/, /\\bsolo travellers?\\b/, /\\bshow me all prices for one person\\b/, /\\btravelling alone\\b/, /\\btraveling alone\\b/)) {
+        return 'We offer city and heritage experiences in Lahore and Islamabad, plus northern Pakistan trips including Hunza, Skardu, Swat, and Naran/Kaghan. Solo prices are listed per person in USD. Ask for all tour prices to see the full current list, or tell me your preferred scenery, dates, and budget for a recommendation.';
+      }
+      if (is(/\\bmost expensive\\b/, /\\bhighest priced\\b/, /\\bhighest price\\b/)) {
+        const tours = noorTours().filter(t => Number.isFinite(t.solo)).sort((a,b) => b.solo-a.solo);
+        if (tours.length) return 'The highest solo-traveller price in the current list is ' + tours[0].name + ' at ' + usd(tours[0].solo) + ' per person (USD). Prices can change; confirm the final quote with our team.';
+        return 'I cannot verify the highest-priced tour from the current list. Please request a written quote from our team.';
+      }
+      if (is(/\\bprices? in usd or pkr\\b/, /\\busd or pkr\\b/, /\\bwhat currency\\b/, /\\bprices? .*currency\\b/)) {
+        return 'Our current international tour price list is in US dollars (USD), per person. Please confirm the final currency and amount in your written quote before paying.';
+      }
+      if (is(/\\bstudent discount\\b/, /\\bgroup discount\\b/, /\\bdiscounts? for students\\b/, /\\bdiscounts? for groups\\b/)) {
+        return 'Our price list has different per-person tiers for 1, 2, 3–4, 5–8, and 9+ travellers. A separate student discount is not confirmed in the published data. Contact our team to ask about any current offers.';
+      }
+      if (is(/\\bplaces can i visit in pakistan\\b/, /\\bdestinations? in pakistan\\b/, /\\bnorthern areas\\b/, /\\bfirst time.*pakistan\\b/, /\\bvisiting pakistan for the first time\\b/)) {
+        return 'Our listed experiences include Lahore heritage and city tours, Islamabad/Rawalpindi, and northern destinations such as Hunza, Skardu, Swat, Naran/Kaghan, Lake Saif-ul-Malook, Neelum Valley, and Fairy Meadows. Availability depends on the package and season. For a first visit, consider a Lahore heritage experience for culture or a northern itinerary for mountain scenery.';
+      }
+      if (is(/\\bwhat is included in the swat\\b/, /\\bswat valley tour\\b/)) {
+        return 'The Swat Valley & Malam Jabba tour is listed as 3 days / 2 nights from Islamabad. Its listed inclusions are an English-speaking guide, private AC car with driver, fuel, parking, entry tickets at the listed foreigner rate, and hotel pickup. Confirm accommodation, meals, and the final itinerary with the team.';
+      }
+      if (is(/\\bdo you offer tours to skardu\\b/, /\\bskardu tour\\b/, /\\bdeosai national park\\b/, /\\bwhich tour includes deosai\\b/)) {
+        return 'Skardu and Deosai are part of our northern Pakistan travel offering. Please ask the team to confirm the exact current itinerary, Deosai access, dates, and package price before booking.';
+      }
+      if (is(/\\bwhat will i see during the lahore heritage tour\\b/, /\\blahore heritage tour\\b/, /\\blahore fort.*walled city\\b/)) {
+        return 'The Lahore Fort & Walled City Heritage Walk is a 3–4 hour experience focused on Lahore’s historic architecture and Walled City. It includes all listed entry tickets, a local expert guide, a shoe basket, and a water bottle. Other Lahore options include a full-day heritage tour and the Walled City & Rangila Rickshaw tour.';
+      }
+      if (is(/\\bhow can i book a tour\\b/, /\\bbook for next month\\b/, /\\bnext month\\b/, /\\bconfirm my reservation\\b/, /\\bconfirm.*booking\\b/, /\\bwhat information.*booking\\b/, /\\bprivate tour\\b/)) {
+        return 'You can request a tour at https://pastenlighten.com/booking.html or contact our team on WhatsApp at https://wa.me/923344770455. Share your preferred tour, travel dates, number of travellers, starting/pickup location, and special requirements. The team must confirm availability, itinerary, price, and payment terms in writing. Submitting a request does not confirm a booking.';
+      }
+      if (is(/\\bcancel or reschedule\\b/, /\\bcancellation policy\\b/, /\\bcancel.*tour\\b/, /\\breschedule\\b/, /\\bpay in advance\\b/, /\\badvance payment\\b/, /\\bdeposit\\b/)) {
+        return 'Cancellation, rescheduling, deposit, and advance-payment terms are not confirmed by the general package data. Please ask the team for the written terms for your specific booking before paying. WhatsApp: https://wa.me/923344770455';
+      }
+      if (is(/\\bprice for two people\\b/, /\\bwhat is the price for two\\b/, /\\bprice for 2 people\\b/, /\\bjoin other travellers\\b/, /\\bjoin.*group\\b/, /\\bgroup tour\\b/, /\\b10 people\\b/, /\\bten people\\b/)) {
+        return 'Our pricing data has separate tiers for 2 travellers, 3–4, 5–8, and 9+ travellers. Shared departures or joining an existing group depend on availability. Tell us the tour name and dates, or request a quote at https://pastenlighten.com/booking.html. The team will confirm the correct per-person and total price.';
+      }
+      if (is(/\\bbest time to visit hunza\\b/, /\\bpack.*skardu\\b/, /\\bwhat should i pack\\b/, /\\bphotography\\b/, /\\bfamily with children\\b/, /\\bchildren\\b/)) {
+        if (/hunza/.test(q)) return 'Spring and autumn are popular for scenery in Hunza, while summer is often preferred for mountain travel. Weather, road conditions, and your preferred activities affect the best dates; check local conditions before departure.';
+        if (/pack|skardu/.test(q)) return 'Pack layered clothing, a warm jacket, comfortable walking shoes, sun protection, sunglasses, personal medication, and a reusable water bottle. Mountain weather can change quickly, so check the forecast and road conditions before departure.';
+        if (/photography/.test(q)) return 'For mountain photography, consider Hunza, Skardu, and Deosai when accessible. For architecture and street photography, Lahore’s Walled City and historic monuments are excellent options.';
+        return 'Please share the children’s ages, travel dates, group size, and preferred pace. A shorter city or heritage tour may suit younger children better than long mountain drives. Our published policy says children under 5 pay 50% of the adult price; confirm how it applies to your chosen package.';
+      }
+      if (is(/\\bplan a 5 day trip\\b/, /\\b5 day trip to northern pakistan\\b/, /\\b3 day holiday\\b/, /\\bthree day holiday\\b/)) {
+        return 'For a 3-day holiday, our Swat Valley & Malam Jabba package is listed as 3 days / 2 nights. For a 5-day northern trip, the best route depends on your starting city, dates, and whether you prefer Hunza, Skardu, or another area. Share your budget and dates so the team can confirm a realistic itinerary.';
+      }
+      if (is(/\\btravel from lahore to hunza\\b/, /\\bhow do i get to hunza\\b/)) {
+        return 'You can travel by road via Islamabad and the Karakoram Highway, or check flight options to the Gilgit region when available, followed by road travel. Routes and travel times depend on weather, road conditions, and transport availability.';
+      }
+      if (is(/\\bairport pickup\\b/, /\\bentrance tickets\\b/, /\\bentry tickets\\b/, /\\btour guide\\b/, /\\bflights included\\b/, /\\bextra charges\\b/, /\\bpay for separately\\b/, /\\bmeals included\\b/, /\\bhotels? included\\b/, /\\binclude accommodation\\b/)) {
+        return 'Inclusions vary by tour. Some packages explicitly list a guide, entry tickets, private AC car with driver, fuel, parking, and hotel pickup. Hotel pickup does not necessarily mean accommodation is included. Meals, flights, airport pickup, and extra charges must be confirmed against the specific package’s written inclusions and exclusions.';
+      }
+      if (is(/\\bwhere are you based\\b/, /\\boffice address\\b/, /\\bcompany address\\b/)) {
+        return 'Past Enlighten offers tours in Lahore, Islamabad, and northern Pakistan. I do not have a verified street address in the package data. Please contact the team for the current office or meeting location: https://wa.me/923344770455';
+      }
+      if (is(/\\bprivate tour company\\b/, /\\bprivate or group\\b/)) {
+        return 'Our website accepts requests for private and group tours. Whether a particular departure is private or shared depends on the arrangement confirmed by our team. Request details at https://pastenlighten.com/booking.html.';
+      }
+      if (is(/\\bbad weather\\b/, /\\bweather is bad\\b/, /\\bweather.*tour\\b/)) {
+        return 'Mountain weather can affect road access, sightseeing, and safety. Contact our team before departure if conditions are poor. Any rescheduling or refund options depend on your written booking terms; I cannot promise a specific outcome without those terms.';
+      }
+      if (is(/\\binternational tourists\\b/, /\\binternational tourists visiting pakistan\\b/, /\\bforeign tourists\\b/)) {
+        return 'Yes, our international price list is in USD and several packages list English-speaking guides. International visitors should confirm visa and travel-document requirements, seasonal access, pickup arrangements, and package inclusions before travelling.';
+      }
+      if (is(/\\bhow do i contact past enlighten\\b/, /\\bcontact your team\\b/, /\\bcontact.*book\\b/, /\\bcontact past enlighten\\b/)) {
+        return 'You can request a booking at https://pastenlighten.com/booking.html or message our team on WhatsApp at +92 334 4770455: https://wa.me/923344770455. Email: infopastenlighten@gmail.com.';
+      }
       return null;
     }
 
