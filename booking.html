@@ -236,7 +236,8 @@
           </dl>
           <div class="mt-4 pt-4 border-t border-white/15 text-sm">
             <p class="text-slate-300">Price</p>
-            <p class="font-semibold">Quoted in writing for your dates and group size.</p>
+            <p id="sumPrice" class="font-semibold">Choose a tour to see the price.</p>
+            <p id="sumPriceNote" class="text-xs text-slate-300 mt-1"></p>
           </div>
         </div>
         <div class="bg-white rounded-2xl border border-stone-200 p-5 text-sm text-slate-700 shadow-sm">
@@ -272,6 +273,7 @@
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-wrap justify-between gap-2"><span>&copy; 2026 Past Enlighten Tour Guides. All rights reserved.</span><span><a href="reviews.html" class="underline">Reviews</a> &middot; Fort Road, Walled City, Lahore &middot; +92 334 4770455</span></div>
   </footer>
 
+<script src="js/prices.js"></script>
 <script src="js/pe-backend.js"></script>
 <script src="js/booking-confirm.js"></script>
 <script>
@@ -281,27 +283,27 @@
   var EMAIL = 'infopastenlighten@gmail.com';
   var DRAFT_KEY = 'pe_booking_draft_v1';
 
-  // Tours offered. Names follow the website; no prices here, because the team confirms a written quote.
+  // Tours offered. Public solo prices come from js/prices.js; group prices are confirmed in writing by the team.
   // To add a tour, add a line. id is what ?tour= links use.
   var TOURS = [
-    { group: 'Lahore', id: 'lahore-heritage-walk', name: 'Lahore Fort & Walled City Heritage Walk', duration: 'Half day or full day', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'lahore-heritage-walk', name: 'Lahore Fort & Walled City Heritage Walk', duration: 'Half day, 3–4 hours', start: 'Lahore', multi: false },
     { group: 'Lahore', id: 'lahore-full-day', name: 'Lahore Full Day Heritage Tour (incl. Wagah Border)', duration: 'Full day, 8–9 hours', start: 'Lahore', multi: false },
     { group: 'Lahore', id: 'walled-city-rickshaw', name: 'Walled City & Rangila Rickshaw', duration: 'Half day, 4–5 hours', start: 'Lahore', multi: false },
     { group: 'Lahore', id: 'museums-fort', name: 'Museums & Fort Tour', duration: 'Half day, 4–5 hours', start: 'Lahore', multi: false },
-    { group: 'Lahore', id: 'sufi-night', name: 'Night Sufi Shrine Tour', duration: 'Evening, about 4 hours', start: 'Lahore', multi: false },
-    { group: 'Lahore', id: 'shopping', name: 'Lahore Shopping & Bazaars Tour', duration: 'Evening, 4–5 hours', start: 'Lahore', multi: false },
-    { group: 'Lahore', id: 'shahdara', name: 'Shahdara Complex: Tombs of Jahangir & Noor Jahan', duration: 'Half day', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'sufi-night', name: 'Night Sufi Shrine Tour', duration: 'Night, from about 9:50 pm', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'shopping', name: 'Lahore Shopping & Bazaars Tour', duration: 'Evening, 3–4 hours', start: 'Lahore', multi: false },
+    { group: 'Lahore', id: 'shahdara', name: 'Shahdara Complex: Tombs of Jahangir & Noor Jahan', duration: 'Morning or evening, 3–4 hours', start: 'Lahore', multi: false },
     { group: 'Lahore', id: 'sheikhupura', name: 'Sheikhupura Fort & Hiran Minar Excursion', duration: 'Full day', start: 'Lahore', multi: false },
     { group: 'Islamabad', id: 'islamabad', name: 'Islamabad & Rawalpindi Full Day City Tour', duration: 'Full day', start: 'Islamabad', multi: false },
     { group: 'Northern Pakistan', id: 'naran-kaghan', name: 'Naran Kaghan & Lake Saif-ul-Malook', duration: '4 days / 3 nights', start: 'Islamabad', multi: true, north: true },
     { group: 'Northern Pakistan', id: 'swat', name: 'Swat Valley & Malam Jabba', duration: '3 days / 2 nights', start: 'Islamabad', multi: true, north: true },
     { group: 'Northern Pakistan', id: 'neelum', name: 'Neelum Valley & Sharda (Kashmir)', duration: '5 days / 4 nights', start: 'Islamabad', multi: true, north: true },
-    { group: 'Northern Pakistan', id: 'hunza', name: 'Hunza Valley Tour', duration: '4–5 days', start: 'Islamabad', multi: true, north: true },
-    { group: 'Northern Pakistan', id: 'skardu', name: 'Skardu & Deosai Tour', duration: '5–7 days', start: 'Islamabad', multi: true, north: true },
-    { group: 'Northern Pakistan', id: 'fairy-meadows', name: 'Fairy Meadows & Nanga Parbat Base Camp', duration: '3 days / 2 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'hunza', name: 'Hunza Valley Tour', duration: '5 days / 4 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'skardu', name: 'Skardu & Deosai Tour', duration: '6 days / 5 nights', start: 'Islamabad', multi: true, north: true },
+    { group: 'Northern Pakistan', id: 'fairy-meadows', name: 'Fairy Meadows & Nanga Parbat Base Camp', duration: '4 days / 3 nights', start: 'Islamabad', multi: true, north: true },
     { group: 'Northern Pakistan', id: 'grand-16', name: 'Grand Northern Pakistan Tour (16 days)', duration: '16 days / 15 nights', start: 'Islamabad', multi: true, north: true },
-    { group: 'South Punjab', id: 'bahawalpur', name: 'Bahawalpur & Cholistan Desert', duration: '3–4 days', start: 'Lahore', multi: true },
-    { group: 'South Punjab', id: 'harappa-multan', name: 'Lahore – Harappa – Multan', duration: '5 days', start: 'Lahore', multi: true },
+    { group: 'South Punjab', id: 'bahawalpur', name: 'Bahawalpur & Cholistan Desert', duration: '4 days / 3 nights', start: 'Lahore', multi: true },
+    { group: 'South Punjab', id: 'harappa-multan', name: 'Lahore – Harappa – Multan', duration: '3 days / 2 nights', start: 'Lahore', multi: true },
     { group: 'Something else', id: 'custom', name: 'Custom itinerary: help me plan', duration: 'You choose', start: 'You choose', multi: true }
   ];
 
@@ -368,6 +370,9 @@
     var a = Math.max(1, parseInt($('adults').value, 10) || 1), c = Math.max(0, parseInt($('children').value, 10) || 0);
     return a + ' adult' + (a > 1 ? 's' : '') + (c ? ', ' + c + ' child' + (c > 1 ? 'ren' : '') : '');
   }
+  var PRICE_ID = { 'lahore-heritage-walk': 'L-WALK', 'lahore-full-day': 'L1', 'walled-city-rickshaw': 'L2', 'museums-fort': 'L3', 'sufi-night': 'L4',
+    'shopping': 'L5', 'shahdara': 'L6', 'sheikhupura': 'L7', 'islamabad': 'I1', 'naran-kaghan': 'N-NARAN', 'swat': 'N-SWAT', 'neelum': 'N-NEELUM',
+    'hunza': 'N1', 'skardu': 'N2', 'fairy-meadows': 'N3', 'grand-16': 'N5', 'bahawalpur': 'S1', 'harappa-multan': 'S2' };
   function update() {
     var t = tourById(tourSel.value);
     $('sumTour').textContent = t ? t.name : 'Choose a tour';
@@ -378,12 +383,24 @@
     var st = form.querySelector('input[name="style"]:checked');
     $('sumStyle').textContent = st ? st.value : '—';
     $('tourInfo').textContent = t ? (t.duration + ' · starts from ' + t.start) : '';
+    // Price: only the public SOLO price is shown; group prices are sent in writing by the team
+    var P = window.PE_PRICES && t ? window.PE_PRICES.tours[PRICE_ID[t.id]] : null;
+    var adults = parseInt($('adults').value, 10) || 1, kids = parseInt($('children').value, 10) || 0;
+    if (P) {
+      $('sumPrice').textContent = 'US$' + P.solo.toLocaleString('en-US') + ' per person (solo traveller)';
+      $('sumPriceNote').textContent = (adults + kids > 1)
+        ? 'You are ' + (adults + kids) + ' travellers, so your price per person will be lower. We confirm your group price in writing before you pay.'
+        : 'Includes ' + P.includes.slice(0, 3).join(', ') + '. Final price confirmed in writing.';
+    } else {
+      $('sumPrice').textContent = t ? 'Quoted in writing for your dates and group size.' : 'Choose a tour to see the price.';
+      $('sumPriceNote').textContent = '';
+    }
     $('customWrap').classList.toggle('hidden', !(t && t.id === 'custom'));
     $('stayWrap').classList.toggle('hidden', !(t && t.multi));
     // seasonal note for mountain tours (roads/passes can close in winter)
     var note = $('seasonNote'), m = $('date').value ? new Date($('date').value + 'T00:00:00').getMonth() : -1;
     if (t && t.north && m >= 0 && (m >= 10 || m <= 3)) {
-      note.textContent = 'Heads-up: ' + fmtDate($('date').value).replace(/^\w+, /, '') + ' is outside the main northern season (May–October). Some passes, lakes and high roads can be closed by snow. We will suggest what is possible on your dates.';
+      note.textContent = 'Heads-up: ' + fmtDate($('date').value).replace(/^\w+, /, '') + ' is outside the main northern season (April–October). Some passes, lakes and high roads can be closed by snow. We will suggest what is possible on your dates.';
       note.classList.remove('hidden');
     } else note.classList.add('hidden');
   }

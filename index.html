@@ -119,7 +119,7 @@
         "name": "What does the tour price include?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Prices depend on your dates, group size and transport, so we don't list them on the website. Connect with our team on WhatsApp or through the booking form and we'll send you a written quote with the price, pickup and everything included before you pay."
+          "text": "The prices on our website are per person in US dollars for a solo traveller, and include an English-speaking guide and all entry tickets at the foreigner rate. Lahore day tours also include water and shoe baskets for mosques; full-day and multi-day tours include a private AC car with driver, fuel, parking and hotel pickup. Travelling with 2 or more people? The price per person is lower: our team sends your exact group price in writing before you pay anything. Children under 5 pay 50% of the adult price."
         }
       },
       {
@@ -371,6 +371,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
   </style>
 
 
+<script src="js/prices.js"></script>
 <script src="js/pe-backend.js"></script>
 <script src="js/booking-confirm.js" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
@@ -425,7 +426,7 @@ main article a:hover { color: #92400e; }
 
         <div class="flex items-center gap-3 ml-auto">
           <!-- Pricing is confirmed for the requested dates and group size -->
-          <span class="inline-flex items-center bg-brand-900/80 rounded-lg px-3 py-2 border border-brand-700 text-[11px] text-slate-200"><i class="fa-solid fa-receipt text-accent-amber mr-2"></i>For prices, connect with our team</span>
+          <span class="inline-flex items-center bg-brand-900/80 rounded-lg px-3 py-2 border border-brand-700 text-[11px] text-slate-200"><i class="fa-solid fa-receipt text-accent-amber mr-2"></i>All prices in US$ per person · groups pay less</span>
 
           <!-- Searchable language selector; page translation requires internet -->
           <div id="languagePicker" class="relative flex items-center bg-brand-900/80 rounded-lg p-1 border border-brand-700 text-[11px]">
@@ -556,7 +557,7 @@ main article a:hover { color: #92400e; }
       <!-- Currency Callout Pill -->
       <div class="mt-3 inline-flex items-center gap-2 px-3 py-0.5 bg-black/40 backdrop-blur-md rounded-full border border-white/20 text-xs text-amber-300">
         <i class="fa-solid fa-comments text-accent-amber"></i>
-        <span data-i18n="currency_banner">Private &amp; small-group tours with local guides. For prices, connect with our team.</span>
+        <span data-i18n="currency_banner">Private &amp; small-group tours with local guides. Prices shown are for a solo traveller in US$; groups pay less per person.</span>
       </div>
 
       <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -780,14 +781,14 @@ main article a:hover { color: #92400e; }
               <i class="fa-solid fa-landmark mr-1"></i> Walled City
             </span>
             <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
-              Half / Full Day
+              Half Day
             </span>
           </div>
 
           <div class="p-4 flex-1 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
-                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 5-8 Hours</span>
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 3-4 Hours</span>
                 <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 4.9 (124)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Lahore Fort & Walled City</h3>
@@ -797,7 +798,7 @@ main article a:hover { color: #92400e; }
             </div>
             <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
               <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 block">Price</span><a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20please%20share%20the%20price%20for%3A%20Lahore%20Fort%20%26%20Walled%20City" target="_blank" rel="noopener" class="font-bold text-emerald-700 hover:text-emerald-800 text-xs underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>Connect with our team</a>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L-WALK">US$70</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
               </div>
               <button onclick="openTourDetails('lahore')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
                 View Itinerary
@@ -837,14 +838,14 @@ main article a:hover { color: #92400e; }
               <i class="fa-solid fa-mountain mr-1"></i> Northern Heights
             </span>
             <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
-              3 to 4 Days
+              4 Days / 3 Nights
             </span>
           </div>
 
           <div class="p-4 flex-1 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
-                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4 Days Expedition</span>
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4 Days / 3 Nights</span>
                 <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 4.9 (88)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Naran Kaghan & Saif-ul-Malook</h3>
@@ -854,7 +855,7 @@ main article a:hover { color: #92400e; }
             </div>
             <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
               <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 block">Price</span><a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20please%20share%20the%20price%20for%3A%20Naran%20Kaghan%20%26%20Saif-ul-Malook" target="_blank" rel="noopener" class="font-bold text-emerald-700 hover:text-emerald-800 text-xs underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>Connect with our team</a>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N-NARAN">US$1,045</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
               </div>
               <button onclick="openTourDetails('naran')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
                 View Itinerary
@@ -889,7 +890,7 @@ main article a:hover { color: #92400e; }
             </div>
             <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
               <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 block">Price</span><a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20please%20share%20the%20price%20for%3A%20Swat%20Valley%20%26%20Malam%20Jabba" target="_blank" rel="noopener" class="font-bold text-emerald-700 hover:text-emerald-800 text-xs underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>Connect with our team</a>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N-SWAT">US$945</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
               </div>
               <button onclick="openTourDetails('swat')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
                 View Itinerary
@@ -907,14 +908,14 @@ main article a:hover { color: #92400e; }
               <i class="fa-solid fa-water mr-1"></i> Neelum Valley
             </span>
             <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
-              4 to 5 Days
+              5 Days / 4 Nights
             </span>
           </div>
 
           <div class="p-4 flex-1 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
-                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 5 Days</span>
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 5 Days / 4 Nights</span>
                 <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 5.0 (92)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Neelum & Kashmir Valley</h3>
@@ -924,7 +925,7 @@ main article a:hover { color: #92400e; }
             </div>
             <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
               <div>
-                <span class="text-[10px] uppercase font-bold text-slate-400 block">Price</span><a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20please%20share%20the%20price%20for%3A%20Neelum%20%26%20Kashmir%20Valley" target="_blank" rel="noopener" class="font-bold text-emerald-700 hover:text-emerald-800 text-xs underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>Connect with our team</a>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N-NEELUM">US$1,495</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
               </div>
               <button onclick="openTourDetails('kashmir')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
                 View Itinerary
@@ -1228,7 +1229,7 @@ main article a:hover { color: #92400e; }
         </p>
         <div class="mt-3 flex flex-wrap justify-center items-center gap-2">
           <span class="px-3 py-1 bg-brand-100 text-brand-800 rounded-full font-bold text-xs">Group or private tour</span>
-          <a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20please%20share%20the%20price%20for%20the%20Grand%20Northern%20Pakistan%20Tour%20%2816%20days%29." target="_blank" rel="noopener" class="px-3 py-1 bg-amber-100 text-accent-dark rounded-full font-bold text-xs hover:bg-amber-200"><i class="fa-brands fa-whatsapp mr-1"></i>For prices, connect with our team</a>
+          <span class="px-3 py-1 bg-amber-100 text-accent-dark rounded-full font-bold text-xs">Solo traveller: <span data-pe-price="N5">US$4,290</span> per person · groups pay less</span>
         </div>
       </div>
 
@@ -1759,7 +1760,7 @@ main article a:hover { color: #92400e; }
             <i class="fa-solid fa-chevron-down text-xs transition transform duration-200" id="faq9-icon"></i>
           </button>
           <div id="faq9" class="hidden px-5 py-3.5 bg-white text-xs text-slate-600 leading-relaxed border-t border-stone-200">
-            Prices depend on your dates, group size and transport, so we don't list them on the website. Connect with our team on WhatsApp or through the booking form and we'll send you a written quote with the price, pickup and everything included before you pay.
+            The prices on our website are per person in US dollars for a solo traveller, and include an English-speaking guide and all entry tickets at the foreigner rate. Lahore day tours also include water and shoe baskets for mosques; full-day and multi-day tours include a private AC car with driver, fuel, parking and hotel pickup. Travelling with 2 or more people? The price per person is lower: our team sends your exact group price in writing before you pay anything. Children under 5 pay 50% of the adult price.
           </div>
         </div>
 
@@ -1835,7 +1836,7 @@ main article a:hover { color: #92400e; }
           <h4 class="font-cinzel font-bold text-white uppercase mb-3">Northern Circuits</h4>
           <ul class="space-y-1.5 text-slate-400">
             <li><button onclick="openTourDetails('N1')" class="hover:text-accent-amber transition text-left">N1 • Hunza Valley 5-Day Tour</button></li>
-            <li><button onclick="openTourDetails('N2')" class="hover:text-accent-amber transition text-left">N2 • Skardu & Deosai 5-Day Tour</button></li>
+            <li><button onclick="openTourDetails('N2')" class="hover:text-accent-amber transition text-left">N2 • Skardu & Deosai 6-Day Tour</button></li>
             <li><button onclick="openTourDetails('N3')" class="hover:text-accent-amber transition text-left">N3 • Fairy Meadows Base Camp</button></li>
             <li><button onclick="openTourDetails('N5')" class="hover:text-accent-amber transition text-left">N5 • Grand 16-Day Northern Tour</button></li>
             <li><button onclick="openTourDetails('naran')" class="hover:text-accent-amber transition text-left">Naran Kaghan & Saif-ul-Malook</button></li>
@@ -1922,8 +1923,8 @@ main article a:hover { color: #92400e; }
               <option value="L4 • Night Sufi Shrine Tour">L4 • Night Sufi Shrine Tour</option>
               <option value="L5 • Lahore Shopping Tour">L5 • Lahore Shopping Tour</option>
               <option value="N1 • Hunza Valley 5-Day Tour">N1 • Hunza Valley 5-Day</option>
-              <option value="N2 • Skardu & Deosai 5-Day Tour">N2 • Skardu & Deosai 5-Day</option>
-              <option value="N3 • Fairy Meadows Base Camp (3 Days)">N3 • Fairy Meadows Base Camp</option>
+              <option value="N2 • Skardu & Deosai 6-Day Tour">N2 • Skardu & Deosai 6-Day</option>
+              <option value="N3 • Fairy Meadows Base Camp (4 Days)">N3 • Fairy Meadows Base Camp</option>
               <option value="N5 • Grand 16-Day Northern Tour">N5 • Grand 16-Day Northern Tour</option>
               <option value="Naran Kaghan & Saif-ul-Malook">Naran Kaghan & Saif-ul-Malook</option>
               <option value="Swat Valley Heritage">Swat Valley & Malam Jabba</option>
@@ -2096,7 +2097,7 @@ main article a:hover { color: #92400e; }
       lahore: {
         title: "Lahore Fort & Walled City Heritage Walk",
         fullName: "Shahi Qila Lahore (شاہی قلعہ لاہور) & Androon Shehr Citadel",
-        duration: "Full Day (8 Hours) or Half Day (4.5 Hours)",
+        duration: "Half Day (3-4 Hours)",
         image: "images/lahore-fort-sm.webp",
         locality: "Walled City of Lahore, Ravi Basin, Punjab, Pakistan",
         language: "Punjabi (Majhi dialect), Urdu, and English",
@@ -2180,11 +2181,11 @@ main article a:hover { color: #92400e; }
       },
       L2: { title: "L2 • Walled City & Rangila Rickshaw", fullName: "Androon Shehr Heritage Walk with Art Rickshaws", duration: "Half Day (4-5 Hours)", image: "images/lahore-walled-city-delhi-gate-sm.webp", locality: "Walled City of Lahore", language: "English, Urdu & Punjabi", history: "Voyage through medieval alleyways riding authentic hand-painted Rangila Rickshaws.", specialThings: "Spices bazaar, Kashmiri Bazaar, Havelis.", summary: "Vibrant rickshaw tour passing through centuries of bazaar traditions.", highlights: ["Rangila Rickshaw ride", "Shahi Hammam", "Wazir Khan Mosque"], includes: ["Rickshaw Ride", "Guide", "Entry Passes", "Tea"] },
       L3: { title: "L3 • Museums & Fort Tour", fullName: "Lahore Central Museum & Royal Citadel Archives", duration: "Half Day (4-5 Hours)", image: "images/mughal-heritage-arches-sm.webp", locality: "Mall Road & Lahore Fort", language: "English, Urdu & Punjabi", history: "Explores the Fasting Buddha of Gandhara, Sikh empire relics, and British colonial artifacts.", specialThings: "Lahore Museum and Sheesh Mahal mirror vaults.", summary: "Curatorial walk for museum and art lovers.", highlights: ["Lahore Museum", "Fasting Buddha gallery", "Lahore Fort pavilions"], includes: ["Transport", "Guide", "Tickets"] },
-      L4: { title: "L4 • Night Sufi Shrine Tour", fullName: "Mystic Sufi Nights: Data Darbar & Shah Jamal Dhamal", duration: "Evening (4 Hours)", image: "images/walled-city-bazaar-gate-sm.webp", locality: "Central Lahore Shrines", language: "English & Urdu", history: "Century-old living Sufi musical dhikr and ecstatic dhamal drum performances.", specialThings: "Hypnotic dhol rhythms of Pappu Sain legacy, incense, qawwali singing.", summary: "Experience the profound mystic nightlife of Lahore.", highlights: ["Data Darbar evening visit", "Shah Jamal Sufi Dhamal", "Qawwali music sessions"], includes: ["Guide", "Transport", "Security & Protocol"] },
-      L5: { title: "L5 • Lahore Shopping & Bazaars Tour", fullName: "Anarkali, Liberty & Traditional Souks", duration: "5 Hours", image: "images/walled-city-spice-bazaar-sm.webp", locality: "Anarkali & Gulberg", language: "English, Urdu & Punjabi", history: "Centuries of silk route fabric trading, pashminas, and jewelry.", specialThings: "Handmade khussa shoes and bargaining support.", summary: "Curated shopping expedition with local guidance.", highlights: ["Historic Anarkali Bazaar", "Liberty Market", "Khussa shoe makers"], includes: ["Private AC Vehicle", "Shopping Guide"] },
+      L4: { title: "L4 • Night Sufi Shrine Tour", fullName: "Mystic Sufi Nights: Data Darbar & Shah Jamal Dhamal", duration: "Night (from about 9:50 PM)", image: "images/walled-city-bazaar-gate-sm.webp", locality: "Central Lahore Shrines", language: "English & Urdu", history: "Century-old living Sufi musical dhikr and ecstatic dhamal drum performances.", specialThings: "Hypnotic dhol rhythms of Pappu Sain legacy, incense, qawwali singing.", summary: "Experience the profound mystic nightlife of Lahore.", highlights: ["Data Darbar evening visit", "Shah Jamal Sufi Dhamal", "Qawwali music sessions"], includes: ["Guide", "Transport", "Security & Protocol"] },
+      L5: { title: "L5 • Lahore Shopping & Bazaars Tour", fullName: "Anarkali, Liberty & Traditional Souks", duration: "Evening (3-4 Hours)", image: "images/walled-city-spice-bazaar-sm.webp", locality: "Anarkali & Gulberg", language: "English, Urdu & Punjabi", history: "Centuries of silk route fabric trading, pashminas, and jewelry.", specialThings: "Handmade khussa shoes and bargaining support.", summary: "Curated shopping expedition with local guidance.", highlights: ["Historic Anarkali Bazaar", "Liberty Market", "Khussa shoe makers"], includes: ["Private AC Vehicle", "Shopping Guide"] },
       N1: { title: "N1 • Hunza Valley 5-Day Tour", fullName: "Karimabad, Attabad Lake, Passu Cones & Ancient Forts", duration: "5 Days / 4 Nights", image: "images/hunza-valley-sm.webp", locality: "Hunza & Nagar, Gilgit-Baltistan", language: "Burushaski, Wakhi, Urdu & English", history: "Autonomous kingdom along the ancient Silk Route with 800-year-old fortresses.", specialThings: "Passu Cathedral cones, crystal turquoise Attabad Lake boat cruise, Altit & Baltit forts.", summary: "The crown jewel of Northern Pakistan.", highlights: ["Altit & Baltit Forts", "Attabad Lake boating", "Passu Cones view"], includes: ["4x4 Prado/Hiace", "Hotels with Breakfast", "Local Guide"] },
-      N2: { title: "N2 • Skardu & Deosai 5-Day Tour", fullName: "Cold Desert, Shangrila & The Land of Giants", duration: "5 Days / 4 Nights", image: "images/skardu-shangrila-sm.webp", locality: "Skardu & Deosai National Park", language: "Balti, Urdu & English", history: "Gateway to four 8,000-meter peaks including K2.", specialThings: "Sarfaranga cold desert sand dunes, Deosai plateau at 13,000 ft, Sheosar Lake.", summary: "High-altitude plateau wonders and dramatic sand dunes.", highlights: ["Shangrila & Upper Kachura Lake", "Sarfaranga Cold Desert", "Deosai Plains"], includes: ["4x4 Mountain Jeep", "Hotel stays", "Driver"] },
-      N3: { title: "N3 • Fairy Meadows Base Camp (3 Days)", fullName: "Nanga Parbat 8,126m Killer Mountain Trek", duration: "3 Days / 2 Nights", image: "images/fairy-meadows-nanga-parbat-sm.webp", locality: "Raikot, Diamer District", language: "Shina, Urdu & English", history: "Legendary mountaineering route to the north face of Nanga Parbat.", specialThings: "Cliffside 4x4 Raikot jeep track, lush alpine meadows.", summary: "One of the most scenic high-mountain alpine treks on Earth.", highlights: ["Thrill jeep ride to Tattu", "Trek to Fairy Meadows", "View of Nanga Parbat"], includes: ["4x4 Jeep", "Cottage stay", "Guide", "Meals"] },
+      N2: { title: "N2 • Skardu & Deosai 6-Day Tour", fullName: "Cold Desert, Shangrila & The Land of Giants", duration: "6 Days / 5 Nights", image: "images/skardu-shangrila-sm.webp", locality: "Skardu & Deosai National Park", language: "Balti, Urdu & English", history: "Gateway to four 8,000-meter peaks including K2.", specialThings: "Sarfaranga cold desert sand dunes, Deosai plateau at 13,000 ft, Sheosar Lake.", summary: "High-altitude plateau wonders and dramatic sand dunes.", highlights: ["Shangrila & Upper Kachura Lake", "Sarfaranga Cold Desert", "Deosai Plains"], includes: ["4x4 Mountain Jeep", "Hotel stays", "Driver"] },
+      N3: { title: "N3 • Fairy Meadows Base Camp (4 Days)", fullName: "Nanga Parbat 8,126m Killer Mountain Trek", duration: "4 Days / 3 Nights", image: "images/fairy-meadows-nanga-parbat-sm.webp", locality: "Raikot, Diamer District", language: "Shina, Urdu & English", history: "Legendary mountaineering route to the north face of Nanga Parbat.", specialThings: "Cliffside 4x4 Raikot jeep track, lush alpine meadows.", summary: "One of the most scenic high-mountain alpine treks on Earth.", highlights: ["Thrill jeep ride to Tattu", "Trek to Fairy Meadows", "View of Nanga Parbat"], includes: ["4x4 Jeep", "Cottage stay", "Guide", "Meals"] },
       N5: { title: "N5 • Grand 16-Day Northern Pakistan Tour", fullName: "Comprehensive Circuit: Hunza, Skardu, Deosai & Fairy Meadows", duration: "16 Days / 15 Nights", image: "images/traveller-mountain-road-sm.webp", locality: "Northern Pakistan Circuit", language: "English, Urdu, Shina, Balti & Burushaski", history: "The complete northern circuit covering all historic kingdoms and passes.", specialThings: "Besham, Karakoram Highway, Gilgit, Hunza, Skardu, Deosai, and Fairy Meadows.", summary: "The ultimate 16-day overland journey across northern Pakistan.", highlights: ["Complete Karakoram Highway overland", "3 Full days in Hunza Valley", "Skardu & Deosai Plains", "Fairy Meadows Base Camp"], includes: ["Dedicated Transport & Fuel", "Mountain Hotels & Cabins", "Half Board", "Licensed Guides"] }
     };
 
@@ -2338,6 +2339,13 @@ main article a:hover { color: #92400e; }
       return src || '';
     }
 
+    // Public solo prices (see js/prices.js). Group prices are never shown on the website.
+    const PE_KEY_TO_PRICE = {lahore:'L-WALK',L1:'L1',L2:'L2',L3:'L3',L4:'L4',L5:'L5',N1:'N1',N2:'N2',N3:'N3',N5:'N5',naran:'N-NARAN',swat:'N-SWAT',kashmir:'N-NEELUM'};
+    function peTour(key) { const p = window.PE_PRICES && window.PE_PRICES.tours[PE_KEY_TO_PRICE[key] || key]; return p || null; }
+    function peSoloLabel(key) { return peTour(key) ? 'Solo traveller, per person' : 'Price'; }
+    function peSoloPrice(key) { const t = peTour(key); return t ? 'US$' + t.solo.toLocaleString('en-US') : '<a href="https://wa.me/923344770455" target="_blank" rel="noopener" class="text-emerald-700 underline">Ask our team</a>'; }
+    function peSoloNote(key) { return peTour(key) ? 'Groups of 2+ pay less per person' : ''; }
+
     function openTourDetails(key) {
       const tour = TOURS_DATA[key];
       if (!tour) return;
@@ -2378,8 +2386,7 @@ main article a:hover { color: #92400e; }
 
         <div class="flex items-center justify-between pt-3 border-t border-stone-200">
           <div>
-            <span class="text-[10px] text-slate-400 uppercase font-bold block">Price</span>
-            <a href="https://wa.me/923344770455?text=${encodeURIComponent('Hello Past Enlighten, please share the price for: ' + tour.title)}" target="_blank" rel="noopener" class="text-sm font-bold text-emerald-700 underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>Connect with our team</a>
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">${peSoloLabel(key)}</span><span class="block text-lg font-extrabold text-brand-900 leading-tight">${peSoloPrice(key)}</span><span class="block text-[11px] text-emerald-700 font-semibold">${peSoloNote(key)}</span>
           </div>
           <button onclick="closeTourModal(); openBookingModal('${tour.title}')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white font-bold px-4 py-2 rounded-lg text-xs shadow">
             Book This Itinerary
@@ -2471,7 +2478,8 @@ main article a:hover { color: #92400e; }
     const WHATSAPP = "923344770455";
     const CONTACT_EMAIL = "infopastenlighten@gmail.com";
     const WEBSITE_URL = "https://pastenlighten.com/";
-    const TOUR_DATA = {"source": "Past_Enlighten_Chatbot_Data_Accuracy_Improved.xlsx", "notice": "Tour details for Noor. Prices are not published: guests are asked to connect with the team for a written quote.", "pricing": [], "tours": [{"Tour ID": "L1", "Region": "Lahore", "Tour Name": "Lahore Full Day Tour", "Duration": "Full day", "Format": "Private or group", "Transport": "Sedan car pick & drop", "What's Included": "All sightseeing tickets and entrances, pick & drop by sedan car", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Fort Road Food Street, Delhi Gate, Shahi Hammam, Surjan Singh Street, Nikah Wali Gali, Usman Ki Baithak, Wazir Khan Mosque, Shalimar Gardens, Wagah Border Flag Lowering Ceremony", "On TripAdvisor": "Yes – 'Lahore Heritage and Sightseeing Guided Tour' {TRIPADVISOR_URL}"}, {"Tour ID": "L2", "Region": "Lahore", "Tour Name": "Lahore Half Day Tour", "Duration": "Half day (about 4 hours)", "Format": "Private or group", "Transport": "Rangila rickshaw ride inside the city", "What's Included": "All sightseeing entrance tickets, shoe baskets for mosques, Rangila rickshaw ride inside the Walled City", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Hazuri Bagh, Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Nikah Wali Gali", "On TripAdvisor": "No"}, {"Tour ID": "L3", "Region": "Lahore", "Tour Name": "Lahore Walled City Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "Walking", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Usman Ki Baithak, Nikah Wali Gali", "On TripAdvisor": "No"}, {"Tour ID": "L4", "Region": "Lahore", "Tour Name": "Lahore Museums Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "On request", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Museum, National History Museum", "On TripAdvisor": "No"}, {"Tour ID": "L5", "Region": "Lahore", "Tour Name": "Lahore Shrines Tour", "Duration": "Half day to full day", "Format": "Private or group", "Transport": "On request", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Madho Lal Hussain Shrine, Mian Mir Shrine, Shah Jamal Shrine, Data Darbar (qawwali 4:00–6:00 PM)", "On TripAdvisor": "No"}, {"Tour ID": "L6", "Region": "Lahore", "Tour Name": "Lahore Sufi Nights Tour", "Duration": "Night", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Shah Jamal Shrine only – drum beats (dhol) and dhamal", "On TripAdvisor": "No"}, {"Tour ID": "L7", "Region": "Lahore", "Tour Name": "Lahore Outskirts – Shahdara Complex Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "Not included – guests come in their own transport", "What's Included": "Guide", "Not Included": "Meals and accommodation not included", "Places Covered": "Tomb of Jahangir, Tomb of Noor Jahan, Tomb of Asif Jah", "On TripAdvisor": "No"}, {"Tour ID": "L8", "Region": "Lahore", "Tour Name": "Lahore Shopping Tour (5:00–9:00 PM)", "Duration": "Evening, 4 hours", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Anarkali Bazaar, Liberty Market, Emporium Mall", "On TripAdvisor": "No"}, {"Tour ID": "L9", "Region": "Lahore", "Tour Name": "Sheikhupura Excursion", "Duration": "Full day", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Sheikhupura Fort, Hiran Minar", "On TripAdvisor": "No"}, {"Tour ID": "I1", "Region": "Islamabad", "Tour Name": "Islamabad Full Day City Tour (Islamabad & Rawalpindi)", "Duration": "Full day", "Format": "Private or group", "Transport": "Transport within Islamabad", "What's Included": "Guide, transport within Islamabad", "Not Included": "Meals and accommodation not included", "Places Covered": "Pakistan Monument, Lok Virsa Museum, Faisal Mosque, Daman-e-Koh, Saidpur Village, Raja Bazaar", "On TripAdvisor": "No"}, {"Tour ID": "N1", "Region": "North Pakistan", "Tour Name": "Hunza Tour (4–5 Days)", "Duration": "4–5 days", "Format": "Private or group", "Transport": "By road", "What's Included": "See team for inclusions", "Not Included": "Details confirmed by team", "Places Covered": "Altit Fort, Baltit Fort, Karimabad Market, Duikar sunset, Attabad Lake, Hussaini Suspension Bridge, Borith Lake, Passu Cones, Nagar Valley, Nagar Village", "On TripAdvisor": "No"}, {"Tour ID": "N2", "Region": "North Pakistan", "Tour Name": "Skardu Tour (5–7 Days)", "Duration": "5–7 days", "Format": "Private or group", "Transport": "By road from Islamabad", "What's Included": "Food and accommodation added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Upper & Lower Kachura Lake, Shigar Fort, Shigar Valley, Organic Village, Sok Valley, Deosai National Park, Sarfaranga Cold Desert, Satpara Lake, Masrur Rock", "On TripAdvisor": "No"}, {"Tour ID": "N3", "Region": "North Pakistan", "Tour Name": "Grand North Pakistan Tour (16 Days)", "Duration": "16 days", "Format": "Group or private", "Transport": "By road, Islamabad to Islamabad", "What's Included": "Transport and fuel, expert local guides, accommodation, two meals per day (half board)", "Not Included": "Details confirmed by team", "Places Covered": "Naran / Babusar Pass (or KKH & Besham), Gilgit, Hunza (3 days), Skardu, Fairy Meadows, back to Islamabad", "On TripAdvisor": "No"}, {"Tour ID": "S1", "Region": "South Punjab", "Tour Name": "Bahawalpur & Cholistan Tour (3–4 Days)", "Duration": "3–4 days", "Format": "Private or group", "Transport": "By road", "What's Included": "Food added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Bahawalpur palaces (Noor Mahal, Darbar Mahal, Sadiq Garh Palace), Cholistan Desert, desert life", "On TripAdvisor": "No"}, {"Tour ID": "S2", "Region": "South Punjab", "Tour Name": "Lahore – Harappa – Multan Tour (5 Days)", "Duration": "5 days", "Format": "Private or group", "Transport": "By road from Lahore", "What's Included": "Food added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Harappa ruins; Multan shrines of Shah Rukn-e-Alam, Bahauddin Zakariya and Shah Shams; Multan old city walk", "On TripAdvisor": "No"}], "contact": {"whatsapp": "923344770455", "website": "https://pastenlighten.com/", "email": "infopastenlighten@gmail.com"}};
+    const TOUR_DATA = {"source": "Past_Enlighten_Chatbot_Data_Accuracy_Improved.xlsx", "notice": "Tour details for Noor. Public prices are per person in USD for a SOLO traveller (see js/prices.js); groups of 2+ pay less and the team confirms group prices in writing.", "pricing": [], "tours": [{"Tour ID": "L1", "Region": "Lahore", "Tour Name": "Lahore Full Day Tour", "Duration": "Full day", "Format": "Private or group", "Transport": "Sedan car pick & drop", "What's Included": "All sightseeing tickets and entrances, pick & drop by sedan car", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Fort Road Food Street, Delhi Gate, Shahi Hammam, Surjan Singh Street, Nikah Wali Gali, Usman Ki Baithak, Wazir Khan Mosque, Shalimar Gardens, Wagah Border Flag Lowering Ceremony", "On TripAdvisor": "Yes – 'Lahore Heritage and Sightseeing Guided Tour' {TRIPADVISOR_URL}"}, {"Tour ID": "L2", "Region": "Lahore", "Tour Name": "Lahore Half Day Tour", "Duration": "Half day (about 4 hours)", "Format": "Private or group", "Transport": "Rangila rickshaw ride inside the city", "What's Included": "All sightseeing entrance tickets, shoe baskets for mosques, Rangila rickshaw ride inside the Walled City", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Hazuri Bagh, Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Nikah Wali Gali", "On TripAdvisor": "No"}, {"Tour ID": "L3", "Region": "Lahore", "Tour Name": "Lahore Walled City Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "Walking", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Usman Ki Baithak, Nikah Wali Gali", "On TripAdvisor": "No"}, {"Tour ID": "L4", "Region": "Lahore", "Tour Name": "Lahore Museums Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "On request", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Museum, National History Museum", "On TripAdvisor": "No"}, {"Tour ID": "L5", "Region": "Lahore", "Tour Name": "Lahore Shrines Tour", "Duration": "Half day to full day", "Format": "Private or group", "Transport": "On request", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Madho Lal Hussain Shrine, Mian Mir Shrine, Shah Jamal Shrine, Data Darbar (qawwali 4:00–6:00 PM)", "On TripAdvisor": "No"}, {"Tour ID": "L6", "Region": "Lahore", "Tour Name": "Lahore Sufi Nights Tour", "Duration": "Night", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Shah Jamal Shrine only – drum beats (dhol) and dhamal", "On TripAdvisor": "No"}, {"Tour ID": "L7", "Region": "Lahore", "Tour Name": "Lahore Outskirts – Shahdara Complex Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "Not included – guests come in their own transport", "What's Included": "Guide", "Not Included": "Meals and accommodation not included", "Places Covered": "Tomb of Jahangir, Tomb of Noor Jahan, Tomb of Asif Jah", "On TripAdvisor": "No"}, {"Tour ID": "L8", "Region": "Lahore", "Tour Name": "Lahore Shopping Tour (5:00–9:00 PM)", "Duration": "Evening, 4 hours", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Anarkali Bazaar, Liberty Market, Emporium Mall", "On TripAdvisor": "No"}, {"Tour ID": "L9", "Region": "Lahore", "Tour Name": "Sheikhupura Excursion", "Duration": "Full day", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Sheikhupura Fort, Hiran Minar", "On TripAdvisor": "No"}, {"Tour ID": "I1", "Region": "Islamabad", "Tour Name": "Islamabad Full Day City Tour (Islamabad & Rawalpindi)", "Duration": "Full day", "Format": "Private or group", "Transport": "Transport within Islamabad", "What's Included": "Guide, transport within Islamabad", "Not Included": "Meals and accommodation not included", "Places Covered": "Pakistan Monument, Lok Virsa Museum, Faisal Mosque, Daman-e-Koh, Saidpur Village, Raja Bazaar", "On TripAdvisor": "No"}, {"Tour ID": "N1", "Region": "North Pakistan", "Tour Name": "Hunza Tour (4–5 Days)", "Duration": "4–5 days", "Format": "Private or group", "Transport": "By road", "What's Included": "See team for inclusions", "Not Included": "Details confirmed by team", "Places Covered": "Altit Fort, Baltit Fort, Karimabad Market, Duikar sunset, Attabad Lake, Hussaini Suspension Bridge, Borith Lake, Passu Cones, Nagar Valley, Nagar Village", "On TripAdvisor": "No"}, {"Tour ID": "N2", "Region": "North Pakistan", "Tour Name": "Skardu Tour (5–7 Days)", "Duration": "5–7 days", "Format": "Private or group", "Transport": "By road from Islamabad", "What's Included": "Food and accommodation added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Upper & Lower Kachura Lake, Shigar Fort, Shigar Valley, Organic Village, Sok Valley, Deosai National Park, Sarfaranga Cold Desert, Satpara Lake, Masrur Rock", "On TripAdvisor": "No"}, {"Tour ID": "N3", "Region": "North Pakistan", "Tour Name": "Grand North Pakistan Tour (16 Days)", "Duration": "16 days", "Format": "Group or private", "Transport": "By road, Islamabad to Islamabad", "What's Included": "Transport and fuel, expert local guides, accommodation, two meals per day (half board)", "Not Included": "Details confirmed by team", "Places Covered": "Naran / Babusar Pass (or KKH & Besham), Gilgit, Hunza (3 days), Skardu, Fairy Meadows, back to Islamabad", "On TripAdvisor": "No"}, {"Tour ID": "S1", "Region": "South Punjab", "Tour Name": "Bahawalpur & Cholistan Tour (3–4 Days)", "Duration": "3–4 days", "Format": "Private or group", "Transport": "By road", "What's Included": "Food added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Bahawalpur palaces (Noor Mahal, Darbar Mahal, Sadiq Garh Palace), Cholistan Desert, desert life", "On TripAdvisor": "No"}, {"Tour ID": "S2", "Region": "South Punjab", "Tour Name": "Lahore – Harappa – Multan Tour (5 Days)", "Duration": "5 days", "Format": "Private or group", "Transport": "By road from Lahore", "What's Included": "Food added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Harappa ruins; Multan shrines of Shah Rukn-e-Alam, Bahauddin Zakariya and Shah Shams; Multan old city walk", "On TripAdvisor": "No"}], "contact": {"whatsapp": "923344770455", "website": "https://pastenlighten.com/", "email": "infopastenlighten@gmail.com"}};
+    if (window.PE_PRICES) TOUR_DATA.pricing = Object.entries(window.PE_PRICES.tours).map(([id, t]) => ({ id, tour: t.name, duration: t.duration, solo_price_usd_per_person: t.solo, includes: t.includes, season: t.season }));
     const conversationHistory = [];
     const MAX_HISTORY_MESSAGES = 12;
 
@@ -2510,44 +2518,110 @@ main article a:hover { color: #92400e; }
       return { answer: hit.answer, actions: ['Book a Lahore tour', 'Talk to team on WhatsApp'], sources: [{ url, title: 'Lahore travel guide' }] };
     }
 
+    // Noor's tour list: the same 18 tours and public SOLO prices as the website (js/prices.js).
+    // Group prices are never in this file; Noor tells groups that the team confirms their price.
+    const NOOR_PLACES = {
+      'L-WALK': 'Lahore Fort, Badshahi Mosque, Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Nikah Wali Gali, Walled City',
+      'L1': 'Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Fort Road Food Street, Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Shalimar Gardens, Wagah Border flag-lowering ceremony',
+      'L2': 'Lahore Fort, Badshahi Mosque, Hazuri Bagh, Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Rangila rickshaw ride, Walled City',
+      'L3': 'Lahore Museum, National History Museum, Lahore Fort',
+      'L4': 'Shah Jamal Shrine: dhol drummers and dhamal (Sufi night)',
+      'L5': 'Anarkali Bazaar, Liberty Market, Emporium Mall (shopping)',
+      'L6': 'Tomb of Jahangir, Tomb of Noor Jahan, Tomb of Asif Jah, Shahdara',
+      'L7': 'Sheikhupura Fort, Hiran Minar',
+      'I1': 'Pakistan Monument, Lok Virsa Museum, Faisal Mosque, Daman-e-Koh, Saidpur Village, Raja Bazaar, Rawalpindi',
+      'N-NARAN': 'Naran, Kaghan Valley, Lake Saif-ul-Malook, Babusar Pass, Lulusar Lake, River Kunhar',
+      'N-SWAT': 'Swat Valley, Malam Jabba ski resort and chairlift, Swat Museum, Butkara Buddhist stupa, White Palace Marghazar',
+      'N-NEELUM': 'Neelum Valley, Kashmir, Sharda Peeth, Keran, Arang Kel, Dhani and Kutton waterfalls',
+      'N1': 'Hunza, Karimabad, Altit Fort, Baltit Fort, Duikar sunset, Attabad Lake, Hussaini Suspension Bridge, Borith Lake, Passu Cones, Nagar Valley',
+      'N2': 'Skardu, Deosai National Park, Upper and Lower Kachura Lake, Shangrila, Shigar Fort, Sarfaranga Cold Desert, Satpara Lake',
+      'N3': 'Fairy Meadows, Nanga Parbat base camp, Raikot jeep track, Tattu, trek',
+      'N5': 'Grand northern circuit: Naran or Karakoram Highway, Gilgit, Hunza (3 days), Skardu, Deosai, Fairy Meadows, back to Islamabad',
+      'S1': 'Bahawalpur, Noor Mahal, Darbar Mahal, Sadiq Garh Palace, Cholistan Desert, Derawar Fort',
+      'S2': 'Harappa ruins, Multan, shrines of Shah Rukn-e-Alam, Bahauddin Zakariya and Shah Shams, Multan old city'
+    };
+    const NOOR_ALIASES = { 'L-WALK': 'heritage walk walking', 'L4': 'sufi qawwali dhamal night shrine', 'L5': 'shopping bazaar market', 'N-NEELUM': 'kashmir neelum sharda',
+      'N5': 'grand 16 day sixteen whole north complete', 'N3': 'fairy meadows nanga parbat', 'S1': 'desert cholistan bahawalpur', 'L3': 'museum museums', 'I1': 'islamabad rawalpindi', 'N2': 'skardu deosai', 'N1': 'hunza' };
+    function noorTours() {
+      const P = (window.PE_PRICES && window.PE_PRICES.tours) || {};
+      return Object.keys(P).map(id => Object.assign({ id, places: NOOR_PLACES[id] || '', aliases: NOOR_ALIASES[id] || '' }, P[id]));
+    }
+    const usd = n => 'US$' + Number(n).toLocaleString('en-US');
+    function noorGroupSize(q) {
+      if (/\b(solo|alone|just me|by myself|one person|1 person|single traveller|single traveler)\b/.test(q)) return 1;
+      if (/\b(couple|two of us|my (wife|husband|partner|friend))\b/.test(q)) return 2;
+      const words = { two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+      const m = q.match(/\b(\d{1,2}|two|three|four|five|six|seven|eight|nine|ten)\s*(people|persons?|pax|travell?ers|adults|guests|of us|friends)\b/) || q.match(/\b(?:we are|we're|group of|family of|party of)\s*(\d{1,2}|two|three|four|five|six|seven|eight|nine|ten)\b/);
+      if (m) return words[m[1]] || parseInt(m[1], 10);
+      if (/\b(group|family|friends|we |us )\b/.test(q)) return 2;
+      return 0;
+    }
+    function noorPriceLine(t, size) {
+      const base = `${t.name} (${t.duration}): ${usd(t.solo)} per person for a solo traveller.`;
+      const group = size > 1
+        ? `For your group of ${size}, the price per person is lower. Our team will send your exact group price in writing.`
+        : 'Travelling with 2 or more people? The price per person is lower, and our team sends your exact group price.';
+      return [base, group];
+    }
+    function noorMatchTours(q) {
+      const STOP = ['tour','tours','about','tell','what','which','with','your','have','price','prices','cost','costs','much','days','does','offer','want','would','like','please','there','trip','person','people','group','solo','how','friends','couple'];
+      const WEAK = ['lahore','full','half','valley','pakistan'];   // count half: shared by many tours
+      const words = q.split(/[^a-z0-9-]+/).filter(w => (w.length > 3 || w === 'day') && !STOP.includes(w));
+      return noorTours().map(t => {
+        const hay = `${t.name} ${t.places} ${t.aliases}`.toLowerCase();
+        let score = words.reduce((n, w) => n + (hay.includes(w) ? (WEAK.includes(w) || w === 'day' ? 0.5 : 1) : 0), 0);
+        if (new RegExp('\\b' + t.id.toLowerCase() + '\\b').test(q)) score += 3;
+        return { t, score };
+      }).filter(x => x.score >= 1).sort((a, b) => b.score - a.score);
+    }
+
     function localNoorAnswer(question) {
-      const q = String(question || '').toLowerCase();
+      const q = ' ' + String(question || '').toLowerCase() + ' ';
+      const tours = noorTours();
+      const priceAsk = /\b(price|prices|pricing|cost|costs|how much|rate|rates|usd|dollars?|fee|fees|charges?|budget|quote|expensive|cheap|cheapest|afford)\b|\$/.test(q);
+      const scored = noorMatchTours(q);
+      const size = noorGroupSize(q);
+      const actions = ['Book this tour', 'Talk to team on WhatsApp'];
+      const PR = window.PE_PRICES || {};
+
+      // Price questions come first (before general Lahore tips such as money/currency)
+      if (priceAsk && scored.length) {
+        const t = scored[0].t;
+        const [base, group] = noorPriceLine(t, size);
+        return { answer: [base, `Included: ${t.includes.join(', ')}.`, group,
+          'Children under 5 pay 50% of the adult price.', `Best season: ${t.season}.`, 'Final price is confirmed by our team in writing before you pay.'].join('\n'), actions };
+      }
+      if (priceAsk && /\b(cheap|cheapest|budget|afford|lowest)\b/.test(q)) {
+        const cheap = tours.slice().sort((a, b) => a.solo - b.solo).slice(0, 4);
+        return { answer: 'Our most affordable tours (solo traveller, per person):\n' + cheap.map(t => `• ${t.name} (${t.duration}): ${usd(t.solo)}`).join('\n') + '\n\nGroups of 2 or more pay less per person.', actions };
+      }
+      if (priceAsk && !lahoreGuideAnswer(q.replace(/\b(price|prices|cost|how much|rate|usd|fee|budget|quote)\b/g, ''))) {
+        const byRegion = {};
+        tours.forEach(t => { (byRegion[t.region] = byRegion[t.region] || []).push(t); });
+        const out = ['Our prices are per person in US dollars for a solo traveller:'];
+        Object.keys(byRegion).forEach(r => { out.push('\n' + r + ':'); byRegion[r].forEach(t => out.push(`• ${t.name} (${t.duration}): ${usd(t.solo)}`)); });
+        out.push('\nGroups of 2 or more pay less per person: our team sends your exact group price in writing. Children under 5 pay 50%. Which tour interests you?');
+        return { answer: out.join('\n'), actions: ['Talk to team on WhatsApp'] };
+      }
+
       const guide = lahoreGuideAnswer(q);
       if (guide) return guide;
-      const tours = (TOUR_DATA && TOUR_DATA.tours) || [];
-      const pricing = (TOUR_DATA && TOUR_DATA.pricing) || [];
-      const words = q.split(/[^a-z0-9]+/).filter(w => w.length > 3 && !['tour','tours','about','tell','what','which','with','your','have','price','prices','cost','much','days','does','offer','want','would','like','please'].includes(w));
-      const scored = tours.map(t => {
-        const hay = `${t['Tour Name']} ${t['Region']} ${t['Places Covered']}`.toLowerCase();
-        let score = words.reduce((n, w) => n + (hay.includes(w) ? 1 : 0), 0);
-        if (q.includes(String(t['Tour ID']).toLowerCase() + ' ') || q.endsWith(String(t['Tour ID']).toLowerCase())) score += 3;
-        return { t, score };
-      }).filter(x => x.score > 0).sort((a, b) => b.score - a.score);
-      const actions = ['Book this tour', 'Talk to team on WhatsApp'];
 
       if (/north|mountain|valley|hunza|skardu|gilgit/.test(q) && (!scored.length || /package|tours|offer/.test(q))) {
-        const north = tours.filter(t => t['Region'] === 'North Pakistan');
-        if (north.length) return {
-          answer: 'Our northern Pakistan tours:\n' + north.map(t => `• ${t['Tour Name']} — ${t['Duration']}`).join('\n') + '\n\nAsk me about any of them, or message the team for current prices and dates.',
+        const north = tours.filter(t => t.region === 'Northern Pakistan');
+        return {
+          answer: 'Our northern Pakistan tours (solo traveller price, per person):\n' + north.map(t => `• ${t.name}: ${t.duration}, ${usd(t.solo)}`).join('\n') + '\n\nAll start from Islamabad; best season is April to October. Groups of 2 or more pay less per person.',
           actions
         };
       }
       if (scored.length) {
         const t = scored[0].t;
-        const lines = [
-          /\d+\s*days?\)?$/i.test(t['Tour Name']) ? t['Tour Name'] : `${t['Tour Name']} (${t['Duration']})`,
-          `Places: ${t['Places Covered']}`,
-          t['Transport'] ? `Transport: ${t['Transport']}` : '',
-          t["What's Included"] ? `Included: ${t["What's Included"]}` : '',
-          'Price: connect with our team on WhatsApp and we\'ll send a written quote for your dates and group size.'
-        ].filter(Boolean);
-        return { answer: lines.join('\n'), actions };
-      }
-      if (/price|cost|how much|rate|usd|pkr|fee|charges?|budget|quote/.test(q)) {
-        return { answer: 'We don\'t list prices on the website because they depend on your dates, group size and transport. For prices, connect with our team on WhatsApp and they\'ll send you a written quote. Tell me which tour interests you and I can share its details.', actions: ['Talk to team on WhatsApp', 'Book this tour'] };
+        const [base, group] = noorPriceLine(t, size);
+        return { answer: [`${t.name} (${t.duration}), starting from ${t.start}.`, t.places ? `Places: ${t.places}.` : '', `Included: ${t.includes.join(', ')}.`,
+          `Price: ${usd(t.solo)} per person for a solo traveller. ${group}`, `Best season: ${t.season}.`].filter(Boolean).join('\n'), actions };
       }
       return {
-        answer: 'I can share details about our Lahore, Islamabad, northern Pakistan and South Punjab tours, and practical Lahore tips: best time to visit, getting around, money, what to wear, food, safety, emergency numbers and useful Urdu phrases. Try asking "When is the best time to visit Lahore?" or "Tell me about Hunza", or message the team on WhatsApp for anything else.',
+        answer: 'I can help with our 18 tours in Lahore, Islamabad, northern Pakistan and South Punjab: prices, what is included, durations and best seasons. I also know practical Lahore tips: best time to visit, getting around, money, what to wear, food, safety and useful Urdu phrases. Try asking "How much is the Hunza tour?" or "What can I see in Lahore in one day?"',
         actions: ['Talk to team on WhatsApp']
       };
     }
@@ -2754,7 +2828,7 @@ main article a:hover { color: #92400e; }
           .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]/gu, '')
           .replace(/[*_#`>|]/g, ' ')
           .replace(/^\s*[•\-–]\s*/gm, '. ')
-          .replace(/\bPKR\b/g, 'rupees').replace(/₨/g, 'rupees ')
+          .replace(/US\$\s?([\d,]+)/g, '$1 US dollars').replace(/\bPKR\b/g, 'rupees').replace(/₨/g, 'rupees ')
           .replace(/\s*\n+\s*/g, '. ')
           .replace(/(\.\s*){2,}/g, '. ')
           .replace(/([:;,!?])\s*\.\s/g, '$1 ')
