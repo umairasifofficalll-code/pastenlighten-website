@@ -344,30 +344,26 @@ window.PE_PRICES = {
   }
 }
 };
-window.PE_PRICE = function (id) { var t = window.PE_PRICES.tours[id]; return t ? 'US
-
-// Fill any element marked data-pe-price="TOUR_ID" with the current solo price
-(function () {
-  function fill() {
-    var els = document.querySelectorAll('[data-pe-price]');
-    for (var i = 0; i < els.length; i++) { var v = window.PE_PRICE(els[i].getAttribute('data-pe-price')); if (v) els[i].textContent = v; }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fill); else fill();
-})();
- + t.solo.toLocaleString('en-US') : ''; };
-window.PE_PRICE_FOR_PARTY = function (id, partySize, shared) {
-  var t = window.PE_PRICES.tours[id];
-  if (!t || !t.prices || !Number.isFinite(Number(partySize)) || Number(partySize) < 1) return null;
-  var n = Number(partySize), key = shared ? 'shared' : n === 1 ? 'solo' : n === 2 ? 'twoTraveller' : n <= 4 ? 'threeToFour' : n <= 8 ? 'fiveToEight' : 'ninePlus';
-  var price = t.prices[key];
-  return Number.isFinite(price) ? price : null;
+window.PE_PRICE = function (id) {
+  var t = window.PE_PRICES && window.PE_PRICES.tours && window.PE_PRICES.tours[id];
+  return t && Number.isFinite(Number(t.solo)) ? 'US$' + Number(t.solo).toLocaleString('en-US') : '';
 };
-
-// Fill any element marked data-pe-price="TOUR_ID" with the current solo price
+window.PE_PRICE_FOR_PARTY = function (id, partySize, shared) {
+  var t = window.PE_PRICES && window.PE_PRICES.tours && window.PE_PRICES.tours[id];
+  if (!t || !t.prices || !Number.isFinite(Number(partySize)) || Number(partySize) < 1) return null;
+  var n = Number(partySize);
+  var key = shared ? 'shared' : n === 1 ? 'solo' : n === 2 ? 'twoTraveller' : n <= 4 ? 'threeToFour' : n <= 8 ? 'fiveToEight' : 'ninePlus';
+  var price = t.prices[key];
+  return Number.isFinite(Number(price)) ? Number(price) : null;
+};
 (function () {
   function fill() {
     var els = document.querySelectorAll('[data-pe-price]');
-    for (var i = 0; i < els.length; i++) { var v = window.PE_PRICE(els[i].getAttribute('data-pe-price')); if (v) els[i].textContent = v; }
+    for (var i = 0; i < els.length; i++) {
+      var v = window.PE_PRICE(els[i].getAttribute('data-pe-price'));
+      if (v) els[i].textContent = v;
+    }
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fill); else fill();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fill);
+  else fill();
 })();
