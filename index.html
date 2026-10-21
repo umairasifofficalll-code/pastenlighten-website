@@ -298,6 +298,20 @@ html.dark-mode .enhance-chip{background:#142a22;color:#d1d5db;border-color:#3552
 .compare-selected{outline:3px solid rgba(217,119,6,.25);border-color:#d97706!important}
 .wishlist-active{color:#dc2626!important;background:#fff1f2!important}
 .tour-card.is-hidden{display:none!important}
+.tours-track{display:flex;gap:1.25rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px 4px 16px;margin:0 -4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.tours-track::-webkit-scrollbar{display:none}
+.tours-track:focus-visible{outline:2px solid #d97706;outline-offset:4px;border-radius:16px}
+.tours-track>.tour-card{flex:0 0 85%;scroll-snap-align:start;max-width:340px}
+@media(min-width:640px){.tours-track>.tour-card{flex-basis:calc((100% - 1.25rem)/2)}}
+@media(min-width:1024px){.tours-track>.tour-card{flex-basis:calc((100% - 3.75rem)/4);max-width:none}}
+.tour-nav{position:absolute;top:96px;z-index:20;width:42px;height:42px;border-radius:999px;background:#fff;color:#0f382c;border:1px solid #e7e5e4;box-shadow:0 6px 18px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .2s}
+.tour-nav:hover{transform:scale(1.08)}.tour-nav[disabled]{opacity:0;pointer-events:none}
+.tour-nav-prev{left:-14px}.tour-nav-next{right:-14px}
+@media(max-width:639px){.tour-nav{display:none}}
+.tour-progress{height:4px;border-radius:99px;background:#e7e5e4;margin-top:6px;overflow:hidden}
+.tour-progress span{display:block;height:100%;width:25%;background:#d97706;border-radius:99px;transition:margin-left .15s,width .15s}
+html.dark-mode .tour-nav{background:#10221c;color:#fde68a;border-color:#355248}
+html.dark-mode .tour-progress{background:#274239}
 #tourEmptyState{display:none}
 #tourEmptyState.show{display:block}
 .frontend-badge{position:absolute;top:10px;right:10px;z-index:15;font-size:9px;font-weight:800;padding:4px 7px;border-radius:999px;background:#fff;color:#0f382c;box-shadow:0 4px 12px rgba(0,0,0,.15)}
@@ -460,21 +474,21 @@ main article a:hover { color: #92400e; }
         </a>
 
         <!-- Desktop Menu -->
-        <div class="hidden lg:flex items-center space-x-5 text-sm font-medium text-slate-700">
+        <div class="hidden lg:flex items-center space-x-4 xl:space-x-5 text-sm font-medium text-slate-700 whitespace-nowrap">
           <a href="#home" class="text-brand-800 font-semibold border-b-2 border-brand-800 pb-0.5" data-i18n="nav_home">Home</a>
           <a href="tours/index.html" class="hover:text-brand-800 transition">All Tours</a>
           <a href="blog/index.html" class="hover:text-brand-800 transition">Travel Blog</a>
-          <a href="#destinations" class="hover:text-brand-800 transition" data-i18n="nav_tours">Destinations</a>
+          <a href="#destinations" class="hidden xl:inline hover:text-brand-800 transition" data-i18n="nav_tours">Destinations</a>
           <a href="#customizer" class="hover:text-brand-800 text-accent-dark font-semibold transition flex items-center gap-1.5" data-i18n="nav_custom">
             <i class="fa-solid fa-wand-magic-sparkles text-accent-amber"></i> Customize Tour
           </a>
-          <a href="#grand-itinerary" class="hover:text-brand-800 transition" data-i18n="nav_grand">Grand 16-Day</a>
-          <a href="#heritage-insights" class="hover:text-brand-800 transition">Deep Heritage</a>
-          <a href="#services" class="hover:text-brand-800 transition">Why Us</a>
+          <a href="#grand-itinerary" class="hidden min-[1800px]:inline hover:text-brand-800 transition" data-i18n="nav_grand">Grand 16-Day</a>
+          <a href="#heritage-insights" class="hidden min-[1800px]:inline hover:text-brand-800 transition">Deep Heritage</a>
+          <a href="#services" class="hidden min-[1800px]:inline hover:text-brand-800 transition">Why Us</a>
           <a href="reviews.html" class="hover:text-brand-800 transition">Reviews</a>
-          <a href="booking.html" class="hover:text-brand-800 transition font-semibold">Book</a>
+          <a href="booking.html" class="hidden min-[1800px]:inline hover:text-brand-800 transition font-semibold">Book</a>
           <a href="guide.html" class="hover:text-brand-800 transition">About Guide</a>
-          <a href="#faq" class="hover:text-brand-800 transition">FAQ</a>
+          <a href="#faq" class="hidden xl:inline hover:text-brand-800 transition">FAQ</a>
         </div>
 
         <!-- Right action buttons -->
@@ -706,6 +720,8 @@ main article a:hover { color: #92400e; }
           <button type="button" data-region="lahore" onclick="filterCards('lahore')" class="cat-pill px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700 hover:bg-stone-300 transition">Lahore Walled City</button>
           <button type="button" data-region="northern" onclick="filterCards('northern')" class="cat-pill px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700 hover:bg-stone-300 transition">Northern Valleys</button>
           <button type="button" data-region="kashmir" onclick="filterCards('kashmir')" class="cat-pill px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700 hover:bg-stone-300 transition">Kashmir</button>
+          <button type="button" data-region="islamabad" onclick="filterCards('islamabad')" class="cat-pill px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700 hover:bg-stone-300 transition">Islamabad</button>
+          <button type="button" data-region="south" onclick="filterCards('south')" class="cat-pill px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-200 text-slate-700 hover:bg-stone-300 transition">South Punjab</button>
         </div>
       </div>
 
@@ -726,10 +742,10 @@ main article a:hover { color: #92400e; }
     </div>
     <div class="w-full xl:w-36"><label class="block text-[10px] uppercase tracking-wider font-extrabold text-slate-500 mb-1">Tour type</label><select id="tourTypeFilter" class="ui-control"><option value="all">All types</option><option value="heritage">Heritage</option><option value="adventure">Adventure</option><option value="cultural">Cultural</option></select></div>
     <div class="w-full xl:w-36"><label class="block text-[10px] uppercase tracking-wider font-extrabold text-slate-500 mb-1">Ratings</label><select id="tourRatingFilter" class="ui-control"><option value="0">No verified rating filter</option></select></div>
-    <div class="w-full xl:w-40"><label class="block text-[10px] uppercase tracking-wider font-extrabold text-slate-500 mb-1">Sort by</label><select id="tourSort" class="ui-control"><option value="featured">Featured</option><option value="name">Name A → Z</option></select></div>
+    <div class="w-full xl:w-40"><label class="block text-[10px] uppercase tracking-wider font-extrabold text-slate-500 mb-1">Sort by</label><select id="tourSort" class="ui-control"><option value="featured">Featured</option><option value="priceLow">Price: low to high</option><option value="priceHigh">Price: high to low</option><option value="name">Name A → Z</option></select></div>
   </div>
   <div class="mt-3 flex flex-wrap items-center gap-2">
-    <button class="enhance-chip active" data-quick-filter="all">All</button><button class="enhance-chip" data-quick-filter="lahore">Lahore</button><button class="enhance-chip" data-quick-filter="northern">Northern</button><button class="enhance-chip" data-quick-filter="kashmir">Kashmir</button>
+    <button class="enhance-chip active" data-quick-filter="all">All</button><button class="enhance-chip" data-quick-filter="lahore">Lahore</button><button class="enhance-chip" data-quick-filter="northern">Northern</button><button class="enhance-chip" data-quick-filter="kashmir">Kashmir</button><button class="enhance-chip" data-quick-filter="islamabad">Islamabad</button><button class="enhance-chip" data-quick-filter="south">South Punjab</button>
     <span class="ml-auto text-[10px] text-slate-500"><strong id="tourResultCount">0</strong> tours shown</span>
   </div>
 </div>
@@ -741,8 +757,10 @@ main article a:hover { color: #92400e; }
   <div id="tourMap" class="h-64 sm:h-80 bg-stone-100"></div>
 </section>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="toursContainer">
-        
+      <div class="relative" id="toursSlider">
+        <button type="button" class="tour-nav tour-nav-prev" aria-label="Previous tours" onclick="slideTours(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="tour-nav tour-nav-next" aria-label="Next tours" onclick="slideTours(1)"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="tours-track" id="toursContainer" tabindex="0" aria-label="All tours. Scroll sideways to see more.">
         <!-- Card 1: Lahore Fort -->
         <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
           <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
@@ -806,6 +824,269 @@ main article a:hover { color: #92400e; }
             </div>
           </div>
         </div>
+        <!-- Card: Lahore Full Day Heritage Tour (incl. Wagah Border) -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/badshahi-courtyard-sm.webp" alt="Courtyard of the Badshahi Mosque, Lahore" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-landmark mr-1"></i> Lahore
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Full Day
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 8–9 hours</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Lahore Full Day Heritage Tour (incl. Wagah Border)</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Lahore Fort, Badshahi Mosque, the Walled City, Shalimar Gardens and the Wagah Border flag-lowering ceremony, with pick-up and drop-off.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L1">US$135</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L1')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Walled City &amp; Rangila Rickshaw -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/lahore-rangeela-rickshaw-sm.webp" alt="Hand-painted Rangila rickshaw in Lahore" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-landmark mr-1"></i> Walled City
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Half Day
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4–5 hours</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Walled City &amp; Rangila Rickshaw</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                A colourful hand-painted rickshaw ride through the old city&#x27;s bazaars and lanes, with stops at the Shahi Hammam and Wazir Khan Mosque.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L2">US$85</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L2')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Museums &amp; Fort Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/mughal-heritage-arches-sm.webp" alt="Mughal arches and pavilions at Lahore Fort" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-building-columns mr-1"></i> Museums
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Half Day
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4–5 hours</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Museums &amp; Fort Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                The Lahore Museum&#x27;s Gandhara and Mughal collections together with the pavilions of Lahore Fort.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L3">US$70</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L3')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Night Sufi Shrine Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/walled-city-bazaar-gate-sm.webp" alt="Walled City gate at night, Lahore" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-moon mr-1"></i> Sufi Night
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Night
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> From about 9:50 pm</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Night Sufi Shrine Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Lahore&#x27;s Sufi traditions after dark: dhol drumming and dhamal at the Shah Jamal shrine.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L4">US$40</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L4')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Lahore Shopping &amp; Bazaars Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/walled-city-spice-bazaar-sm.webp" alt="Spice bazaar in Lahore&#x27;s Walled City" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-bag-shopping mr-1"></i> Bazaars
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Evening
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 3–4 hours</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Lahore Shopping &amp; Bazaars Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Anarkali Bazaar, Liberty Market and more, with a local helping you find handmade khussa shoes, fabrics and crafts.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L5">US$40</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L5')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Shahdara Complex: Tombs of Jahangir &amp; Noor Jahan -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/badshahi-architecture-sm.webp" alt="Mughal architecture near Lahore" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-landmark-dome mr-1"></i> Mughal Tombs
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              3-4 Hours
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 3–4 hours</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Shahdara Complex: Tombs of Jahangir &amp; Noor Jahan</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                The Mughal tombs of Emperor Jahangir, Empress Noor Jahan and Asif Khan at Shahdara, just across the Ravi River.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L6">US$50</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L6')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Sheikhupura Fort &amp; Hiran Minar Excursion -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="lahore" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/hero-badshahi-sunset-sm.webp" alt="Mughal monuments at sunset near Lahore" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-chess-rook mr-1"></i> Day Trip
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Full Day
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> Full day</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Sheikhupura Fort &amp; Hiran Minar Excursion</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                A day trip to Sheikhupura Fort and Hiran Minar, the Mughal hunting tower and water tank built by Emperor Jahangir.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="L7">US$195</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('L7')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Islamabad &amp; Rawalpindi Full Day City Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="islamabad" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/islamabad-faisal-mosque-sm.webp" alt="Faisal Mosque, Islamabad" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-mosque mr-1"></i> Islamabad
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              Full Day
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> Full day</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Islamabad &amp; Rawalpindi Full Day City Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Faisal Mosque, Pakistan Monument, Lok Virsa Museum, Daman-e-Koh viewpoint, Saidpur Village and Rawalpindi&#x27;s Raja Bazaar.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="I1">US$145</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('I1')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
 
         <!-- Card 2: Naran Kaghan -->
         <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="northern" data-cat="adventure">
@@ -863,7 +1144,6 @@ main article a:hover { color: #92400e; }
             </div>
           </div>
         </div>
-
         <!-- Card 3: Swat Valley -->
         <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="northern" data-cat="adventure">
           <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
@@ -898,7 +1178,6 @@ main article a:hover { color: #92400e; }
             </div>
           </div>
         </div>
-
         <!-- Card 4: Kashmir Valley -->
         <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="kashmir" data-cat="adventure">
           <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
@@ -934,6 +1213,206 @@ main article a:hover { color: #92400e; }
           </div>
         </div>
 
+        <!-- Card: Hunza Valley Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="northern" data-cat="adventure">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/hunza-valley-sm.webp" alt="Hunza Valley with snow-capped peaks" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-mountain mr-1"></i> Northern Heights
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              5 Days / 4 Nights
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 5 days / 4 nights</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Hunza Valley Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Altit and Baltit forts, Karimabad, Attabad Lake, the Hussaini suspension bridge and the Passu Cones.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N1">US$1,980</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('N1')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Skardu &amp; Deosai Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="northern" data-cat="adventure">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/skardu-shangrila-sm.webp" alt="Shangrila Lake, Skardu" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-mountain mr-1"></i> Northern Heights
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              6 Days / 5 Nights
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 6 days / 5 nights</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Skardu &amp; Deosai Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Shangrila and Kachura lakes, Shigar Fort, the Sarfaranga cold desert and the high Deosai plains.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N2">US$2,690</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('N2')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Fairy Meadows &amp; Nanga Parbat Base Camp -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="northern" data-cat="adventure">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/fairy-meadows-nanga-parbat-sm.webp" alt="Fairy Meadows with Nanga Parbat behind" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-person-hiking mr-1"></i> Trek
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              4 Days / 3 Nights
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4 days / 3 nights</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Fairy Meadows &amp; Nanga Parbat Base Camp</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                The jeep track to Tattu and the trek up to Fairy Meadows, with close views of Nanga Parbat.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N3">US$1,925</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('N3')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Grand Northern Pakistan Tour -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="northern" data-cat="adventure">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/traveller-mountain-road-sm.webp" alt="Traveller on a mountain road in northern Pakistan" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-route mr-1"></i> Grand Tour
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              16 Days / 15 Nights
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 16 days / 15 nights</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Grand Northern Pakistan Tour</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                The complete northern circuit: Gilgit, three days in Hunza, Skardu and Deosai, and Fairy Meadows, by road from Islamabad.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="N5">US$4,290</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('N5')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Bahawalpur &amp; Cholistan Desert -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="south" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/truck-art-culture-sm.webp" alt="Colourful Pakistani truck art" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-sun mr-1"></i> South Punjab
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              4 Days / 3 Nights
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4 days / 3 nights</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Bahawalpur &amp; Cholistan Desert</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                Noor Mahal, Darbar Mahal and Sadiq Garh palaces in Bahawalpur, and desert life in Cholistan.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="S1">US$1,045</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('S1')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Lahore – Harappa – Multan -->
+        <div class="tilt-card tour-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition border border-stone-200 flex flex-col group" data-region="south" data-cat="heritage">
+          <div class="relative h-48 overflow-hidden slider-track bg-stone-900">
+            <img src="images/shahi-hammam-sm.webp" alt="Mughal-era painted tilework" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" decoding="async">
+            <span class="absolute top-2.5 left-2.5 bg-brand-900/90 text-amber-300 text-[11px] px-2 py-0.5 rounded font-semibold z-10 pointer-events-none">
+              <i class="fa-solid fa-landmark mr-1"></i> South Punjab
+            </span>
+            <span class="absolute bottom-2.5 right-2.5 bg-white/95 text-brand-900 text-[11px] font-bold px-2 py-0.5 rounded shadow z-10 pointer-events-none">
+              3 Days / 2 Nights
+            </span>
+          </div>
+
+          <div class="p-4 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 3 days / 2 nights</span>
+              </div>
+              <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Lahore – Harappa – Multan</h3>
+              <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
+                The Indus Valley ruins of Harappa and the Sufi shrines and old city of Multan.
+              </p>
+            </div>
+            <div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="S2">US$865</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>
+              </div>
+              <button onclick="openTourDetails('S2')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+                View Itinerary
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+        <div class="tour-progress" aria-hidden="true"><span id="tourProgressBar"></span></div>
       </div>
     </div>
   </section>
@@ -1929,6 +2408,12 @@ main article a:hover { color: #92400e; }
               <option value="Naran Kaghan & Saif-ul-Malook">Naran Kaghan & Saif-ul-Malook</option>
               <option value="Swat Valley Heritage">Swat Valley & Malam Jabba</option>
               <option value="Kashmir & Neelum">Kashmir & Neelum Valley</option>
+            
+              <option>L6 • Shahdara Mughal Tombs</option>
+              <option>L7 • Sheikhupura Fort & Hiran Minar</option>
+              <option>I1 • Islamabad & Rawalpindi City Tour</option>
+              <option>S1 • Bahawalpur & Cholistan Desert</option>
+              <option>S2 • Lahore – Harappa – Multan</option>
             </select>
           </div>
         </div>
@@ -2186,7 +2671,12 @@ main article a:hover { color: #92400e; }
       N1: { title: "N1 • Hunza Valley 5-Day Tour", fullName: "Karimabad, Attabad Lake, Passu Cones & Ancient Forts", duration: "5 Days / 4 Nights", image: "images/hunza-valley-sm.webp", locality: "Hunza & Nagar, Gilgit-Baltistan", language: "Burushaski, Wakhi, Urdu & English", history: "Autonomous kingdom along the ancient Silk Route with 800-year-old fortresses.", specialThings: "Passu Cathedral cones, crystal turquoise Attabad Lake boat cruise, Altit & Baltit forts.", summary: "The crown jewel of Northern Pakistan.", highlights: ["Altit & Baltit Forts", "Attabad Lake boating", "Passu Cones view"], includes: ["4x4 Prado/Hiace", "Hotels with Breakfast", "Local Guide"] },
       N2: { title: "N2 • Skardu & Deosai 6-Day Tour", fullName: "Cold Desert, Shangrila & The Land of Giants", duration: "6 Days / 5 Nights", image: "images/skardu-shangrila-sm.webp", locality: "Skardu & Deosai National Park", language: "Balti, Urdu & English", history: "Gateway to four 8,000-meter peaks including K2.", specialThings: "Sarfaranga cold desert sand dunes, Deosai plateau at 13,000 ft, Sheosar Lake.", summary: "High-altitude plateau wonders and dramatic sand dunes.", highlights: ["Shangrila & Upper Kachura Lake", "Sarfaranga Cold Desert", "Deosai Plains"], includes: ["4x4 Mountain Jeep", "Hotel stays", "Driver"] },
       N3: { title: "N3 • Fairy Meadows Base Camp (4 Days)", fullName: "Nanga Parbat 8,126m Killer Mountain Trek", duration: "4 Days / 3 Nights", image: "images/fairy-meadows-nanga-parbat-sm.webp", locality: "Raikot, Diamer District", language: "Shina, Urdu & English", history: "Legendary mountaineering route to the north face of Nanga Parbat.", specialThings: "Cliffside 4x4 Raikot jeep track, lush alpine meadows.", summary: "One of the most scenic high-mountain alpine treks on Earth.", highlights: ["Thrill jeep ride to Tattu", "Trek to Fairy Meadows", "View of Nanga Parbat"], includes: ["4x4 Jeep", "Cottage stay", "Guide", "Meals"] },
-      N5: { title: "N5 • Grand 16-Day Northern Pakistan Tour", fullName: "Comprehensive Circuit: Hunza, Skardu, Deosai & Fairy Meadows", duration: "16 Days / 15 Nights", image: "images/traveller-mountain-road-sm.webp", locality: "Northern Pakistan Circuit", language: "English, Urdu, Shina, Balti & Burushaski", history: "The complete northern circuit covering all historic kingdoms and passes.", specialThings: "Besham, Karakoram Highway, Gilgit, Hunza, Skardu, Deosai, and Fairy Meadows.", summary: "The ultimate 16-day overland journey across northern Pakistan.", highlights: ["Complete Karakoram Highway overland", "3 Full days in Hunza Valley", "Skardu & Deosai Plains", "Fairy Meadows Base Camp"], includes: ["Dedicated Transport & Fuel", "Mountain Hotels & Cabins", "Half Board", "Licensed Guides"] }
+      N5: { title: "N5 • Grand 16-Day Northern Pakistan Tour", fullName: "Comprehensive Circuit: Hunza, Skardu, Deosai & Fairy Meadows", duration: "16 Days / 15 Nights", image: "images/traveller-mountain-road-sm.webp", locality: "Northern Pakistan Circuit", language: "English, Urdu, Shina, Balti & Burushaski", history: "The complete northern circuit covering all historic kingdoms and passes.", specialThings: "Besham, Karakoram Highway, Gilgit, Hunza, Skardu, Deosai, and Fairy Meadows.", summary: "The ultimate 16-day overland journey across northern Pakistan.", highlights: ["Complete Karakoram Highway overland", "3 Full days in Hunza Valley", "Skardu & Deosai Plains", "Fairy Meadows Base Camp"], includes: ["Dedicated Transport & Fuel", "Mountain Hotels & Cabins", "Half Board", "Licensed Guides"] },
+      L6: {"title": "L6 • Shahdara Mughal Tombs", "fullName": "Tombs of Emperor Jahangir, Empress Noor Jahan & Asif Khan", "duration": "Morning or Evening (3-4 Hours)", "image": "images/badshahi-architecture-sm.webp", "locality": "Shahdara, across the Ravi River from Lahore", "language": "Punjabi, Urdu & English", "history": "Emperor Jahangir died in 1627; his tomb was built in the following decade, with Noor Jahan's and Asif Khan's tombs close by.", "specialThings": "Marble inlay, painted ceilings and quiet Mughal gardens.", "summary": "A calm half-day among three Mughal tombs, best in the soft morning or evening light.", "highlights": ["Tomb of Emperor Jahangir", "Tomb of Empress Noor Jahan", "Tomb of Asif Khan"]},
+      L7: {"title": "L7 • Sheikhupura Fort & Hiran Minar", "fullName": "Mughal Hunting Tower, Water Tank & Fort", "duration": "Full Day", "image": "images/hero-badshahi-sunset-sm.webp", "locality": "Sheikhupura, north-west of Lahore", "language": "Punjabi, Urdu & English", "history": "Hiran Minar is a Mughal tower and water tank from Emperor Jahangir's time, beside an old royal hunting ground.", "specialThings": "The tower, the stepped water tank with its central pavilion, and Sheikhupura Fort.", "summary": "A relaxed countryside day trip from Lahore to two Mughal-era sites.", "highlights": ["Hiran Minar tower & water tank", "Sheikhupura Fort", "Punjab countryside drive"]},
+      I1: {"title": "I1 • Islamabad & Rawalpindi City Tour", "fullName": "Capital Landmarks & Old Rawalpindi Bazaars", "duration": "Full Day", "image": "images/islamabad-faisal-mosque-sm.webp", "locality": "Islamabad & Rawalpindi", "language": "Urdu, Punjabi & English", "history": "Islamabad was built as Pakistan's capital in the 1960s, next to the much older city of Rawalpindi.", "specialThings": "Faisal Mosque, the Margalla Hills and busy Raja Bazaar.", "summary": "The modern capital and its old twin city in one full day.", "highlights": ["Faisal Mosque", "Pakistan Monument & Lok Virsa Museum", "Daman-e-Koh & Saidpur Village", "Raja Bazaar, Rawalpindi"]},
+      S1: {"title": "S1 • Bahawalpur & Cholistan Desert", "fullName": "Palaces of the Nawabs & Desert Life", "duration": "4 Days / 3 Nights", "image": "images/truck-art-culture-sm.webp", "locality": "Bahawalpur & Cholistan, South Punjab", "language": "Saraiki, Urdu & English", "history": "Bahawalpur was a princely state ruled by the Abbasi Nawabs, who built its grand palaces.", "specialThings": "Noor Mahal, Darbar Mahal, Sadiq Garh Palace and the Cholistan Desert.", "summary": "Royal palaces and the wide open desert of South Punjab.", "highlights": ["Noor Mahal", "Darbar Mahal", "Sadiq Garh Palace", "Cholistan Desert life"]},
+      S2: {"title": "S2 • Lahore – Harappa – Multan", "fullName": "Indus Valley Ruins & the City of Saints", "duration": "3 Days / 2 Nights", "image": "images/shahi-hammam-sm.webp", "locality": "Harappa (Sahiwal) & Multan, Punjab", "language": "Punjabi, Saraiki, Urdu & English", "history": "Harappa is one of the great cities of the Indus Valley civilisation; Multan is famous for its Sufi shrines.", "specialThings": "Harappa ruins and museum, the shrines of Shah Rukn-e-Alam, Bahauddin Zakariya and Shah Shams, and Multan's old city.", "summary": "From the Bronze Age to the Sufi saints in three days.", "highlights": ["Harappa ruins", "Shrine of Shah Rukn-e-Alam", "Shrine of Bahauddin Zakariya", "Multan old city walk"]},
     };
 
     let currentCurrency = 'PKR';
@@ -2340,7 +2830,7 @@ main article a:hover { color: #92400e; }
     }
 
     // Public solo prices (see js/prices.js). Group prices are never shown on the website.
-    const PE_KEY_TO_PRICE = {lahore:'L-WALK',L1:'L1',L2:'L2',L3:'L3',L4:'L4',L5:'L5',N1:'N1',N2:'N2',N3:'N3',N5:'N5',naran:'N-NARAN',swat:'N-SWAT',kashmir:'N-NEELUM'};
+    const PE_KEY_TO_PRICE = {lahore:'L-WALK',L1:'L1',L2:'L2',L3:'L3',L4:'L4',L5:'L5',L6:'L6',L7:'L7',I1:'I1',N1:'N1',N2:'N2',N3:'N3',N5:'N5',naran:'N-NARAN',swat:'N-SWAT',kashmir:'N-NEELUM',S1:'S1',S2:'S2'};
     function peTour(key) { const p = window.PE_PRICES && window.PE_PRICES.tours[PE_KEY_TO_PRICE[key] || key]; return p || null; }
     function peSoloLabel(key) { return peTour(key) ? 'Solo traveller, per person' : 'Price'; }
     function peSoloPrice(key) { const t = peTour(key); return t ? 'US$' + t.solo.toLocaleString('en-US') : '<a href="https://wa.me/923344770455" target="_blank" rel="noopener" class="text-emerald-700 underline">Ask our team</a>'; }
@@ -2383,6 +2873,14 @@ main article a:hover { color: #92400e; }
             ${tour.highlights.map(h => `<li class="flex items-start gap-1.5"><i class="fa-solid fa-check text-emerald-600 mt-0.5"></i><span>${h}</span></li>`).join('')}
           </ul>
         </div>
+
+        ${peTour(key) ? `<div class="mb-3">
+          <h4 class="font-bold text-brand-900 text-xs uppercase mb-1.5">Included in the price</h4>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs text-slate-700">
+            ${peTour(key).includes.map(h => `<li class="flex items-start gap-1.5"><i class="fa-solid fa-circle-check text-accent-gold mt-0.5"></i><span>${h.charAt(0).toUpperCase() + h.slice(1)}</span></li>`).join('')}
+          </ul>
+          <p class="text-[11px] text-slate-500 mt-1.5">Best season: ${peTour(key).season}. Children under 5 pay 50%.</p>
+        </div>` : ''}
 
         <div class="flex items-center justify-between pt-3 border-t border-stone-200">
           <div>
@@ -2537,7 +3035,7 @@ main article a:hover { color: #92400e; }
       'N2': 'Skardu, Deosai National Park, Upper and Lower Kachura Lake, Shangrila, Shigar Fort, Sarfaranga Cold Desert, Satpara Lake',
       'N3': 'Fairy Meadows, Nanga Parbat base camp, Raikot jeep track, Tattu, trek',
       'N5': 'Grand northern circuit: Naran or Karakoram Highway, Gilgit, Hunza (3 days), Skardu, Deosai, Fairy Meadows, back to Islamabad',
-      'S1': 'Bahawalpur, Noor Mahal, Darbar Mahal, Sadiq Garh Palace, Cholistan Desert, Derawar Fort',
+      'S1': 'Bahawalpur, Noor Mahal, Darbar Mahal, Sadiq Garh Palace, Cholistan Desert',
       'S2': 'Harappa ruins, Multan, shrines of Shah Rukn-e-Alam, Bahauddin Zakariya and Shah Shams, Multan old city'
     };
     const NOOR_ALIASES = { 'L-WALK': 'heritage walk walking', 'L4': 'sufi qawwali dhamal night shrine', 'L5': 'shopping bazaar market', 'N-NEELUM': 'kashmir neelum sharda',
@@ -2949,17 +3447,51 @@ main article a:hover { color: #92400e; }
     function toggleNoorVoice() { NoorVoice.toggle(); }
     function toggleNoorListening() { NoorVoice.isListening() ? NoorVoice.stopListening() : NoorVoice.startListening(); }
 
+    /* ===== TOURS SLIDER: all tours in one row, swipe / arrows / drag ===== */
+    function slideTours(dir) {
+      const track = document.getElementById('toursContainer');
+      const card = track.querySelector('.tour-card:not(.is-hidden)');
+      const step = card ? (card.getBoundingClientRect().width + 20) * (window.innerWidth >= 1024 ? 2 : 1) : track.clientWidth;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    }
+    function updateTourSlider() {
+      const track = document.getElementById('toursContainer'); if (!track) return;
+      const max = track.scrollWidth - track.clientWidth;
+      const prev = document.querySelector('.tour-nav-prev'), next = document.querySelector('.tour-nav-next');
+      if (prev) prev.disabled = track.scrollLeft <= 4;
+      if (next) next.disabled = track.scrollLeft >= max - 4;
+      const bar = document.getElementById('tourProgressBar');
+      if (bar) { const w = max > 0 ? Math.max(12, track.clientWidth / track.scrollWidth * 100) : 100; bar.style.width = w + '%'; bar.style.marginLeft = (max > 0 ? (track.scrollLeft / max) * (100 - w) : 0) + '%'; }
+    }
+    (function () {
+      const init = () => {
+        const track = document.getElementById('toursContainer'); if (!track) return;
+        track.addEventListener('scroll', updateTourSlider, { passive: true });
+        window.addEventListener('resize', updateTourSlider);
+        track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); slideTours(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); slideTours(-1); } });
+        // drag with the mouse on desktop
+        let down = false, startX = 0, startLeft = 0, moved = false;
+        track.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; });
+        window.addEventListener('pointermove', e => { if (!down) return; const dx = e.clientX - startX; if (Math.abs(dx) > 5) { moved = true; track.style.scrollSnapType = 'none'; track.style.scrollBehavior = 'auto'; track.scrollLeft = startLeft - dx; } });
+        window.addEventListener('pointerup', () => { if (!down) return; down = false; track.style.scrollSnapType = ''; track.style.scrollBehavior = ''; });
+        track.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+        track.addEventListener('dragstart', e => e.preventDefault());
+        updateTourSlider();
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    })();
+
     /* ===== FRONTEND ENHANCEMENT LOGIC ===== */
 const frontendState={compare:[],wishlist:new Set(JSON.parse(localStorage.getItem('pe_wishlist')||'[]')),recent:JSON.parse(localStorage.getItem('pe_recent')||'[]'),quickRegion:'all'};
-function moneyNumber(card){const el=card.querySelector('[data-price-pkr]');return el?Number(el.dataset.pricePkr||0):999999}
+function moneyNumber(card){const el=card.querySelector('[data-pe-price]');const t=el&&window.PE_PRICES&&PE_PRICES.tours[el.dataset.pePrice];return t?t.solo:999999}
 function ratingNumber(card){const txt=card.innerText.match(/([0-5]\.[0-9])\s*\(/);return txt?Number(txt[1]):0}
 function cardKey(card){const btn=card.querySelector('[onclick*="openTourDetails"]');const m=btn?.getAttribute('onclick')?.match(/openTourDetails\('([^']+)'\)/);return m?m[1]:card.dataset.key||card.querySelector('h3')?.innerText||'tour'}
 function cardTitle(card){return card.querySelector('h3')?.innerText?.trim()||'Tour'}
 function applyTourFilters(){
- const cards=[...document.querySelectorAll('#toursContainer .tour-card')];const q=(document.getElementById('tourSearch')?.value||'').toLowerCase().trim();const type=document.getElementById('tourTypeFilter')?.value||'all';const max=Number(document.getElementById('tourPriceFilter')?.value||999999);const minR=Number(document.getElementById('tourRatingFilter')?.value||0);const sort=document.getElementById('tourSort')?.value||'featured';
+ const cards=[...document.querySelectorAll('#toursContainer .tour-card')];cards.forEach((c,i)=>{if(!c.dataset.order)c.dataset.order=i});const q=(document.getElementById('tourSearch')?.value||'').toLowerCase().trim();const type=document.getElementById('tourTypeFilter')?.value||'all';const max=Number(document.getElementById('tourPriceFilter')?.value||999999);const minR=Number(document.getElementById('tourRatingFilter')?.value||0);const sort=document.getElementById('tourSort')?.value||'featured';
  let visible=cards.filter(c=>{const text=c.innerText.toLowerCase();const region=c.dataset.region||'';const cat=c.dataset.cat||'';return (!q||text.includes(q))&&(type==='all'||cat===type)&&moneyNumber(c)<=max&&ratingNumber(c)>=minR&&(frontendState.quickRegion==='all'||region===frontendState.quickRegion)});
- if(sort==='priceLow') visible.sort((a,b)=>moneyNumber(a)-moneyNumber(b));if(sort==='priceHigh') visible.sort((a,b)=>moneyNumber(b)-moneyNumber(a));if(sort==='rating') visible.sort((a,b)=>ratingNumber(b)-ratingNumber(a));if(sort==='name') visible.sort((a,b)=>cardTitle(a).localeCompare(cardTitle(b)));
- const container=document.getElementById('toursContainer');visible.forEach(c=>container.appendChild(c));cards.forEach(c=>c.classList.toggle('is-hidden',!visible.includes(c)));document.getElementById('tourResultCount').textContent=visible.length;document.getElementById('tourEmptyState').classList.toggle('show',visible.length===0);
+ if(sort==='featured') visible.sort((a,b)=>(+a.dataset.order||0)-(+b.dataset.order||0));if(sort==='priceLow') visible.sort((a,b)=>moneyNumber(a)-moneyNumber(b));if(sort==='priceHigh') visible.sort((a,b)=>moneyNumber(b)-moneyNumber(a));if(sort==='rating') visible.sort((a,b)=>ratingNumber(b)-ratingNumber(a));if(sort==='name') visible.sort((a,b)=>cardTitle(a).localeCompare(cardTitle(b)));
+ const container=document.getElementById('toursContainer');visible.forEach(c=>container.appendChild(c));cards.forEach(c=>c.classList.toggle('is-hidden',!visible.includes(c)));document.getElementById('tourResultCount').textContent=visible.length;document.getElementById('tourEmptyState').classList.toggle('show',visible.length===0);document.getElementById('toursContainer').scrollLeft=0;if(typeof updateTourSlider==='function')setTimeout(updateTourSlider,50);
 }
 function resetTourFilters(){['tourSearch','tourTypeFilter','tourPriceFilter','tourRatingFilter','tourSort'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=id==='tourSort'?'featured':id==='tourTypeFilter'?'all':id==='tourPriceFilter'?'999999':id==='tourRatingFilter'?'0':''});setRegionFilter('all')}
 function saveWishlist(){localStorage.setItem('pe_wishlist',JSON.stringify([...frontendState.wishlist]))}
