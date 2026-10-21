@@ -3098,13 +3098,13 @@ main article a:hover { color: #92400e; }
       if (is(/\bhow many days\b/, /\bduration\b/, /\bhow long\b/) && /hunza/.test(q)) {
         return 'The Hunza Valley Tour is 5 days / 4 nights, starting from Islamabad. The detailed sightseeing schedule and travel dates should be confirmed with our team. Would you like the solo price or the price for two travellers?';
       }
-      if (is(/\bcustomi[sz]e\b/, /\bcustom tour\b/, /\btailor.?made\b/, /\bfor my family\b/, /\bfamily tour\b/)) {
+      if (is(/\bcustomi[sz](e|ing|ed)?\b/, /\bcustom(?:ized|ised)? family tour(s)?\b/, /\bcustom tour(s)?\b/, /\btailor.?made\b/, /\bfor my family\b/, /\bfamily tour(s)?\b/, /\bfamily package(s)?\b/, /\bplan.*family\b/)) {
         return 'Yes! We can discuss a tailor-made family itinerary based on your interests, schedule, and budget. Please share your preferred destination, number of adults and children, travel dates or month, number of days, and approximate budget. Our team will prepare a suitable plan and written quote. Children under 5 pay 50% of the adult price under our published policy; confirm the details for your chosen package.';
       }
-      if (is(/\bhow do i make a reservation\b/, /\bhow.*book\b/, /\bmake a booking\b/, /\breservation\b/, /\bbook a tour\b/)) {
+      if (is(/\bhow do i make a reservation\b/, /\bhow.*book\b/, /\bmak(e|ing|e a|ing a) reservations?\b/, /\breservations?\b/, /\bbooking(s)?\b/, /\bbook a tour\b/, /\bmake a booking\b/, /\breserve a tour\b/)) {
         return 'To request a reservation: 1) choose your tour and dates, 2) share the number of travellers and starting city, and 3) tell us any special requests. Our team will confirm the itinerary, availability, and price in writing before payment.\n' + contact + '\nYour booking is not confirmed until our team confirms it.';
       }
-      if (is(/\bspeak to a human\b/, /\btalk to a human\b/, /\breal person\b/, /\bhuman agent\b/, /\bspeak to someone\b/, /\bcontact.*team\b/)) {
+      if (is(/\bspeak(ing)? to a human\b/, /\btalk(ing)? to a human\b/, /\breal person\b/, /\bhuman agent\b/, /\bspeak(ing)? to someone\b/, /\bcontact.*team\b/, /\btalk to.*(person|staff|team|agent)\b/, /\bconnect me\b/, /\bcustomer support\b/, /\bcontact (the )?(company|office|staff)\b/)) {
         return 'Of course! You can speak directly with our team:\n' + contact + '\nTell us which tour you are interested in and your travel dates, and we will help with your questions.';
       }
       return null;
