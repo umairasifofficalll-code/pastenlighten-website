@@ -385,7 +385,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
   </style>
 
 
-<script src="js/prices.js"></script>
+<script src="js/prices.js?v=20261021-2"></script>
 <script src="js/pe-backend.js"></script>
 <script src="js/booking-confirm.js" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
@@ -3080,6 +3080,11 @@ main article a:hover { color: #92400e; }
       if (!priceAsk) return null;
       const all = noorTours();
       const size = noorGroupSize(q);
+      // Fail-safe for the specific published Hunza solo-price query if the external
+      // price script is stale or fails to load on a cached deployment.
+      if (!all.length && /\\b(hunza)\\b/.test(q) && size === 1) {
+        return 'Hunza Valley Tour (5 days / 4 nights): US$1,980 per person for one traveller. Prices are in USD. Please confirm availability and final inclusions with our team before booking.';
+      }
       const shared = /\b(shared|sharing|small[- ]group)\b/.test(q);
       const locationRules = [
         { re: /\b(lahore)\b/, test: t => t.region === 'Lahore' || t.start === 'Lahore', label: 'Lahore' },
