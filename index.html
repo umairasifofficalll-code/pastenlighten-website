@@ -3100,8 +3100,18 @@ main article a:hover { color: #92400e; }
           if (!mentionsGeneral) return 'Which tour or city are you asking about? I will give you the exact price for that destination.';
         }
       }
-      if (!candidates.length) return 'I could not find a matching tour in the current price list. Please contact our team for a confirmed quote.';
-      if (!size) return 'How many travellers will be going? I will show only the matching per-person price for that party size.';
+      if (!candidates.length) {
+        if (!location && /\\b(tours?|packages?|pricing|price list|prices)\\b/.test(q)) {
+          return 'I can help with tour pricing. Which destination do you want (Lahore, Islamabad/Rawalpindi, Northern Pakistan, or South Punjab), and how many travellers are going? I will show only the matching price.';
+        }
+        return 'I could not find a matching tour in the current price list. Please tell me the tour name or destination, and I will check the matching price.';
+      }
+      if (!size) {
+        if (!location && /\\b(tours?|packages?|pricing|price list|prices)\\b/.test(q) && noorMatchTours(q).length === 0) {
+          return 'I can help with tour pricing. Which destination do you want (Lahore, Islamabad/Rawalpindi, Northern Pakistan, or South Punjab), and how many travellers are going? I will show only the matching price.';
+        }
+        return 'How many travellers will be going? I will show only the matching per-person price for that party size.';
+      }
       const tier = shared ? 'shared' : size === 1 ? 'solo' : size === 2 ? 'twoTraveller' : size <= 4 ? 'threeToFour' : size <= 8 ? 'fiveToEight' : 'ninePlus';
       const tierLabel = shared ? 'shared group' : size === 1 ? 'solo traveller' : size === 2 ? '2 travellers' : size <= 4 ? '3–4 travellers' : size <= 8 ? '5–8 travellers' : '9+ travellers';
       const rows = [];
