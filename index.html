@@ -3073,6 +3073,43 @@ main article a:hover { color: #92400e; }
       }).filter(x => x.score >= 1).sort((a, b) => b.score - a.score);
     }
 
+    // Noor's ten common customer FAQs: deterministic answers keep prices and booking guidance consistent.
+    function noorCustomerFaqAnswer(question) {
+      const q = String(question || '').toLowerCase().replace(/[^a-z0-9$]+/g, ' ').trim();
+      const is = (...patterns) => patterns.some(p => p.test(q));
+      const contact = 'WhatsApp: +92 334 4770455 (https://wa.me/923344770455)\nEmail: infopastenlighten@gmail.com';
+
+      if (is(/\btouring price\b/, /\btour prices?\b/, /\bprice list\b/, /\ball tour prices?\b/, /\bshow me all tour prices\b/)) {
+        return 'Welcome to Past Enlighten! Here are our solo-traveller prices, per person in USD.\n\n' +
+          '• Night Sufi Shrine Tour — US$40\n• Lahore Shopping & Bazaars Tour — US$40\n• Lahore Fort & Walled City Heritage Walk — US$70\n• Museums & Fort Tour — US$70\n• Walled City & Rangila Rickshaw — US$85\n• Lahore Full Day Heritage Tour — US$135\n• Islamabad & Rawalpindi City Tour — US$145\n• Sheikhupura Fort & Hiran Minar Excursion — US$195\n• Lahore–Harappa–Multan — 3 days / 2 nights — US$865\n• Swat Valley & Malam Jabba — 3 days / 2 nights — US$945\n• Bahawalpur & Cholistan Desert — 4 days / 3 nights — US$1,045\n• Naran Kaghan & Lake Saif-ul-Malook — 4 days / 3 nights — US$1,045\n• Neelum Valley & Sharda — 5 days / 4 nights — US$1,495\n• Fairy Meadows & Nanga Parbat Base Camp — 4 days / 3 nights — US$1,925\n• Hunza Valley Tour — 5 days / 4 nights — US$1,980\n• Skardu & Deosai Tour — 6 days / 5 nights — US$2,690\n• Grand Northern Pakistan Tour — 16 days / 15 nights — US$4,290\n\nThese are solo-traveller prices. Group prices per person are lower; ask for your party-size quote. Which tour interests you?';
+      }
+      if (is(/\bcheapest\b/, /\bmost affordable\b/, /\blowest priced\b/) ) {
+        return 'Our lowest-priced solo-traveller options are the Night Sufi Shrine Tour in Lahore (US$40 per person) and Lahore Shopping & Bazaars Tour (US$40 per person). Would you prefer a cultural experience or a shopping trip?';
+      }
+      if (/hunza/.test(q) && is(/\bprice\b/, /\bcost\b/, /\bhow much\b/, /\bsolo\b/, /\bone person\b/, /\btraveller\b/, /\btour\b/)) {
+        return 'Our Hunza Valley Tour is 5 days / 4 nights and starts from Islamabad. Prices in USD: solo traveller US$1,980 per person; 2 travellers US$1,695 per person (US$3,390 total); 3–4 travellers US$1,450 per person; 5–8 travellers US$1,290 per person; 9+ travellers US$1,095 per person. It includes an English-speaking guide, private AC car with driver, fuel, parking, entry tickets at the foreigner rate, and hotel pickup. Please confirm dates and final arrangements with our team.';
+      }
+      if (is(/\bwhat is included\b/, /\bincluded in the tour price\b/, /\bwhat.*included.*price\b/)) {
+        return 'Inclusions depend on the tour. Applicable packages may include an English-speaking/local expert guide and entry tickets at the foreigner rate. Full-day and multi-day driving tours include a private AC car with driver, fuel, parking, and hotel pickup where specified. Some Lahore tours include water, shoe baskets, or a Rangila Rickshaw ride. Meals, flights, and accommodation are not guaranteed unless explicitly listed for your chosen package. Tell me the tour name and I can check its listed inclusions.';
+      }
+      if (is(/\bbook.*two people\b/, /\bfor two people\b/, /\btwo travellers?\b/, /\b2 people\b/, /\bbook.*couple\b/)) {
+        return 'Yes! We can help arrange a tour for two people. For example, the Hunza Valley Tour is US$1,695 per person for two travellers (US$3,390 total). Tell us your preferred tour, travel dates, and starting city; our team will confirm availability and the final price in writing before payment.';
+      }
+      if (is(/\bhow many days\b/, /\bduration\b/, /\bhow long\b/) && /hunza/.test(q)) {
+        return 'The Hunza Valley Tour is 5 days / 4 nights, starting from Islamabad. The detailed sightseeing schedule and travel dates should be confirmed with our team. Would you like the solo price or the price for two travellers?';
+      }
+      if (is(/\bcustomi[sz]e\b/, /\bcustom tour\b/, /\btailor.?made\b/, /\bfor my family\b/, /\bfamily tour\b/)) {
+        return 'Yes! We can discuss a tailor-made family itinerary based on your interests, schedule, and budget. Please share your preferred destination, number of adults and children, travel dates or month, number of days, and approximate budget. Our team will prepare a suitable plan and written quote. Children under 5 pay 50% of the adult price under our published policy; confirm the details for your chosen package.';
+      }
+      if (is(/\bhow do i make a reservation\b/, /\bhow.*book\b/, /\bmake a booking\b/, /\breservation\b/, /\bbook a tour\b/)) {
+        return 'To request a reservation: 1) choose your tour and dates, 2) share the number of travellers and starting city, and 3) tell us any special requests. Our team will confirm the itinerary, availability, and price in writing before payment.\n' + contact + '\nYour booking is not confirmed until our team confirms it.';
+      }
+      if (is(/\bspeak to a human\b/, /\btalk to a human\b/, /\breal person\b/, /\bhuman agent\b/, /\bspeak to someone\b/, /\bcontact.*team\b/)) {
+        return 'Of course! You can speak directly with our team:\n' + contact + '\nTell us which tour you are interested in and your travel dates, and we will help with your questions.';
+      }
+      return null;
+    }
+
     // Deterministic pricing answers: prices are read from js/prices.js, not generated by the AI.
     function noorDeterministicPriceAnswer(question) {
       const q = String(question || '').toLowerCase();
@@ -3255,6 +3292,17 @@ main article a:hover { color: #92400e; }
       box.scrollTop = box.scrollHeight;
 
       try {
+        const faqAnswer = noorCustomerFaqAnswer(text);
+        if (faqAnswer) {
+          conversationHistory.push({ role: 'user', content: text });
+          conversationHistory.push({ role: 'assistant', content: faqAnswer });
+          if (conversationHistory.length > MAX_HISTORY_MESSAGES) {
+            conversationHistory.splice(0, conversationHistory.length - MAX_HISTORY_MESSAGES);
+          }
+          pending.remove();
+          appendRobotMessage(faqAnswer, ['Talk to team on WhatsApp']);
+          return false;
+        }
         const deterministicPrice = noorDeterministicPriceAnswer(text);
         if (deterministicPrice) {
           conversationHistory.push({ role: 'user', content: text });
