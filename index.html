@@ -386,7 +386,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/prices.js?v=20261021-3"></script>
-<script src="js/noor-knowledge.js?v=20261024-5"></script>
+<script src="js/noor-knowledge.js?v=20261024-6"></script>
 <script src="js/pe-backend.js"></script>
 <script src="js/booking-confirm.js" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
@@ -2524,8 +2524,8 @@ main article a:hover { color: #92400e; }
         <button onclick="openBookingModal('AI Consultation')" class="bg-accent-light text-brand-900 font-semibold px-2 py-0.5 rounded-full border border-accent-gold/40">
           📅 Book Now
         </button>
-        <button onclick="sendQuickPrompt('What should a first-time visitor know about Lahore?')" class="bg-white text-slate-700 px-2 py-0.5 rounded-full border border-stone-300 hover:bg-brand-50">
-          🧭 Lahore tips
+        <button onclick="sendQuickPrompt('Tour tips')" class="bg-white text-slate-700 px-2 py-0.5 rounded-full border border-stone-300 hover:bg-brand-50">
+          🧭 Tour tips
         </button>
       </div>
 
@@ -3272,7 +3272,7 @@ main article a:hover { color: #92400e; }
         if (k.region && !k.region.test(q)) continue;
         if (!k.when.test(q)) continue;
         const a = typeof k.answer === 'function' ? k.answer(q, t) : k.answer;
-        if (a) return { answer: a, actions: noorActions(k.id), topic: k.id };
+        if (a) return { answer: a, actions: k.actions || noorActions(k.id), topic: k.id };
       }
       return null;
     }

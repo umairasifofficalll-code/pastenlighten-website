@@ -41,7 +41,14 @@
     { id: 'who', when: /\b(who are you|are you (a )?(bot|robot|human|real)|your name)\b/,
       answer: 'I\'m Noor, the Past Enlighten chatbot. I answer common questions instantly. For anything personal to your trip, our human team (led by Bilawal, a Lahore-born guide) replies on WhatsApp at +92 334 4770455.' },
 
-    // ---------- regional travel tips (northern Pakistan & South Punjab)
+    // ---------- tour tips (Lahore, northern Pakistan & South Punjab)
+    { id: 'tips_menu', strong: true, when: /^\s*(tour|travel|trip)?\s*tips\s*[?!.]*\s*$|\b(tour tips|travel tips|any tips|give me (some )?tips|tips please)\b/,
+      actions: ['Lahore tips', 'Northern Pakistan tips', 'South Punjab tips', 'Talk to team on WhatsApp'],
+      answer: function (q) {
+        if (/lahore|north|hunza|skardu|fairy|naran|kaghan|swat|neelum|kashmir|gilgit|south|multan|harappa|bahawalpur|cholistan/.test(q)) return null;
+        return 'Tour tips: which region are you visiting?\n• Lahore: mosques and dress code, the Walled City, Wagah, Sufi night, getting around\n• Northern Pakistan: seasons, mountain roads, altitude, cash, checkpoints, plus tips for Hunza, Skardu, Fairy Meadows, Naran, Swat and Neelum\n• South Punjab: desert heat, shrines in Multan, Harappa, Bahawalpur & Cholistan\nTap a region below, or ask, for example, "tips for Hunza".';
+      } },
+
     // Destination-specific tips first, then the general region tips.
     { id: 'tips_hunza', strong: true, when: TIPS_RE, region: /\b(hunza|karimabad|attabad|passu|altit|baltit|nagar|gojal)\b/,
       answer: 'Hunza tips:\n• Base yourself in Karimabad: Baltit and Altit forts, cafés and the Duikar sunset viewpoint are all close.\n• Hunza is friendly and relaxed, but still dress modestly and ask before photographing people.\n• Try local food: apricots (fresh in summer, dried all year), walnut cake and chapshuro (a meat-filled bread).\n• Attabad Lake is cold even in summer, so bring a warm layer for the boat ride.\n• Carry cash: ATMs are few and sometimes empty.\n• Best months: April (apricot blossom) to October (autumn colours).\nOur ' + tour('N1') + ' covers all the highlights.' },
