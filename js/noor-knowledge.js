@@ -1,0 +1,240 @@
+/*
+ * Noor's knowledge base: answers to the questions international travellers ask most.
+ * Used by the chatbot on the homepage (index.html, function localNoorAnswer).
+ *
+ * HOW TO EDIT: each topic has
+ *   id      a short name
+ *   when    a pattern of words that trigger it (regular expression, lower case)
+ *   answer  the reply (text, or a function that can tailor the reply to the question)
+ *   strong  true = checked before tour/price matching (for questions that mention a tour
+ *           but are really about something else, e.g. "is lunch included in the Hunza tour?")
+ *
+ * Facts only Past Enlighten can confirm (deposit, cancellation, permits arranged, hotel level…)
+ * are NOT invented here: Noor says the team confirms them in writing and offers WhatsApp.
+ * When the team sends those details, replace the TEAM_CONFIRMS wording with the real policy.
+ */
+(function () {
+  'use strict';
+  var P = function () { return (window.PE_PRICES && window.PE_PRICES.tours) || {}; };
+  var usd = function (n) { return 'US$' + Number(n).toLocaleString('en-US'); };
+  var tour = function (id) { var t = P()[id]; return t ? t.name + ' (' + t.duration + ', ' + usd(t.solo) + ' solo)' : id; };
+  var TEAM = 'Our team confirms this in writing with your quote. Message us on WhatsApp (+92 334 4770455) and we\'ll reply, usually the same day.';
+
+  // Which region is the question about?
+  function region(q) {
+    if (/hunza|skardu|deosai|gilgit|fairy meadows|nanga|naran|kaghan|saif|babusar|swat|malam jabba|neelum|kashmir|north|mountain|valley|karakoram|kkh/.test(q)) return 'north';
+    if (/bahawalpur|cholistan|desert|multan|harappa|south punjab/.test(q)) return 'south';
+    if (/islamabad|rawalpindi/.test(q)) return 'islamabad';
+    if (/lahore/.test(q)) return 'lahore';
+    return '';
+  }
+
+  var K = [
+    // ---------- greetings & small talk
+    { id: 'greeting', when: /^\s*(hi|hello|hey|salam|assalam[ou\- ]*alaikum|aoa|good (morning|afternoon|evening))[\s!.,]*$/,
+      answer: 'Wa alaikum assalam, and welcome! I\'m Noor, Past Enlighten\'s guide bot. I can help with tour prices, what\'s included, the best time to visit, visas, safety and planning your days in Pakistan. What would you like to know?' },
+    { id: 'thanks', when: /^\s*(thanks|thank you|thx|shukriya|great|perfect|ok(ay)?|cool)[\s!.,]*$/,
+      answer: 'You\'re welcome! If you\'d like to go ahead, you can book on the Book page or message our team on WhatsApp. Anything else I can help with?' },
+    { id: 'who', when: /\b(who are you|are you (a )?(bot|robot|human|real)|your name)\b/,
+      answer: 'I\'m Noor, the Past Enlighten chatbot. I answer common questions instantly. For anything personal to your trip, our human team (led by Bilawal, a Lahore-born guide) replies on WhatsApp at +92 334 4770455.' },
+
+    { id: 'sim', strong: true, when: /\b(sim|sim card|mobile data|internet|wifi|wi-fi|phone (work|network)|roaming|esim|network)\b/,
+      answer: 'You can buy a local SIM card from a mobile network\'s official shop (bring your passport); your guide can help you get one. Big cities have good 4G. In the northern valleys, signal is weaker and some areas have none, so download offline maps before you go. Hotels usually have Wi-Fi, though it can be slow in the mountains.' },
+
+    // ---------- booking, payment & policies (strong: may mention a tour name)
+    { id: 'deposit', strong: true, when: /\b(deposit|advance payment|pay (in )?advance|upfront|up front|balance)\b/,
+      answer: 'Whether a deposit is needed, and how much, depends on the tour and dates. ' + TEAM },
+    { id: 'payment', strong: true, when: /\b(pay(ment)?s?|paying|credit card|debit card|card payment|pay by card|paypal|wise|bank transfer|transfer money|western union|how (do|can) i pay)\b/,
+      answer: 'Payment: you don\'t pay anything until you\'ve agreed to a written quote. How you can pay from abroad (for example bank transfer or other options) and in which currency is ' + 'confirmed by our team with your quote. Message us on WhatsApp (+92 334 4770455) if you want to check a payment method first.' },
+    { id: 'cancel', strong: true, when: /\b(cancel(l?ation|led|ling)?|refund|money back)\b/,
+      answer: function (q) {
+        if (/flight|plane|pia|airline/.test(q)) return null; // handled by "flight"
+        return 'Cancellation and refunds: the exact policy is written in your quote before you pay, so you know it in advance. ' + TEAM;
+      } },
+    { id: 'change', strong: true, when: /\b(change|move|reschedul\w*|postpone|shift)\b.*\b(date|dates|day|booking|tour)\b/,
+      answer: 'Need different dates? Just tell us as early as you can. We\'ll check availability and confirm any change in writing. ' + 'WhatsApp +92 334 4770455 is the quickest way.' },
+    { id: 'howbook', strong: true, when: /\b(how (do|can|to) (i |we )?(book|reserve)|book(ing)? process|make a (booking|reservation)|want to book|i('d| would) like to book|reserve a tour)\b/,
+      answer: 'Booking is easy:\n1. Send a request: use the Book page on this website, the "Book Now" button, or WhatsApp +92 334 4770455.\n2. We reply with availability and a written quote (price, pickup and what\'s included), usually the same day.\n3. You confirm only when you\'re happy. Nothing is charged before that.' },
+    { id: 'advance', strong: true, when: /\b(how (far|long|early|soon) (in )?(advance|before|ahead)|book (in )?advance|last minute|short notice|how soon)\b/,
+      answer: 'Lahore day tours can often be arranged at short notice, a few days ahead is usually fine. Northern and multi-day tours need more planning (drivers, hotels and sometimes permits), so book as early as you can, especially for April to October. Tell us your dates and we\'ll confirm what\'s possible.' },
+    { id: 'pricecurrency', strong: true, when: /\b(price|prices|pricing)\b.*\b(usd|dollars?|pkr|rupees?|currency|euro|pounds?)\b|\b(usd|dollars?|currency)\b.*\b(price|prices)\b/,
+      answer: 'Yes, all our prices are per person in US dollars (USD). The website shows the solo-traveller price; groups of 2 or more pay less per person. Tell me the tour and how many of you are going and I\'ll give you the exact price.' },
+    { id: 'discount', strong: true, when: /\b(discounts?|student|special offers?|promo|coupon|cheaper|deals?|negotiat\w*|best price)\b/,
+      answer: 'The prices on our website are for a solo traveller. Groups of 2 or more pay less per person, and children under 5 pay 50%. We don\'t list other fixed discounts (such as student rates); ask our team on WhatsApp and they\'ll tell you what\'s possible for your dates.' },
+
+    // ---------- what's included (strong, per tour where possible)
+    { id: 'meals', strong: true, when: /\b(lunch|dinner|breakfast|meals?|food included|is food)\b/,
+      answer: function (q, t) {
+        if (t && /days?\b/.test(t.duration) && /night/.test(t.duration)) return 'For the ' + t.name + ', which meals are included depends on the hotels and plan you choose. ' + TEAM;
+        if (t) return 'Meals are not part of the ' + t.name + ' price. It includes: ' + t.includes.join(', ') + '. Your guide will happily take you to good local places to eat (you pay for your own food).';
+        return 'Day tours in Lahore and Islamabad don\'t include meals, but your guide will take you to good local places to eat. For multi-day tours, which meals are included is confirmed in your written quote.';
+      } },
+    { id: 'pickup', strong: true, when: /\b(pick ?(me|us)? ?up|pickup|pick-up|collect (me|us)|drop ?off|meet(ing)? point|where (do|does) (it|the tour) start)\b/,
+      answer: function (q) {
+        if (/airport/.test(q)) return null; // handled by "airport"
+        return 'Hotel pickup is included on our full-day and multi-day tours (Lahore, Islamabad, the north and South Punjab). The half-day Lahore walks and the night tour meet you at an agreed point in the old city; we can add a car pickup if you prefer. Tell us your hotel when you book.';
+      } },
+    { id: 'hotels', strong: true, when: /\b(hotels?|accommodation|stay|rooms?|where (do|will) (we|i) sleep|guest ?house)\b/,
+      answer: function (q, t) {
+        if (/pick|collect|drop/.test(q)) return null;
+        if (t && !/night/.test(t.duration)) return 'The ' + t.name + ' is a day tour, so no overnight stay is included. Need help choosing a hotel in Lahore? Ask our team on WhatsApp.';
+        return 'Multi-day tours include overnight stays along the route. The hotel standard (for example 3-star or a mountain guesthouse) and room type are confirmed in your written quote. If you want a particular level or a single room, tell us when you request your quote.';
+      } },
+    { id: 'tickets', strong: true, when: /\b(entry|entrance|ticket|tickets|admission)\b/,
+      answer: 'Yes. All our tour prices include entry tickets at the foreigner rate, so you won\'t pay at the gate for the sites on your itinerary.' },
+    { id: 'airport', strong: true, when: /\b(airport|arriv(e|al|ing) (in|at)|land(ing)? in|flight (arrives|lands))\b/,
+      answer: function (q) {
+        if (/cancel|delay/.test(q)) return null;
+        return 'Yes, we can arrange a pickup from Lahore or Islamabad airport, with a driver meeting you at arrivals. The airport transfer is priced separately; ' + 'share your flight details and our team will confirm the price in writing.';
+      } },
+    { id: 'transport', when: /\b(car|vehicle|transport|jeep|4x4|bus|van|drive|driving|driver)\b/,
+      answer: 'Full-day and multi-day tours use a private air-conditioned car with a driver (fuel and parking included). Some mountain sections, such as the Fairy Meadows track or Deosai, use local 4x4 jeeps. Bigger groups get a larger vehicle.' },
+    { id: 'flight', strong: true, when: /\b(flight|fly|plane|pia)\b.*\b(cancel\w*|delay\w*|weather)\b|\b(cancel\w*|delay\w*)\b.*\b(flight|plane)\b|\bdomestic flight/,
+      answer: 'Flights to Skardu and Gilgit depend on mountain weather and are sometimes delayed or cancelled. Our northern tours travel by road in a private car from Islamabad, so you aren\'t relying on those flights. If you plan to fly one way, our team will explain the backup plan in your quote.' },
+    { id: 'tips', strong: true, when: /\b(tip|tips|tipping|gratuity)\b/,
+      answer: 'Tipping isn\'t required, but it is appreciated for good service by guides and drivers. Carry some small rupee notes. There\'s no fixed amount: give what you feel the day was worth.' },
+    { id: 'whatincluded', strong: true, when: /\b(what('s| is)? included|what does (the )?(price|tour) include|inclusions?|is everything included)\b/,
+      answer: function (q, t) {
+        if (t) return t.name + ' (' + t.duration + ') includes: ' + t.includes.join(', ') + '. Not included: meals (on day tours), tips and personal expenses.';
+        return 'All tours include an English-speaking guide and entry tickets at the foreigner rate. Full-day and multi-day tours also include a private AC car with driver, fuel, parking and hotel pickup. Half-day Lahore walks include a local expert guide, tickets, shoe baskets at mosques and water. Ask me about a specific tour to see its full list.';
+      } },
+
+    // ---------- guide & group
+    { id: 'guidelang', strong: true, when: /\b(guide|guides)\b.*\b(english|speak|language)\b|\b(speak|speaks) english\b|\benglish.speaking\b/,
+      answer: 'Yes. Your guide speaks English, and all our tours include an English-speaking guide. Past Enlighten is led by Bilawal, a guide born and raised in Lahore\'s Walled City. Need another language? Ask our team.' },
+    { id: 'femaleguide', strong: true, when: /\b(female|woman|women|lady|ladies)\b.*\bguide\b|\bguide\b.*\b(female|woman|lady)\b/,
+      answer: 'If you\'d prefer a female guide, please ask when you book. Our team will tell you if one is available for your dates.' },
+    { id: 'whoguide', when: /\b(who is (the|your|my) guide|bilawal|about (the )?guide|your guides?)\b/,
+      answer: 'Past Enlighten is run by Bilawal, a guide born and raised in Lahore\'s Walled City, with a team of local guides and drivers for the north. You can read more on the "About Guide" page.' },
+    { id: 'groupsize', strong: true, when: /\b(how many (people|travell?ers|persons)|group size|maximum|max(imum)? (people|group)|minimum)\b/,
+      answer: 'There\'s no minimum: you can travel solo. Private tours work for couples, families and bigger groups (we use a larger vehicle). For a large group, tell us the number and we\'ll confirm the arrangements and your group price.' },
+    { id: 'private', strong: true, when: /\b(private|shared|join(ing)? (a )?group|other (people|travell?ers|tourists)|just (us|me)|small group|group tour)\b/,
+      answer: 'Every tour can be private (just you and your companions) and many can also run as a small shared group. The prices on the website are for a private tour with one traveller; more people means a lower price per person.' },
+    { id: 'kids', strong: true, when: /\b(kids?|children|child|baby|babies|infant|toddler|family|families)\b/,
+      answer: function (q) {
+        if (/\b(how much|price|prices|cost|costs)\b/.test(q)) return null;
+        return 'Families are very welcome! Children under 5 pay 50% of the adult price. Tell us the children\'s ages and we\'ll plan an easier pace, rest stops and car seats if needed. Good family picks: the Lahore Walled City & Rangila Rickshaw tour, Islamabad\'s city tour, and Naran or Swat in summer.';
+      } },
+    { id: 'solo', when: /\b(solo|alone|on my own|by myself|single travell?er)\b/,
+      answer: 'Solo travellers are very welcome, and the prices on the website are for one person. Your guide stays with you throughout, which makes getting around easy and comfortable.' },
+    { id: 'access', when: /\b(wheelchair|disab\w*|mobility|elderly|senior|walk(ing)? a lot|stairs|steps|fitness|fit enough)\b/,
+      answer: 'Tell us about any mobility needs and we\'ll adapt the plan. Many Lahore sites have uneven floors and steps, and some northern trips involve walking at altitude. Fairy Meadows needs a hike of a few hours. Our team will suggest the most comfortable option.' },
+
+    // ---------- visas, permits, health, phone, safety
+    { id: 'visa', strong: true, when: /\b(visa|e-?visa|passport|immigration|entry requirements?)\b/,
+      answer: 'Most visitors need a visa for Pakistan. Many nationalities can apply online through Pakistan\'s official online visa system (visa.nadra.gov.pk). Requirements differ by passport, so check the official site or your nearest Pakistani embassy. If you need a tour confirmation letter for your application, ask our team.' },
+    { id: 'permit', strong: true, when: /\b(permit|noc|no objection|restricted|checkpost|check ?point|police escort|escort)\b/,
+      answer: 'Some areas close to the Line of Control (for example parts of Neelum Valley in Kashmir) can need a permit (NOC) for foreign visitors, and some routes have police checkpoints where your passport is registered. The rules change, so our team checks the current requirements for your dates and tells you what\'s needed. Keep your passport and visa copies handy.' },
+    { id: 'health', strong: true, when: /\b(vaccin\w*|injection|jab|malaria|health|doctor|medicine|insurance|sick|hospital)\b/,
+      answer: function (q) {
+        if (/altitude/.test(q)) return null;
+        return 'For vaccinations and health advice, please check with your doctor or a travel clinic a few weeks before you travel, and get travel insurance that covers medical care (and mountain areas if you\'re going north). Drink bottled or treated water. In an emergency in Punjab, dial Rescue 1122.';
+      } },
+    { id: 'altitude', when: /\b(altitude|high altitude|breath\w*|oxygen|elevation|how high)\b/,
+      answer: 'Some northern places are high: Deosai is about 4,000 m (13,000 ft) and Fairy Meadows about 3,300 m. Go slowly, drink plenty of water and tell your guide if you feel unwell. Our itineraries go up gradually. If you have heart or lung conditions, check with your doctor first.' },
+    { id: 'safefemale', strong: true, when: /\b(female|woman|women|girl|lady)\b.*\b(safe|travel\w*|alone|solo)\b|\b(safe|solo)\b.*\b(female|woman|women|girl|lady)\b/,
+      answer: 'Many women travel in Pakistan, solo and in groups. On a private tour your guide stays with you throughout. Helpful tips: dress modestly (loose clothes covering shoulders and legs, and a scarf for mosques), and agree photos before taking pictures of people. Ask our team if you\'d prefer a female guide. Always check your government\'s latest travel advice too.' },
+    { id: 'safe', strong: true, when: /\b(safe|safety|danger\w*|secure|security|risk\w*|terror\w*)\b/,
+      answer: function (q) {
+        var r = region(q);
+        var base = 'Thousands of international travellers visit Pakistan every year. Always check your own government\'s latest travel advice before you book and before you go.';
+        if (r === 'north') return base + ' In the north, the main concerns are mountain roads and weather, so we use experienced local drivers and keep plans flexible.';
+        return base + ' On a private tour your guide plans routes and stays with you throughout. In busy bazaars keep valuables secure, and use pre-arranged transport after dark.';
+      } },
+    { id: 'alcohol', when: /\b(alcohol|beer|wine|drink(ing)? alcohol|bar|bars|nightlife)\b/,
+      answer: 'Pakistan is a Muslim-majority country and alcohol isn\'t openly sold or drunk in public; some upmarket hotels have permit rooms for foreign guests. Nightlife here means food streets, Sufi music nights and late-evening bazaars, which we can show you!' },
+    { id: 'veg', when: /\b(vegetarian|vegan|halal|allerg\w*|gluten|diet\w*)\b/,
+      answer: 'All meat in Pakistan is halal. Vegetarian food is easy to find: daal (lentils), chana (chickpeas), sabzi (vegetables), paratha and fresh naan. Vegan and allergy needs are possible, so tell your guide and they\'ll help you order.' },
+
+    // ---------- seasons & weather (by region)
+    { id: 'season', strong: true, when: /\b(best time|when (should|to|is the best time to) (i |we )?(go|visit|travel|come)|best (month|season)|which month|good (month|time)|weather|temperature|season|(january|february|march|april|may|june|july|august|september|october|november|december)|winter|summer|spring|autumn|snow|cold|hot|monsoon|rain)\b/,
+      answer: function (q) {
+        if (/\b(how much|price|prices|cost|costs)\b/.test(q)) return null;
+        var r = region(q);
+        var north = 'Northern Pakistan (Hunza, Skardu, Naran, Swat, Neelum, Fairy Meadows): best from April to October. May–June brings blossom and green valleys, and September–October has clear skies and autumn colours. High places like Babusar Pass and Deosai usually open only in summer (roughly June to September), and winter brings snow and road closures.';
+        var lahore = 'Lahore and Islamabad: best from October to March, when days are mild and good for walking. April to June is very hot, July–August is monsoon season, and December–January can be foggy or smoggy in the mornings.';
+        var south = 'South Punjab (Bahawalpur, Cholistan, Multan): best from October to March; summers are extremely hot.';
+        var monthMatch = q.match(/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/);
+        if (monthMatch) {
+          var m = ['january','february','march','april','may','june','july','august','september','october','november','december'].indexOf(monthMatch[1]);
+          var northOk = m >= 3 && m <= 9, lahoreOk = m >= 9 || m <= 2;
+          var cap = monthMatch[1].charAt(0).toUpperCase() + monthMatch[1].slice(1);
+          var out = cap + ': ' + (lahoreOk ? 'a good time for Lahore, Islamabad and South Punjab. ' : 'hot in Lahore and the south, so sightsee early or late in the day. ') +
+            (northOk ? 'Also a good time for the northern valleys.' : 'In the north it\'s cold, and some high roads and lakes may be closed by snow.');
+          return out;
+        }
+        if (r === 'north') return north;
+        if (r === 'south') return south;
+        if (r === 'lahore' || r === 'islamabad') return lahore;
+        return lahore + '\n\n' + north + '\n\n' + south;
+      } },
+    { id: 'pack', when: /\b(pack|packing|bring|what (to|should i) (wear|bring|pack)|clothes|clothing|luggage|shoes)\b/,
+      answer: function (q) {
+        if (/mosque|shrine|temple/.test(q)) return null;
+        return 'What to pack:\n• Modest, loose clothes covering shoulders and knees (and a scarf for women, for mosques)\n• Comfortable walking shoes, easy to slip off at mosques\n• For the north: warm layers and a jacket even in summer, as evenings are cold; sunscreen and sunglasses\n• Power bank, small rupee notes, a reusable water bottle\n• Copies of your passport and visa';
+      } },
+
+    // ---------- distances & travel times
+    { id: 'distance', strong: true, when: /\b(how (long|far)|distance|hours? (drive|by road)|travel time|get (from|to)|reach)\b/,
+      answer: function (q, t) {
+        if (t && /\b(tour|trip|package|itinerary)\b/.test(q) && !/\b(drive|road|from)\b/.test(q)) return t.name + ' is ' + t.duration + ', starting from ' + t.start + '. Price: ' + usd(t.solo) + ' per person for a solo traveller (less per person for groups).';
+        if (/lahore/.test(q) && /islamabad/.test(q)) return 'Lahore to Islamabad is about 4 to 5 hours by motorway. We can include this transfer in a combined trip.';
+        if (/hunza|gilgit|skardu/.test(q)) return 'From Islamabad to Hunza, Gilgit or Skardu is a long mountain drive, normally split over 2 days with an overnight stop, which is why our northern tours start in Islamabad. The scenery along the Karakoram Highway is part of the trip!';
+        if (/naran|swat/.test(q)) return 'Naran and Swat are each roughly half a day to a day\'s drive from Islamabad, which is built into the 3–4 day tours.';
+        return null;
+      } },
+
+    // ---------- trip planning & itineraries
+    { id: 'plan2lahore', when: /\b(2|two|3|three|one|1)\s*(days?|nights?)\b.*\blahore\b|\blahore\b.*\b(2|two|3|three|one|1)\s*(days?|nights?)\b|\bday in lahore\b/,
+      answer: function (q) {
+        var one = /\b(one|1)\s*day\b|\bday in lahore\b/.test(q) && !/\b(2|two|3|three)\b/.test(q);
+        if (one) return 'One day in Lahore? Take the ' + tour('L1') + ': Lahore Fort, Badshahi Mosque, the Walled City and the Wagah Border flag ceremony in one day, with pickup and drop-off.';
+        return 'A great 2 to 3 days in Lahore:\n• Day 1: ' + tour('L1') + ', with the Fort, Badshahi Mosque and the Wagah Border ceremony.\n• Day 2: ' + tour('L2') + ' in the morning, and the ' + tour('L4') + ' at night (the Shah Jamal drumming is traditionally on Thursday nights, so ask us for the date).\n• Day 3 (optional): ' + tour('L6') + ' or the ' + tour('L3') + ', then shopping on the ' + tour('L5') + '.\nGroups of 2 or more pay less per person.';
+      } },
+    { id: 'combine', when: /\b(combine|combination|both|together|\d+\s*days? (in|for|trip)|(10|ten|7|seven|14|fourteen|two weeks|one week|a week|week)\b.*\b(pakistan|trip|days|itinerary))\b|\bitinerary for\b/,
+      answer: function (q) {
+        if (/lahore/.test(q) && /(hunza|north|skardu)/.test(q) || /\b(10|ten|two weeks|14)\b/.test(q))
+          return 'A 10-day Lahore + north idea:\n• Days 1–2: Lahore (' + tour('L1') + ', and the Walled City walk)\n• Day 3: drive Lahore → Islamabad (about 4–5 hours), with an evening in the capital\n• Days 4–8: ' + tour('N1') + '\n• Day 9: ' + tour('I1') + '\n• Day 10: departure from Islamabad\nWe can adjust it to your dates. Send us your plan on WhatsApp for a written quote (groups pay less per person).';
+        if (/\b(7|seven|one week|a week)\b/.test(q))
+          return 'One week idea: 2 days in Lahore (' + tour('L1') + ' and the Walled City walk), then the ' + tour('N-NARAN') + ' or ' + tour('N-SWAT') + ' from Islamabad. In winter, swap the north for Lahore + ' + tour('S1') + '.';
+        return null;
+      } },
+    { id: 'photo', strong: true, when: /\b(photo\w*|camera|instagram|drone|pictures?|sunrise|sunset)\b/,
+      answer: function (q) {
+        if (/drone/.test(q)) return 'Drones need permission in Pakistan and are often not allowed near forts, mosques, borders or the Line of Control, so please don\'t bring one without checking with our team first.';
+        return 'For photography we recommend:\n• Lahore Walled City early in the morning: soft light and quiet lanes (Heritage Walk or Rickshaw tour)\n• Badshahi Mosque and Wazir Khan Mosque, with their tilework and courtyards\n• Hunza: Passu Cones, Attabad Lake and the Duikar sunset\n• Skardu & Deosai, and Fairy Meadows with Nanga Parbat\nPlease ask before photographing people, especially women. Your guide can help.';
+      } },
+    { id: 'firsttime', strong: true, when: /\b(first.?time|first visit|never been|which tour (is )?(best|should|do you recommend)|recommend (a|me|us)? ?(tour|trip)|best tour|most popular|must.?do)\b/,
+      answer: 'First time in Pakistan? Our most popular combination:\n• Lahore: ' + 'the Lahore Full Day Heritage Tour (Lahore Fort, Badshahi Mosque, the Walled City and the Wagah Border ceremony).\n• North (April–October): the Hunza Valley Tour, with forts, Attabad Lake and the Passu Cones.\nShort on time? The half-day Lahore Fort & Walled City walk is a wonderful introduction. Ask me the price of any of them.' },
+    { id: 'trek', when: /\b(hik\w*|trek\w*|walk(ing)? tour|adventure|climb\w*|camping)\b/,
+      answer: 'For hiking: the ' + tour('N3') + ' includes the trek up to Fairy Meadows with views of Nanga Parbat. Hunza also has easy walks, like Duikar, the Hussaini bridge and Borith Lake (' + tour('N1') + '). For a gentler walk, try the ' + tour('L-WALK') + ' in Lahore.' },
+    { id: 'foodtour', strong: true, when: /\b(food tours?|food walks?|street food tours?|eat(ing)? tours?|cooking class|culinary|foodie)\b/,
+      answer: 'We don\'t run a separate food tour yet, but food is part of the experience: the Lahore Full Day tour passes Fort Road Food Street, and your guide will happily take you to the best local spots for nihari, kebabs, halwa puri and lassi (you pay for your own food). We can also plan a custom evening food walk. Just ask on WhatsApp.' },
+    { id: 'honeymoon', when: /\b(honeymoon|romantic|anniversary|couple(s)? trip|wedding)\b/,
+      answer: 'For couples we love Hunza (' + tour('N1') + '), Skardu & Deosai, and Neelum Valley in Kashmir: quiet valleys, lakes and big mountain views. Every tour is private, so the pace is yours. Couples pay less per person than a solo traveller.' },
+    { id: 'spiritual', when: /\b(sufi|qawwali|dhamal|shrine|spiritual|mystic|dervish)\b/,
+      answer: 'For Sufi culture: the ' + tour('L4') + ' takes you to Shah Jamal for dhol drumming and dhamal (traditionally on Thursday nights). For qawwali, Data Darbar and other shrines hold sessions on some evenings. Ask us for the best night during your stay. The ' + tour('S2') + ' visits Multan\'s famous Sufi shrines.' },
+    { id: 'buddhist', when: /\b(buddh\w*|gandhara|stupa|monaster\w*|taxila)\b/,
+      answer: 'For Buddhist heritage, go to Swat: the ' + tour('N-SWAT') + ' visits the Swat Museum and the Butkara Buddhist stupa from the ancient Gandhara civilisation. The Lahore Museum (on the ' + tour('L3') + ') also has famous Gandhara sculptures.' },
+    { id: 'history', when: /\b(history|historical|heritage|mughal|ancient|ruins|archaeolog\w*|buddhist|gandhara|indus|unesco)\b/,
+      answer: 'History lovers: Lahore\'s Mughal monuments (Lahore Fort, Badshahi Mosque, Shalimar Gardens), the Mughal tombs at Shahdara, the Indus Valley ruins of Harappa (' + tour('S2') + '), Swat\'s Buddhist heritage (' + tour('N-SWAT') + ') and the ancient Sharda site in Neelum Valley.' },
+    { id: 'custom', strong: true, when: /\b(custom\w*|tailor\w*|personal\w*|my own (itinerary|plan|tour)|design (my|a) (trip|tour)|flexible|private itinerary)\b/,
+      answer: 'Yes, we love custom trips! Use the "Build Your Custom Tour Plan" section on this page: choose your starting city, places, days, vehicle and group size, and send it to us on WhatsApp. We\'ll reply with a written quote.' },
+    { id: 'shopping', when: /\b(shopping|souvenirs?|buy|bazaar|market|khussa|carpet|handicraft)\b/,
+      answer: 'Shopping: the ' + tour('L5') + ' covers Anarkali Bazaar, Liberty Market and more, and a local helps you find khussa shoes, fabrics and crafts at fair prices. Bargaining is normal in bazaars, but not in malls.' },
+    { id: 'wagah', when: /\b(wagah|border ceremony|flag ceremony|flag lowering)\b/,
+      answer: 'The Wagah Border flag-lowering ceremony is included in the ' + tour('L1') + '. It happens every evening before sunset (the time changes with the season), and your guide gets you there in good time for a seat.' },
+
+    // ---------- money & contact
+    { id: 'currency', when: /\b(currency|rupees?|pkr|exchange|atm|cash|usd cash|dollars cash|money changer)\b/,
+      answer: 'Pakistan uses the rupee (PKR). ATMs are common in cities, and US dollars, euros and pounds can be exchanged at banks and licensed money changers (your guide can show you one). Carry cash for bazaars and small shops. Our tour prices are quoted in US dollars.' },
+    { id: 'contact', when: /\b(contact|phone number|whatsapp|email|call you|talk to (a )?(human|person|someone)|office|address|where are you (located|based))\b/,
+      answer: 'You can reach Past Enlighten on WhatsApp at +92 334 4770455, or by email at infopastenlighten@gmail.com. Our base is on Fort Road in Lahore\'s Walled City. We usually reply the same day (Pakistan time, UTC+5).' },
+    { id: 'languages', when: /\b(what language|languages? (do|are) (they|people|spoken)|do people speak english|speak urdu)\b/,
+      answer: 'Urdu is the national language and Punjabi is widely spoken in Lahore. English is common in hotels, shops and among younger people in cities, and your guide translates everything else. Learning "Assalam-o-Alaikum" (hello) and "Shukriya" (thank you) goes a long way!' }
+  ];
+
+  window.NOOR_KNOWLEDGE = K;
+  window.NOOR_TEAM_CONFIRMS = TEAM;
+  window.noorRegion = region;
+})();

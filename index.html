@@ -386,6 +386,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/prices.js?v=20261021-3"></script>
+<script src="js/noor-knowledge.js?v=20261024-4"></script>
 <script src="js/pe-backend.js"></script>
 <script src="js/booking-confirm.js" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
@@ -3056,9 +3057,12 @@ main article a:hover { color: #92400e; }
     }
     function noorPriceLine(t, size) {
       const base = `${t.name} (${t.duration}): ${usd(t.solo)} per person for a solo traveller.`;
+      const tier = size === 2 ? 'twoTraveller' : size >= 3 && size <= 4 ? 'threeToFour' : size >= 5 && size <= 8 ? 'fiveToEight' : size >= 9 ? 'ninePlus' : '';
+      const label = { twoTraveller: '2 travellers', threeToFour: '3–4 travellers', fiveToEight: '5–8 travellers', ninePlus: '9+ travellers' }[tier];
+      const p = tier && t.prices && t.prices[tier];
       const group = size > 1
-        ? `For your group of ${size}, the price per person is lower. Our team will send your exact group price in writing.`
-        : 'Travelling with 2 or more people? The price per person is lower, and our team sends your exact group price.';
+        ? (Number.isFinite(p) ? `For ${size} travellers: ${usd(p)} per person (${label} price), ${usd(p * size)} in total.` : `For your group of ${size}, the price per person is lower. Our team will send your exact group price in writing.`)
+        : 'Travelling with 2 or more people? The price per person is lower. Tell me how many of you are going and I\'ll give the exact price.';
       return [base, group];
     }
     function noorMatchTours(q) {
@@ -3078,8 +3082,11 @@ main article a:hover { color: #92400e; }
       const q = String(question || '').toLowerCase().replace(/[^a-z0-9$]+/g, ' ').trim();
       const is = (...patterns) => patterns.some(p => p.test(q));
       const contact = 'WhatsApp: +92 334 4770455 (https://wa.me/923344770455)\nEmail: infopastenlighten@gmail.com';
+      // A named tour/destination or a group size means the exact-price answer should handle it
+      const namesTourOrPlace = noorMatchTours(' ' + q + ' ').some(x => x.score >= 1) || /\b(lahore|islamabad|rawalpindi|north|northern|south punjab)\b/.test(q);
+      const priceWithDetail = /\b(price|prices|cost|how much)\b/.test(q) && (namesTourOrPlace || noorGroupSize(' ' + q + ' ') > 0);
 
-      if (is(/\btouring price\b/, /\btour prices?\b/, /\bprice list\b/, /\ball tour prices?\b/, /\bshow me all tour prices\b/)) {
+      if (!priceWithDetail && is(/\btouring price\b/, /\btour prices?\b/, /\bprice list\b/, /\ball tour prices?\b/, /\bshow me all tour prices\b/)) {
         return 'Welcome to Past Enlighten! Here are our solo-traveller prices, per person in USD.\n\n' +
           '• Night Sufi Shrine Tour — US$40\n• Lahore Shopping & Bazaars Tour — US$40\n• Lahore Fort & Walled City Heritage Walk — US$70\n• Museums & Fort Tour — US$70\n• Walled City & Rangila Rickshaw — US$85\n• Lahore Full Day Heritage Tour — US$135\n• Islamabad & Rawalpindi City Tour — US$145\n• Sheikhupura Fort & Hiran Minar Excursion — US$195\n• Lahore–Harappa–Multan — 3 days / 2 nights — US$865\n• Swat Valley & Malam Jabba — 3 days / 2 nights — US$945\n• Bahawalpur & Cholistan Desert — 4 days / 3 nights — US$1,045\n• Naran Kaghan & Lake Saif-ul-Malook — 4 days / 3 nights — US$1,045\n• Neelum Valley & Sharda — 5 days / 4 nights — US$1,495\n• Fairy Meadows & Nanga Parbat Base Camp — 4 days / 3 nights — US$1,925\n• Hunza Valley Tour — 5 days / 4 nights — US$1,980\n• Skardu & Deosai Tour — 6 days / 5 nights — US$2,690\n• Grand Northern Pakistan Tour — 16 days / 15 nights — US$4,290\n\nThese are solo-traveller prices. Group prices per person are lower; ask for your party-size quote. Which tour interests you?';
       }
@@ -3092,14 +3099,14 @@ main article a:hover { color: #92400e; }
       if (is(/\bwhat is included\b/, /\bincluded in the tour price\b/, /\bwhat.*included.*price\b/)) {
         return 'Inclusions depend on the tour. Applicable packages may include an English-speaking/local expert guide and entry tickets at the foreigner rate. Full-day and multi-day driving tours include a private AC car with driver, fuel, parking, and hotel pickup where specified. Some Lahore tours include water, shoe baskets, or a Rangila Rickshaw ride. Meals, flights, and accommodation are not guaranteed unless explicitly listed for your chosen package. Tell me the tour name and I can check its listed inclusions.';
       }
-      if (is(/\bbook.*two people\b/, /\bfor two people\b/, /\btwo travellers?\b/, /\b2 people\b/, /\bbook.*couple\b/)) {
+      if (!priceWithDetail && is(/\bbook.*two people\b/, /\bfor two people\b/, /\btwo travellers?\b/, /\b2 people\b/, /\bbook.*couple\b/)) {
         return 'Yes! We can help arrange a tour for two people. For example, the Hunza Valley Tour is US$1,695 per person for two travellers (US$3,390 total). Tell us your preferred tour, travel dates, and starting city; our team will confirm availability and the final price in writing before payment.';
       }
       if (is(/\bhow many days\b/, /\bduration\b/, /\bhow long\b/) && /hunza/.test(q)) {
         return 'The Hunza Valley Tour is 5 days / 4 nights, starting from Islamabad. The detailed sightseeing schedule and travel dates should be confirmed with our team. Would you like the solo price or the price for two travellers?';
       }
       if (is(/\bcustomi[sz](e|ing|ed)?\b/, /\bcustom(?:ized|ised)? family tour(s)?\b/, /\bcustom tour(s)?\b/, /\btailor.?made\b/, /\bfor my family\b/, /\bfamily tour(s)?\b/, /\bfamily package(s)?\b/, /\bplan.*family\b/)) {
-        return 'Yes! We can discuss a tailor-made family itinerary based on your interests, schedule, and budget. Please share your preferred destination, number of adults and children, travel dates or month, number of days, and approximate budget. Our team will prepare a suitable plan and written quote. Children under 5 pay 50% of the adult price under our published policy; confirm the details for your chosen package.';
+        return 'Yes! We can discuss a tailor-made itinerary based on your interests, schedule, and budget. Please share your preferred destination, number of adults and children, travel dates or month, number of days, and approximate budget. Our team will prepare a suitable plan and written quote. Children under 5 pay 50% of the adult price under our published policy; confirm the details for your chosen package.';
       }
       if (is(/\bhow do i make a reservation\b/, /\bhow.*book\b/, /\bmak(e|ing|e a|ing a) reservations?\b/, /\breservations?\b/, /\bbooking(s)?\b/, /\bbook a tour\b/, /\bmake a booking\b/, /\breserve a tour\b/)) {
         return 'To request a reservation: 1) choose your tour and dates, 2) share the number of travellers and starting city, and 3) tell us any special requests. Our team will confirm the itinerary, availability, and price in writing before payment.\n' + contact + '\nYour booking is not confirmed until our team confirms it.';
@@ -3128,7 +3135,7 @@ main article a:hover { color: #92400e; }
       if (is(/\bwhat is included in the swat\b/, /\bswat valley tour\b/)) {
         return 'The Swat Valley & Malam Jabba tour is listed as 3 days / 2 nights from Islamabad. Its listed inclusions are an English-speaking guide, private AC car with driver, fuel, parking, entry tickets at the listed foreigner rate, and hotel pickup. Confirm accommodation, meals, and the final itinerary with the team.';
       }
-      if (is(/\bdo you offer tours to skardu\b/, /\bskardu tour\b/, /\bdeosai national park\b/, /\bwhich tour includes deosai\b/)) {
+      if (is(/\bdo you offer tours to skardu\b/, /\bwhich tour includes deosai\b/) || (is(/\bskardu tour\b/, /\bdeosai national park\b/) && !/\b(price|cost|how much|people|travell?ers|hotel|include)/.test(q))) {
         return 'Skardu and Deosai are part of our northern Pakistan travel offering. Please ask the team to confirm the exact current itinerary, Deosai access, dates, and package price before booking.';
       }
       if (is(/\bwhat will i see during the lahore heritage tour\b/, /\blahore heritage tour\b/, /\blahore fort.*walled city\b/)) {
@@ -3140,7 +3147,7 @@ main article a:hover { color: #92400e; }
       if (is(/\bcancel or reschedule\b/, /\bcancellation policy\b/, /\bcancel.*tour\b/, /\breschedule\b/, /\bpay in advance\b/, /\badvance payment\b/, /\bdeposit\b/)) {
         return 'Cancellation, rescheduling, deposit, and advance-payment terms are not confirmed by the general package data. Please ask the team for the written terms for your specific booking before paying. WhatsApp: https://wa.me/923344770455';
       }
-      if (is(/\bprice for two people\b/, /\bwhat is the price for two\b/, /\bprice for 2 people\b/, /\bjoin other travellers\b/, /\bjoin.*group\b/, /\bgroup tour\b/, /\b10 people\b/, /\bten people\b/)) {
+      if (!priceWithDetail && is(/\bprice for two people\b/, /\bwhat is the price for two\b/, /\bprice for 2 people\b/, /\bjoin other travellers\b/, /\bjoin.*group\b/, /\bgroup tour\b/, /\b10 people\b/, /\bten people\b/)) {
         return 'Our pricing data has separate tiers for 2 travellers, 3–4, 5–8, and 9+ travellers. Shared departures or joining an existing group depend on availability. Tell us the tour name and dates, or request a quote at https://pastenlighten.com/booking.html. The team will confirm the correct per-person and total price.';
       }
       if (is(/\bbest time to visit hunza\b/, /\bpack.*skardu\b/, /\bwhat should i pack\b/, /\bphotography\b/, /\bfamily with children\b/, /\bchildren\b/)) {
@@ -3207,8 +3214,11 @@ main article a:hover { color: #92400e; }
         { re: /\b(south punjab|bahawalpur|cholistan|multan|harappa)\b/, test: t => t.region === 'South Punjab', label: 'South Punjab' }
       ];
       const location = locationRules.find(x => x.re.test(q));
+      const named = noorMatchTours(' ' + q + ' ');
+      const specificTour = named.length && named[0].score >= 1 && (!location || location.test(named[0].t)) ? named[0].t : null;
       let candidates = all;
-      if (location) candidates = candidates.filter(location.test);
+      if (specificTour) candidates = [specificTour];
+      else if (location) candidates = candidates.filter(location.test);
       else {
         const matched = noorMatchTours(q);
         if (matched.length) {
@@ -3229,6 +3239,7 @@ main article a:hover { color: #92400e; }
         if (!location && /\b(tours?|packages?|pricing|price list|prices)\b/.test(q) && noorMatchTours(q).length === 0) {
           return 'I can help with tour pricing. Which destination do you want (Lahore, Islamabad/Rawalpindi, Northern Pakistan, or South Punjab), and how many travellers are going? I will show only the matching price.';
         }
+        if (specificTour) return specificTour.name + ' (' + specificTour.duration + '): ' + usd(specificTour.solo) + ' per person for a solo traveller.\nTravelling with others? The price per person is lower for groups. Tell me how many travellers are going and I will show the exact price.\nChildren under 5 pay 50% of the adult price.';
         return 'How many travellers will be going? I will show only the matching per-person price for that party size.';
       }
       const tier = shared ? 'shared' : size === 1 ? 'solo' : size === 2 ? 'twoTraveller' : size <= 4 ? 'threeToFour' : size <= 8 ? 'fiveToEight' : 'ninePlus';
@@ -3241,7 +3252,7 @@ main article a:hover { color: #92400e; }
       }
       if (!rows.length) return 'A confirmed price for that tour and party type is not available in the current price list. Our team can provide a written quote.';
       const matchedTours = noorMatchTours(q);
-      const requestedSpecificTour = matchedTours.length > 0 && !location;
+      const requestedSpecificTour = !!specificTour || (matchedTours.length > 0 && !location);
       const shown = requestedSpecificTour ? rows.slice(0, 1) : rows;
       const heading = location ? location.label + ' tour prices' : 'Tour price';
       const lines = shown.map(({ t, price, total }) => {
@@ -3253,53 +3264,90 @@ main article a:hover { color: #92400e; }
         '\n\nPrices are per person. Children under 5 pay 50% of the adult price.';
     }
 
+    // Noor's knowledge base (js/noor-knowledge.js). strongOnly = topics that win even when a tour is named.
+    function noorKnowledge(q, t, strongOnly) {
+      const K = window.NOOR_KNOWLEDGE || [];
+      for (const k of K) {
+        if (!!k.strong !== !!strongOnly) continue;
+        if (!k.when.test(q)) continue;
+        const a = typeof k.answer === 'function' ? k.answer(q, t) : k.answer;
+        if (a) return { answer: a, actions: noorActions(k.id), topic: k.id };
+      }
+      return null;
+    }
+    function noorActions(id) {
+      if (['howbook', 'firsttime', 'plan2lahore', 'combine', 'custom', 'honeymoon', 'trek', 'photo', 'history', 'spiritual', 'wagah', 'shopping', 'kids'].includes(id)) return ['Book a Lahore tour', 'Talk to team on WhatsApp'];
+      return ['Talk to team on WhatsApp'];
+    }
+    // Knowledge-base answer for the chat flow. phase 'strong' runs before the FAQ list, 'soft' after the price answers.
+    function noorKnowledgeAnswer(question, phase) {
+      const q = ' ' + String(question || '').toLowerCase().replace(/[’‘]/g, "'") + ' ';
+      const m = noorMatchTours(q);
+      const top = m.length ? m[0].t : null;
+      const priceAsk = /\b(price|prices|pricing|cost|costs|how much|rate|rates|usd|dollars?|fee|fees|charges?|budget|quote|expensive|cheap|cheapest|afford)\b|\$/.test(q);
+      if (phase === 'strong') return noorKnowledge(q, top, true);
+      return priceAsk ? null : noorKnowledge(q, top, false);
+    }
+
     function localNoorAnswer(question) {
-      const q = ' ' + String(question || '').toLowerCase() + ' ';
+      const q = ' ' + String(question || '').toLowerCase().replace(/[’‘]/g, "'") + ' ';
       const tours = noorTours();
       const priceAsk = /\b(price|prices|pricing|cost|costs|how much|rate|rates|usd|dollars?|fee|fees|charges?|budget|quote|expensive|cheap|cheapest|afford)\b|\$/.test(q);
       const scored = noorMatchTours(q);
+      const top = scored.length ? scored[0].t : null;
       const size = noorGroupSize(q);
       const actions = ['Book this tour', 'Talk to team on WhatsApp'];
-      const PR = window.PE_PRICES || {};
 
-      // Price questions come first (before general Lahore tips such as money/currency)
-      if (priceAsk && scored.length) {
-        const t = scored[0].t;
-        const [base, group] = noorPriceLine(t, size);
-        return { answer: [base, `Included: ${t.includes.join(', ')}.`, group,
-          'Children under 5 pay 50% of the adult price.', `Best season: ${t.season}.`, 'Final price is confirmed by our team in writing before you pay.'].join('\n'), actions };
+      // 1. Specific topics that win even when a tour is named ("is lunch included in the full day tour?")
+      const strong = noorKnowledge(q, top, true);
+      if (strong) return strong;
+
+      // 2. Prices
+      if (priceAsk && top) {
+        const [base, group] = noorPriceLine(top, size);
+        return { answer: [base, group, `Included: ${top.includes.join(', ')}.`,
+          'Children under 5 pay 50% of the adult price.', `Best season: ${top.season}.`, 'Final price is confirmed by our team in writing before you pay.'].join('\n'), actions };
       }
       if (priceAsk && /\b(cheap|cheapest|budget|afford|lowest)\b/.test(q)) {
         const cheap = tours.slice().sort((a, b) => a.solo - b.solo).slice(0, 4);
         return { answer: 'Our most affordable tours (solo traveller, per person):\n' + cheap.map(t => `• ${t.name} (${t.duration}): ${usd(t.solo)}`).join('\n') + '\n\nGroups of 2 or more pay less per person.', actions };
       }
-      if (priceAsk && !lahoreGuideAnswer(q.replace(/\b(price|prices|cost|how much|rate|usd|fee|budget|quote)\b/g, ''))) {
+      if (priceAsk) {
         const byRegion = {};
         tours.forEach(t => { (byRegion[t.region] = byRegion[t.region] || []).push(t); });
         const out = ['Our prices are per person in US dollars for a solo traveller:'];
         Object.keys(byRegion).forEach(r => { out.push('\n' + r + ':'); byRegion[r].forEach(t => out.push(`• ${t.name} (${t.duration}): ${usd(t.solo)}`)); });
-        out.push('\nGroups of 2 or more pay less per person: our team sends your exact group price in writing. Children under 5 pay 50%. Which tour interests you?');
+        out.push('\nGroups of 2 or more pay less per person: tell me how many of you are going for the exact price. Children under 5 pay 50%.');
         return { answer: out.join('\n'), actions: ['Talk to team on WhatsApp'] };
       }
 
+      // 3. Planning, seasons, interests and other topics
+      const soft = noorKnowledge(q, top, false);
+      if (soft) return soft;
+
+      // 4. Lahore visitor tips (food, getting around, Urdu phrases…)
       const guide = lahoreGuideAnswer(q);
       if (guide) return guide;
 
+      // 5. A tour or region
       if (/north|mountain|valley|hunza|skardu|gilgit/.test(q) && (!scored.length || /package|tours|offer/.test(q))) {
         const north = tours.filter(t => t.region === 'Northern Pakistan');
-        return {
-          answer: 'Our northern Pakistan tours (solo traveller price, per person):\n' + north.map(t => `• ${t.name}: ${t.duration}, ${usd(t.solo)}`).join('\n') + '\n\nAll start from Islamabad; best season is April to October. Groups of 2 or more pay less per person.',
-          actions
-        };
+        return { answer: 'Our northern Pakistan tours (solo traveller price, per person):\n' + north.map(t => `• ${t.name}: ${t.duration}, ${usd(t.solo)}`).join('\n') + '\n\nAll start from Islamabad; best season is April to October. Groups of 2 or more pay less per person.', actions };
       }
-      if (scored.length) {
-        const t = scored[0].t;
-        const [base, group] = noorPriceLine(t, size);
-        return { answer: [`${t.name} (${t.duration}), starting from ${t.start}.`, t.places ? `Places: ${t.places}.` : '', `Included: ${t.includes.join(', ')}.`,
-          `Price: ${usd(t.solo)} per person for a solo traveller. ${group}`, `Best season: ${t.season}.`].filter(Boolean).join('\n'), actions };
+      if (/\b(what|which) tours\b|\ball (your )?tours\b|\btours (do you|you) (have|offer)\b/.test(q)) {
+        const byRegion = {};
+        tours.forEach(t => { (byRegion[t.region] = byRegion[t.region] || []).push(t); });
+        return { answer: 'We offer ' + tours.length + ' tours:\n' + Object.keys(byRegion).map(r => r + ': ' + byRegion[r].map(t => t.name).join('; ')).join('\n\n') + '\n\nAsk me about any of them, for example "Tell me about Hunza".', actions: ['Talk to team on WhatsApp'] };
       }
+      if (top) {
+        const [, group] = noorPriceLine(top, size);
+        return { answer: [`${top.name} (${top.duration}), starting from ${top.start}.`, top.places ? `Places: ${top.places}.` : '', `Included: ${top.includes.join(', ')}.`,
+          `Price: ${usd(top.solo)} per person for a solo traveller. ${group}`, `Best season: ${top.season}.`].filter(Boolean).join('\n'), actions };
+      }
+
+      // 6. Not sure: hand over to the team instead of guessing
       return {
-        answer: 'I can help with our 18 tours in Lahore, Islamabad, northern Pakistan and South Punjab: prices, what is included, durations and best seasons. I also know practical Lahore tips: best time to visit, getting around, money, what to wear, food, safety and useful Urdu phrases. Try asking "How much is the Hunza tour?" or "What can I see in Lahore in one day?"',
+        answer: 'I\'m not sure about that one, and I don\'t want to guess. Our team can answer you directly on WhatsApp at +92 334 4770455 (usually the same day).\n\nI can help with: tour prices and what\'s included, the best time to visit, visas and permits, safety, packing, planning your days in Lahore or the north, and how to book.',
         actions: ['Talk to team on WhatsApp']
       };
     }
@@ -3358,6 +3406,17 @@ main article a:hover { color: #92400e; }
       box.scrollTop = box.scrollHeight;
 
       try {
+        // 1. Precise topics (payment, pickup, permits, seasons…) from js/noor-knowledge.js
+        const kbStrong = noorKnowledgeAnswer(text, 'strong');
+        if (kbStrong) {
+          conversationHistory.push({ role: 'user', content: text });
+          conversationHistory.push({ role: 'assistant', content: kbStrong.answer });
+          if (conversationHistory.length > MAX_HISTORY_MESSAGES) conversationHistory.splice(0, conversationHistory.length - MAX_HISTORY_MESSAGES);
+          pending.remove();
+          appendRobotMessage(kbStrong.answer, kbStrong.actions);
+          return false;
+        }
+        // 2. Customer FAQ list
         const faqAnswer = noorCustomerFaqAnswer(text);
         if (faqAnswer) {
           conversationHistory.push({ role: 'user', content: text });
@@ -3369,6 +3428,7 @@ main article a:hover { color: #92400e; }
           appendRobotMessage(faqAnswer, ['Talk to team on WhatsApp']);
           return false;
         }
+        // 3. Exact prices
         const deterministicPrice = noorDeterministicPriceAnswer(text);
         if (deterministicPrice) {
           conversationHistory.push({ role: 'user', content: text });
@@ -3378,6 +3438,16 @@ main article a:hover { color: #92400e; }
           }
           pending.remove();
           appendRobotMessage(deterministicPrice, ['Talk to team on WhatsApp']);
+          return false;
+        }
+        // 4. Planning, interests and other topics, before asking the AI service
+        const kbSoft = noorKnowledgeAnswer(text, 'soft');
+        if (kbSoft) {
+          conversationHistory.push({ role: 'user', content: text });
+          conversationHistory.push({ role: 'assistant', content: kbSoft.answer });
+          if (conversationHistory.length > MAX_HISTORY_MESSAGES) conversationHistory.splice(0, conversationHistory.length - MAX_HISTORY_MESSAGES);
+          pending.remove();
+          appendRobotMessage(kbSoft.answer, kbSoft.actions);
           return false;
         }
         const response = await fetch(CHAT_API_URL, {
