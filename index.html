@@ -331,6 +331,19 @@ html.dark-mode .compare-mini-card{background:#0b1b16;border-color:#355248}.html-
 html.dark-mode .recent-item{background:#10221c;border-color:#274239}
 .timeline{position:relative;border-left:2px solid #d97706;margin-left:8px;padding-left:18px}.timeline-item{position:relative;padding-bottom:13px}.timeline-item:before{content:'';position:absolute;left:-25px;top:2px;width:10px;height:10px;border-radius:50%;background:#d97706;border:2px solid #fff}.quote-total{font-size:1.5rem;font-weight:900;color:#0f382c}.dark-toggle{width:34px;height:34px;border-radius:10px;border:1px solid #d6d3d1;background:#fff;display:inline-flex;align-items:center;justify-content:center}
 html.dark-mode .dark-toggle{background:#10221c;color:#fff;border-color:#355248}
+.noor-note{margin:6px 2px 0;font-size:10px;line-height:1.3;color:#64748b}.noor-note a{text-decoration:underline}
+.noor-review{margin-left:32px;background:#fff;border:1px solid #fcd34d;border-radius:12px;padding:10px;font-size:12px}
+.noor-review form{display:grid;gap:6px}.nr-title{color:#0a261e;font-size:13px}
+.noor-review input,.noor-review select,.noor-review textarea{width:100%;border:1px solid #d6d3d1;border-radius:8px;padding:6px 8px;font:inherit;font-size:12px;background:#fff;color:#1f2937}
+.nr-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.nr-stars{display:flex;gap:2px}.nr-stars button{font-size:22px;line-height:1;color:#d6d3d1;background:none;border:0;cursor:pointer;padding:0 2px}
+.nr-stars button.on{color:#f59e0b}.nr-stars button:focus-visible{outline:2px solid #0f382c;border-radius:4px}
+.nr-consent{display:flex;gap:6px;align-items:flex-start;font-size:11px;color:#475569}.nr-consent input{width:auto;margin-top:2px}
+.nr-err{color:#b91c1c;font-size:11px;min-height:0;margin:0}.nr-err:empty{display:none}
+.nr-send{background:#0f382c;color:#fff;font-weight:700;border-radius:8px;padding:7px;border:0;cursor:pointer}.nr-send:disabled{opacity:.6}
+.noor-review .pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}
+html.dark-mode .noor-review{background:#10221c;border-color:#7c5e10}html.dark-mode .nr-title{color:#f3f4f6}html.dark-mode .nr-consent{color:#cbd5e1}
+html.dark-mode .noor-review input,html.dark-mode .noor-review select,html.dark-mode .noor-review textarea{background:#0b1b16;color:#e5e7eb;border-color:#355248}
 #noorAvatar.speaking{animation:noorTalk .9s ease-in-out infinite;box-shadow:0 0 0 2px rgba(245,158,11,.6)}
 @keyframes noorTalk{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 #noorMicBtn.listening{background:#dc2626;border-color:#dc2626;color:#fff;animation:noorTalk 1s ease-in-out infinite}
@@ -386,8 +399,8 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/prices.js?v=20261021-3"></script>
-<script src="js/noor-knowledge.js?v=20261024-6"></script>
-<script src="js/pe-backend.js"></script>
+<script src="js/noor-knowledge.js?v=20261025-2"></script>
+<script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/booking-confirm.js" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
 <style id="map-render-fix">
@@ -2347,6 +2360,7 @@ main article a:hover { color: #92400e; }
         <div class="flex items-center gap-3">
           <a href="booking.html" class="hover:text-accent-amber">Book a tour</a>
           <a href="reviews.html" class="hover:text-accent-amber">Reviews</a>
+          <a href="booking-payment.html" class="hover:text-accent-amber">Booking &amp; payment</a>
           <a href="privacy.html" class="hover:text-accent-amber">Privacy</a>
           <a href="#home" class="hover:text-accent-amber flex items-center gap-1">Back to Top <i class="fa-solid fa-arrow-up"></i></a>
         </div>
@@ -2527,6 +2541,12 @@ main article a:hover { color: #92400e; }
         <button onclick="sendQuickPrompt('Tour tips')" class="bg-white text-slate-700 px-2 py-0.5 rounded-full border border-stone-300 hover:bg-brand-50">
           🧭 Tour tips
         </button>
+        <button onclick="sendQuickPrompt('Leave a review')" class="bg-white text-slate-700 px-2 py-0.5 rounded-full border border-stone-300 hover:bg-brand-50">
+          ⭐ Review
+        </button>
+        <button onclick="sendQuickPrompt('Booking and payment terms')" class="bg-white text-slate-700 px-2 py-0.5 rounded-full border border-stone-300 hover:bg-brand-50">
+          💳 Payment
+        </button>
       </div>
 
       <div id="chatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs bg-slate-50 custom-scrollbar">
@@ -2559,6 +2579,7 @@ main article a:hover { color: #92400e; }
             <i class="fa-solid fa-paper-plane text-xs"></i>
           </button>
         </form>
+        <p class="noor-note">Questions are saved without your name to improve Noor. Please don't share personal details here. <a href="privacy.html">Privacy</a></p>
       </div>
     </div>
   </div>
@@ -3272,7 +3293,7 @@ main article a:hover { color: #92400e; }
         if (k.region && !k.region.test(q)) continue;
         if (!k.when.test(q)) continue;
         const a = typeof k.answer === 'function' ? k.answer(q, t) : k.answer;
-        if (a) return { answer: a, actions: k.actions || noorActions(k.id), topic: k.id };
+        if (a) return { answer: window.noorWithTerms ? window.noorWithTerms(k.id, a) : a, actions: k.actions || noorActions(k.id), topic: k.id };
       }
       return null;
     }
@@ -3307,11 +3328,11 @@ main article a:hover { color: #92400e; }
       if (priceAsk && top) {
         const [base, group] = noorPriceLine(top, size);
         return { answer: [base, group, `Included: ${top.includes.join(', ')}.`,
-          'Children under 5 pay 50% of the adult price.', `Best season: ${top.season}.`, 'Final price is confirmed by our team in writing before you pay.'].join('\n'), actions };
+          'Children under 5 pay 50% of the adult price.', `Best season: ${top.season}.`, 'Final price is confirmed by our team in writing before you pay.'].join('\n'), actions, topic: 'price' };
       }
       if (priceAsk && /\b(cheap|cheapest|budget|afford|lowest)\b/.test(q)) {
         const cheap = tours.slice().sort((a, b) => a.solo - b.solo).slice(0, 4);
-        return { answer: 'Our most affordable tours (solo traveller, per person):\n' + cheap.map(t => `• ${t.name} (${t.duration}): ${usd(t.solo)}`).join('\n') + '\n\nGroups of 2 or more pay less per person.', actions };
+        return { answer: 'Our most affordable tours (solo traveller, per person):\n' + cheap.map(t => `• ${t.name} (${t.duration}): ${usd(t.solo)}`).join('\n') + '\n\nGroups of 2 or more pay less per person.', actions, topic: 'price_cheapest' };
       }
       if (priceAsk) {
         const byRegion = {};
@@ -3319,7 +3340,7 @@ main article a:hover { color: #92400e; }
         const out = ['Our prices are per person in US dollars for a solo traveller:'];
         Object.keys(byRegion).forEach(r => { out.push('\n' + r + ':'); byRegion[r].forEach(t => out.push(`• ${t.name} (${t.duration}): ${usd(t.solo)}`)); });
         out.push('\nGroups of 2 or more pay less per person: tell me how many of you are going for the exact price. Children under 5 pay 50%.');
-        return { answer: out.join('\n'), actions: ['Talk to team on WhatsApp'] };
+        return { answer: out.join('\n'), actions: ['Talk to team on WhatsApp'], topic: 'price_list' };
       }
 
       // 3. Planning, seasons, interests and other topics
@@ -3328,28 +3349,29 @@ main article a:hover { color: #92400e; }
 
       // 4. Lahore visitor tips (food, getting around, Urdu phrases…)
       const guide = lahoreGuideAnswer(q);
-      if (guide) return guide;
+      if (guide) return Object.assign({ topic: 'lahore_guide' }, guide);
 
       // 5. A tour or region
       if (/north|mountain|valley|hunza|skardu|gilgit/.test(q) && (!scored.length || /package|tours|offer/.test(q))) {
         const north = tours.filter(t => t.region === 'Northern Pakistan');
-        return { answer: 'Our northern Pakistan tours (solo traveller price, per person):\n' + north.map(t => `• ${t.name}: ${t.duration}, ${usd(t.solo)}`).join('\n') + '\n\nAll start from Islamabad; best season is April to October. Groups of 2 or more pay less per person.', actions };
+        return { answer: 'Our northern Pakistan tours (solo traveller price, per person):\n' + north.map(t => `• ${t.name}: ${t.duration}, ${usd(t.solo)}`).join('\n') + '\n\nAll start from Islamabad; best season is April to October. Groups of 2 or more pay less per person.', actions, topic: 'north_tours' };
       }
       if (/\b(what|which) tours\b|\ball (your )?tours\b|\btours (do you|you) (have|offer)\b/.test(q)) {
         const byRegion = {};
         tours.forEach(t => { (byRegion[t.region] = byRegion[t.region] || []).push(t); });
-        return { answer: 'We offer ' + tours.length + ' tours:\n' + Object.keys(byRegion).map(r => r + ': ' + byRegion[r].map(t => t.name).join('; ')).join('\n\n') + '\n\nAsk me about any of them, for example "Tell me about Hunza".', actions: ['Talk to team on WhatsApp'] };
+        return { answer: 'We offer ' + tours.length + ' tours:\n' + Object.keys(byRegion).map(r => r + ': ' + byRegion[r].map(t => t.name).join('; ')).join('\n\n') + '\n\nAsk me about any of them, for example "Tell me about Hunza".', actions: ['Talk to team on WhatsApp'], topic: 'tour_list' };
       }
       if (top) {
         const [, group] = noorPriceLine(top, size);
         return { answer: [`${top.name} (${top.duration}), starting from ${top.start}.`, top.places ? `Places: ${top.places}.` : '', `Included: ${top.includes.join(', ')}.`,
-          `Price: ${usd(top.solo)} per person for a solo traveller. ${group}`, `Best season: ${top.season}.`].filter(Boolean).join('\n'), actions };
+          `Price: ${usd(top.solo)} per person for a solo traveller. ${group}`, `Best season: ${top.season}.`].filter(Boolean).join('\n'), actions, topic: 'tour:' + top.id };
       }
 
       // 6. Not sure: hand over to the team instead of guessing
       return {
         answer: 'I\'m not sure about that one, and I don\'t want to guess. Our team can answer you directly on WhatsApp at +92 334 4770455 (usually the same day).\n\nI can help with: tour prices and what\'s included, the best time to visit, visas and permits, safety, packing, planning your days in Lahore or the north, and how to book.',
-        actions: ['Talk to team on WhatsApp']
+        actions: ['Talk to team on WhatsApp'],
+        topic: 'fallback'
       };
     }
 
@@ -3385,6 +3407,11 @@ main article a:hover { color: #92400e; }
       handleUserMessage({ preventDefault() {} });
     }
 
+    // Save each question for the team (js/pe-backend.js → backend /api/noor-log). No names; contact details are removed.
+    function noorLog(question, topic, answered, answer) {
+      try { if (window.PEBackend && PEBackend.logNoor) PEBackend.logNoor({ question, topic, answered, answer }); } catch (_) {}
+    }
+
     async function handleUserMessage(e) {
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
       const input = document.getElementById('chatInput');
@@ -3415,6 +3442,8 @@ main article a:hover { color: #92400e; }
           if (conversationHistory.length > MAX_HISTORY_MESSAGES) conversationHistory.splice(0, conversationHistory.length - MAX_HISTORY_MESSAGES);
           pending.remove();
           appendRobotMessage(kbStrong.answer, kbStrong.actions);
+          noorLog(text, kbStrong.topic, true, kbStrong.answer);
+          if (kbStrong.topic === 'review') openNoorReviewForm();
           return false;
         }
         // 2. Customer FAQ list
@@ -3427,6 +3456,7 @@ main article a:hover { color: #92400e; }
           }
           pending.remove();
           appendRobotMessage(faqAnswer, ['Talk to team on WhatsApp']);
+          noorLog(text, 'faq', true, faqAnswer);
           return false;
         }
         // 3. Exact prices
@@ -3439,6 +3469,7 @@ main article a:hover { color: #92400e; }
           }
           pending.remove();
           appendRobotMessage(deterministicPrice, ['Talk to team on WhatsApp']);
+          noorLog(text, 'price', true, deterministicPrice);
           return false;
         }
         // 4. Planning, interests and other topics, before asking the AI service
@@ -3449,6 +3480,7 @@ main article a:hover { color: #92400e; }
           if (conversationHistory.length > MAX_HISTORY_MESSAGES) conversationHistory.splice(0, conversationHistory.length - MAX_HISTORY_MESSAGES);
           pending.remove();
           appendRobotMessage(kbSoft.answer, kbSoft.actions);
+          noorLog(text, kbSoft.topic, true, kbSoft.answer);
           return false;
         }
         const response = await fetch(CHAT_API_URL, {
@@ -3472,6 +3504,7 @@ main article a:hover { color: #92400e; }
         }
         pending.remove();
         appendRobotMessage(payload.answer, payload.actions || []);
+        noorLog(text, 'ai', true, payload.answer);
         if (Array.isArray(payload.sources) && payload.sources.length) appendChatSources(payload.sources);
       } catch (error) {
         console.warn('Noor AI service unavailable, using offline answers:', error);
@@ -3479,12 +3512,74 @@ main article a:hover { color: #92400e; }
         const local = localNoorAnswer(text);
         appendRobotMessage(local.answer, local.actions);
         if (local.sources) appendChatSources(local.sources);
+        noorLog(text, local.topic || 'local', local.topic !== 'fallback', local.answer);
       } finally {
         input.disabled = false;
         if (sendButton) sendButton.disabled = false;
         input.focus();
       }
       return false;
+    }
+
+    // ---- Review form inside Noor (saved as a "feedback" request in the admin dashboard)
+    function openNoorReviewForm() {
+      const c = document.getElementById('chatMessages');
+      if (c.querySelector('.noor-review:not(.done)')) { c.querySelector('.noor-review:not(.done)').scrollIntoView({ block: 'nearest' }); return; }
+      const wrap = document.createElement('div');
+      wrap.className = 'noor-review';
+      const el = (tag, attrs, text) => { const n = document.createElement(tag); Object.entries(attrs || {}).forEach(([k, v]) => n.setAttribute(k, v)); if (text != null) n.textContent = text; return n; };
+      const form = el('form', { novalidate: '' });
+      form.appendChild(el('strong', { class: 'nr-title' }, 'Review your tour'));
+      // stars
+      const stars = el('div', { class: 'nr-stars', role: 'radiogroup', 'aria-label': 'Your rating' });
+      let rating = 0;
+      const paint = () => stars.querySelectorAll('button').forEach((b, i) => { b.classList.toggle('on', i < rating); b.setAttribute('aria-checked', String(i + 1 === rating)); });
+      for (let i = 1; i <= 5; i++) {
+        const b = el('button', { type: 'button', role: 'radio', 'aria-label': i + ' star' + (i > 1 ? 's' : ''), 'aria-checked': 'false' }, '★');
+        b.addEventListener('click', () => { rating = i; paint(); err.textContent = ''; });
+        stars.appendChild(b);
+      }
+      form.appendChild(stars);
+      const name = el('input', { type: 'text', maxlength: '80', placeholder: 'Your name *', 'aria-label': 'Your name', autocomplete: 'name' });
+      const country = el('input', { type: 'text', maxlength: '60', placeholder: 'Country', 'aria-label': 'Country', autocomplete: 'country-name' });
+      const tour = el('select', { 'aria-label': 'Which tour?' });
+      tour.appendChild(el('option', { value: '' }, 'Which tour? (optional)'));
+      Object.values((window.PE_PRICES && PE_PRICES.tours) || {}).forEach(t => tour.appendChild(el('option', { value: t.name }, t.name)));
+      tour.appendChild(el('option', { value: 'Custom tour' }, 'Custom tour'));
+      const month = el('input', { type: 'month', 'aria-label': 'When did you travel? (optional)', max: new Date().toISOString().slice(0, 7) });
+      const text = el('textarea', { rows: '3', maxlength: '1500', placeholder: 'What did you enjoy? What could be better? *', 'aria-label': 'Your review' });
+      const consentLabel = el('label', { class: 'nr-consent' });
+      const consent = el('input', { type: 'checkbox' });
+      consentLabel.append(consent, document.createTextNode(' You may show my review (name and country) on the website.'));
+      const hp = el('input', { type: 'text', class: 'pe-hp', tabindex: '-1', autocomplete: 'off', 'aria-hidden': 'true' });
+      const err = el('p', { class: 'nr-err', role: 'alert' });
+      const send = el('button', { type: 'submit', class: 'nr-send' }, 'Send review');
+      const row = el('div', { class: 'nr-row' }); row.append(name, country);
+      form.append(row, tour, month, text, consentLabel, hp, err, send);
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault();
+        if (!rating) { err.textContent = 'Please choose 1 to 5 stars.'; return; }
+        if (name.value.trim().length < 2) { err.textContent = 'Please add your name.'; name.focus(); return; }
+        if (text.value.trim().length < 10) { err.textContent = 'Please write a few words about your tour.'; text.focus(); return; }
+        send.disabled = true; send.textContent = 'Sending…'; err.textContent = '';
+        const res = window.PEBackend ? await PEBackend.save('feedback', {
+          rating, name: name.value.trim(), country: country.value.trim(), tour: tour.value, travelled: month.value,
+          text: text.value.trim(), publish_consent: consent.checked }, form) : null;
+        if (res && res.ok) {
+          wrap.classList.add('done');
+          form.replaceChildren(el('strong', { class: 'nr-title' }, 'Thank you, ' + name.value.trim().split(' ')[0] + '! ' + '★'.repeat(rating)),
+            el('p', {}, 'Your review has reached our team. Shukriya for travelling with Past Enlighten!'));
+          noorLog('[review submitted] ' + rating + ' stars', 'review_sent', true, '');
+          appendRobotMessage('It would also help us a lot if you shared your review on TripAdvisor or Google. You can find the links on our Reviews page (reviews.html).', ['Talk to team on WhatsApp']);
+        } else {
+          send.disabled = false; send.textContent = 'Send review';
+          err.textContent = (res && res.errors && res.errors[0]) || 'Sorry, we could not send your review just now. Please try again, or send it to us on WhatsApp.';
+        }
+      });
+      wrap.appendChild(form);
+      c.appendChild(wrap);
+      c.scrollTop = c.scrollHeight;
+      setTimeout(() => stars.querySelector('button').focus(), 50);
     }
 
     function appendUserMessage(msg) {
@@ -3790,6 +3885,7 @@ function filterFaq(){const q=(document.getElementById('faqSearch')?.value||'').t
 function installDateGuestQuote(){const date=document.getElementById('bookingDate'),guests=document.getElementById('bookingGuests');if(date){date.min=new Date().toISOString().split('T')[0]}if(guests){guests.addEventListener('input',()=>{const n=Math.max(1,Number(guests.value||1));const note=document.getElementById('bookingGuestHint');if(note)note.textContent=`${n} guest${n>1?'s':''} selected`})}}
 
 window.addEventListener('DOMContentLoaded',()=>{
+ if(window.PEBackend&&PEBackend.terms)PEBackend.terms();
  if(localStorage.getItem('pe_dark')==='1')toggleDarkMode();
  enhanceTourCards();applyTourFilters();renderRecent();renderRecommendations();enhanceReviewsAndFaq();installDateGuestQuote();updateCustomQuote();setTimeout(initTourMap,100);
  document.querySelectorAll('#tourSearch,#tourTypeFilter,#tourPriceFilter,#tourRatingFilter,#tourSort').forEach(e=>e.addEventListener('input',applyTourFilters));

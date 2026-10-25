@@ -77,6 +77,21 @@
     { id: 'sim', strong: true, when: /\b(sim|sim card|mobile data|internet|wifi|wi-fi|phone (work|network)|roaming|esim|network)\b/,
       answer: 'You can buy a local SIM card from a mobile network\'s official shop (bring your passport); your guide can help you get one. Big cities have good 4G. In the northern valleys, signal is weaker and some areas have none, so download offline maps before you go. Hotels usually have Wi-Fi, though it can be slow in the mountains.' },
 
+    // ---------- reviews & booking terms
+    { id: 'review', strong: true, when: /\b(leave|write|give|add|post|submit|share)\b.{0,20}\b(a )?(review|feedback|rating)\b|^\s*(review|reviews|feedback|rate (us|you))\s*[?!.]*\s*$|\b(i want to|can i|how (do|can) i) (review|rate)\b/,
+      actions: ['Talk to team on WhatsApp'],
+      answer: 'Thank you for travelling with us! I\'ve opened a short review form below: pick your stars, write a few words about your tour, and send. Our team reads every review.' },
+    { id: 'terms', strong: true, when: /\b(booking terms|payment terms|terms and conditions|terms & conditions|booking conditions|booking policy|policies|policy|how does payment work|booking and payment)\b/,
+      answer: function (q) {
+        if (/cancel|refund|deposit|\bpay|airport|hotel|meal|change|reschedul|visa|permit|discount|child|kid/.test(q)) return null; // a specific term answers it
+        var T = (window.PE_TERMS && window.PE_TERMS.terms) || {};
+        var L = (window.PE_TERMS && window.PE_TERMS.labels) || {};
+        var order = (window.PE_TERMS && window.PE_TERMS.order) || [];
+        var lines = order.filter(function (k) { return T[k]; }).slice(0, 8).map(function (k) { return '• ' + (L[k] || k) + ': ' + T[k]; });
+        return 'Our booking & payment terms:\n' + (lines.length ? lines.join('\n') + '\n' : '• Nothing is charged until you agree to a written quote.\n• Prices are per person in US dollars; groups pay less per person.\n') +
+          'Full details are on the Booking & Payment page (booking-payment.html).';
+      } },
+
     // ---------- booking, payment & policies (strong: may mention a tour name)
     { id: 'deposit', strong: true, when: /\b(deposit|advance payment|pay (in )?advance|upfront|up front|balance)\b/,
       answer: 'Whether a deposit is needed, and how much, depends on the tour and dates. ' + TEAM },
@@ -270,7 +285,26 @@
       answer: 'Urdu is the national language and Punjabi is widely spoken in Lahore. English is common in hotels, shops and among younger people in cities, and your guide translates everything else. Learning "Assalam-o-Alaikum" (hello) and "Shukriya" (thank you) goes a long way!' }
   ];
 
+
+  // ---- Use the booking terms the team saved in the admin dashboard (window.PE_TERMS, loaded by js/pe-backend.js)
+  var TERM_KEYS = { deposit: ['deposit', 'balance'], payment: ['payment_methods', 'balance', 'deposit'], cancel: ['cancellation', 'our_cancellation'],
+    change: ['date_changes'], airport: ['airport_pickup'], hotels: ['hotels'], meals: ['meals'], femaleguide: ['female_guide'],
+    groupsize: ['group_size'], discount: ['discounts'], visa: ['visa_letter'], permit: ['permits'], kids: ['children'], flight: ['our_cancellation'] };
+  var PENDING = /written quote|in writing|ask when you book|team will tell you|ask our team on whatsapp/i;
+  function withTerms(id, answer) {
+    var T = window.PE_TERMS && window.PE_TERMS.terms, L = (window.PE_TERMS && window.PE_TERMS.labels) || {};
+    var keys = TERM_KEYS[id];
+    if (!T || !keys || !answer) return answer;
+    var lines = keys.filter(function (k) { return T[k] && answer.indexOf(T[k]) < 0; }).map(function (k) { return (L[k] || k) + ': ' + T[k]; });
+    if (!lines.length) return answer;
+    var link = '\nFull details: Booking & Payment page (booking-payment.html).';
+    // The general answer only said "the team confirms it": replace it with the real terms
+    if (PENDING.test(answer) && !/day tour|meals are not part/i.test(answer)) return lines.join('\n') + link;
+    return answer + '\n\n' + lines.join('\n') + link;
+  }
+
   window.NOOR_KNOWLEDGE = K;
+  window.noorWithTerms = withTerms;
   window.NOOR_TEAM_CONFIRMS = TEAM;
   window.noorRegion = region;
 })();
