@@ -39,7 +39,14 @@
     .stepper input { width: 100%; text-align: center; border: 0; outline: none; font-weight: 700; padding: .55rem 0; }
     .pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
-  </style>
+      .calc{margin-top:.6rem;display:grid;gap:.3rem;font-size:.85rem}
+    .calc div{display:flex;justify-content:space-between;gap:.75rem}
+    .calc dt{color:#cbd5e1}.calc dd{font-weight:700;text-align:right}
+    .calc .calc-total{border-top:1px solid rgba(255,255,255,.18);padding-top:.45rem;margin-top:.15rem;font-size:1rem}
+    .calc .calc-total dt{color:#fde68a;font-weight:700}.calc .calc-total dd{color:#fde68a;font-size:1.15rem}
+    .calc .calc-sub dt,.calc .calc-sub dd{color:#94a3b8;font-weight:600;font-size:.8rem}
+    .calc.hidden{display:none}
+</style>
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -139,7 +146,7 @@
                 <div class="stepper"><button type="button" data-step="adults" data-d="-1" aria-label="Fewer adults">−</button><input id="adults" name="adults" type="number" min="1" max="40" value="2" inputmode="numeric"><button type="button" data-step="adults" data-d="1" aria-label="More adults">+</button></div>
               </div>
               <div>
-                <label class="label" for="children">Children</label>
+                <label class="label" for="children">Children under 5</label>
                 <div class="stepper"><button type="button" data-step="children" data-d="-1" aria-label="Fewer children">−</button><input id="children" name="children" type="number" min="0" max="20" value="0" inputmode="numeric"><button type="button" data-step="children" data-d="1" aria-label="More children">+</button></div>
               </div>
             </div>
@@ -237,6 +244,13 @@
           <div class="mt-4 pt-4 border-t border-white/15 text-sm">
             <p class="text-slate-300">Price</p>
             <p id="sumPrice" class="font-semibold">Choose a tour to see the price.</p>
+            <dl id="priceCalc" class="calc hidden" aria-live="polite">
+              <div><dt id="calcAdultsLabel">Adults</dt><dd id="calcAdults"></dd></div>
+              <div id="calcKidsRow"><dt id="calcKidsLabel">Children under 5 (50%)</dt><dd id="calcKids"></dd></div>
+              <div class="calc-total"><dt>Estimated total</dt><dd id="calcTotal"></dd></div>
+              <div id="calcDepositRow" class="calc-sub"><dt id="calcDepositLabel">Deposit</dt><dd id="calcDeposit"></dd></div>
+              <div id="calcBalanceRow" class="calc-sub"><dt>Rest on arrival</dt><dd id="calcBalance"></dd></div>
+            </dl>
             <p id="sumPriceNote" class="text-xs text-slate-300 mt-1"></p>
           </div>
         </div>
@@ -273,7 +287,7 @@
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-wrap justify-between gap-2"><span>&copy; 2026 Past Enlighten Tour Guides. All rights reserved.</span><span><a href="reviews.html" class="underline">Reviews</a> &middot; Fort Road, Walled City, Lahore &middot; +92 334 4770455</span></div>
   </footer>
 
-<script src="js/prices.js"></script>
+<script src="js/prices.js?v=20261021-3"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/booking-confirm.js"></script>
 <script>
@@ -383,15 +397,43 @@
     var st = form.querySelector('input[name="style"]:checked');
     $('sumStyle').textContent = st ? st.value : '—';
     $('tourInfo').textContent = t ? (t.duration + ' · starts from ' + t.start) : '';
-    // Price: only the public SOLO price is shown; group prices are sent in writing by the team
+    // ---- Price calculator (prices from js/prices.js; deposit % from the team's booking terms)
     var P = window.PE_PRICES && t ? window.PE_PRICES.tours[PRICE_ID[t.id]] : null;
-    var adults = parseInt($('adults').value, 10) || 1, kids = parseInt($('children').value, 10) || 0;
+    var adults = Math.max(1, parseInt($('adults').value, 10) || 1), kids = Math.max(0, parseInt($('children').value, 10) || 0);
+    var calc = $('priceCalc'), usd = function (n) { return 'US$' + Math.round(n).toLocaleString('en-US'); };
     if (P) {
-      $('sumPrice').textContent = 'US$' + P.solo.toLocaleString('en-US') + ' per person (solo traveller)';
-      $('sumPriceNote').textContent = (adults + kids > 1)
-        ? 'You are ' + (adults + kids) + ' travellers, so your price per person will be lower. We confirm your group price in writing before you pay.'
-        : 'Includes ' + P.includes.slice(0, 3).join(', ') + '. Final price confirmed in writing.';
+      var nPeople = adults + kids;
+      var shared = st && st.value === 'Small group';
+      var tier = shared ? 'shared' : nPeople === 1 ? 'solo' : nPeople === 2 ? 'twoTraveller' : nPeople <= 4 ? 'threeToFour' : nPeople <= 8 ? 'fiveToEight' : 'ninePlus';
+      var tierLabel = shared ? 'small-group price' : { solo: 'solo price', twoTraveller: 'price for 2', threeToFour: 'price for 3–4', fiveToEight: 'price for 5–8', ninePlus: 'price for 9+' }[tier];
+      var pp = (P.prices && Number.isFinite(P.prices[tier])) ? P.prices[tier] : (nPeople === 1 ? P.solo : null);
+      if (pp != null) {
+        var adultTotal = adults * pp, kidTotal = kids * pp * 0.5, total = adultTotal + kidTotal;
+        $('sumPrice').textContent = usd(pp) + ' per person (' + tierLabel + ')';
+        $('calcAdultsLabel').textContent = adults + ' adult' + (adults > 1 ? 's' : '') + ' × ' + usd(pp);
+        $('calcAdults').textContent = usd(adultTotal);
+        $('calcKidsRow').hidden = !kids;
+        $('calcKidsLabel').textContent = kids + ' child' + (kids > 1 ? 'ren' : '') + ' under 5 × ' + usd(pp * 0.5);
+        $('calcKids').textContent = usd(kidTotal);
+        $('calcTotal').textContent = usd(total);
+        var dep = window.PE_TERMS && window.PE_TERMS.terms && window.PE_TERMS.terms.deposit;
+        var pct = dep && (dep.match(/(\d{1,2})\s*%/) || [])[1];
+        $('calcDepositRow').hidden = $('calcBalanceRow').hidden = !pct;
+        if (pct) {
+          $('calcDepositLabel').textContent = 'Deposit (' + pct + '%)';
+          var depAmt = Math.round(total * pct / 100);
+          $('calcDeposit').textContent = usd(depAmt);
+          $('calcBalance').textContent = usd(Math.round(total) - depAmt);
+        }
+        calc.classList.remove('hidden');
+        $('sumPriceNote').innerHTML = 'Estimate for a ' + (shared ? 'small-group' : 'private') + ' tour, in US dollars. Children aged 5 and over count as adults. Your final price is confirmed in writing before you pay. <a href="booking-payment.html" class="underline">Payment terms</a>';
+      } else {
+        calc.classList.add('hidden');
+        $('sumPrice').textContent = usd(P.solo) + ' per person (solo traveller)';
+        $('sumPriceNote').textContent = 'Your group price is confirmed in writing before you pay.';
+      }
     } else {
+      calc.classList.add('hidden');
       $('sumPrice').textContent = t ? 'Quoted in writing for your dates and group size.' : 'Choose a tour to see the price.';
       $('sumPriceNote').textContent = '';
     }
@@ -404,6 +446,7 @@
       note.classList.remove('hidden');
     } else note.classList.add('hidden');
   }
+  if (window.PEBackend && PEBackend.terms) { PEBackend.terms(); document.addEventListener('pe:terms', function () { update(); }); }
   form.addEventListener('input', function () { update(); saveDraft(); });
   form.addEventListener('change', function () { update(); saveDraft(); });
   update();
