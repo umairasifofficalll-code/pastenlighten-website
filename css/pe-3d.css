@@ -1,29 +1,24 @@
 /* ==========================================================================
-   PAST ENLIGHTEN — FULL 3D ARCHITECTURAL OVERHAUL (pe-3d.css)
-   Transforms the flat 2D layout into a visible, sculptural 3D web experience
+   PAST ENLIGHTEN — depth styling (pe-3d.css), performance version
+   Keeps the gold & emerald "raised" look (layered edge shadows) without tilting,
+   perspective or translateZ, which made text overlap, looked blurry and cost a lot
+   of work on every scroll and mouse move. Only transform/opacity are animated.
    ========================================================================== */
 
-:root {
-  --pe-perspective: 1200px;
-}
-
-/* 1. SCULPTURAL 3D STAGE BACKGROUNDS & PERSPECTIVE FLOOR */
+/* 1. PAGE BACKGROUND */
 body {
   background:
-    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 85% 28%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.10) 0%, transparent 40%),
+    radial-gradient(circle at 85% 28%, rgba(16, 185, 129, 0.10) 0%, transparent 45%),
     linear-gradient(180deg, #061a14 0%, #0b2920 18%, #eef5f2 18.5%, #e6f0ec 100%) !important;
-  perspective: 1400px;
   overflow-x: hidden;
 }
 
-/* 2. 3D HERO STAGE WITH REAL-TIME THREE.JS 3D GLOBE & FLOATING 3D DECK */
+/* 2. HERO */
 #home {
   min-height: 690px !important;
-  perspective: 1400px;
-  transform-style: preserve-3d;
   border-bottom: 4px solid #d97706;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
 }
 
 #pe3dHeroCanvas {
@@ -35,7 +30,7 @@ body {
   pointer-events: none;
 }
 
-/* 3D Perspective Floor Grid inside Hero */
+/* Static perspective floor grid (drawn once, not animated) */
 #home::after {
   content: '';
   position: absolute;
@@ -44,189 +39,117 @@ body {
   bottom: -15%;
   height: 58%;
   background-image:
-    linear-gradient(to right, rgba(245, 158, 11, 0.22) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 158, 11, 0.22) 1px, transparent 1px);
+    linear-gradient(to right, rgba(245, 158, 11, 0.16) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 158, 11, 0.16) 1px, transparent 1px);
   background-size: 56px 56px;
   transform: perspective(550px) rotateX(68deg);
   transform-origin: center bottom;
-  mask-image: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 85%);
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 85%);
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 85%);
   z-index: 2;
   pointer-events: none;
-  animation: peGridMove 12s linear infinite;
 }
 
-@keyframes peGridMove {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 56px; }
-}
+#home > .relative.z-10 { z-index: 15 !important; }
 
-#home > .relative.z-10 {
-  z-index: 15 !important;
-  transform-style: preserve-3d;
-  transform: perspective(1300px) rotateX(4deg) translateZ(20px);
-  transition: transform 0.2s ease-out;
-}
-
-/* Massive 3D Extruded Gold & Emerald Headline */
+/* Headline: raised gold edge, flat (no 3D push), so it never covers the badges above it */
 #home h1 {
-  transform: translateZ(75px);
   letter-spacing: 0.04em;
   text-shadow:
     0 1px 0 #d97706,
     0 2px 0 #b45309,
-    0 3px 0 #92400e,
-    0 4px 0 #78350f,
-    0 5px 0 #061a14,
-    0 6px 0 #061a14,
-    0 7px 0 #04120e,
-    0 8px 0 #04120e,
-    0 22px 40px rgba(0, 0, 0, 0.85),
-    0 0 45px rgba(245, 158, 11, 0.45) !important;
+    0 3px 0 #78350f,
+    0 4px 0 #061a14,
+    0 14px 28px rgba(0, 0, 0, 0.75) !important;
 }
-
+/* The gold gradient line: shadows behind transparent text made it look muddy */
 #home h1 span {
-  display: inline-block;
-  transform: translateZ(40px) scale(1.04);
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.8));
+  text-shadow: none !important;
+  filter: drop-shadow(0 3px 0 rgba(6, 26, 20, 0.9)) drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
 }
 
-/* 3D Floating Interactive Hero Stat Blocks (Visibly Tilted in 3D Space) */
-#home .grid.grid-cols-2.sm\:grid-cols-4 {
-  perspective: 1100px;
-  transform-style: preserve-3d;
-  gap: 16px !important;
+/* Hero glass elements: the blur was recalculated every frame over the moving photo.
+   Solid tinted panels look the same and cost nothing. */
+#home [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
+#home .bg-white\/10 { background-color: rgba(6, 26, 20, 0.55) !important; }
+#home .bg-white\/15 { background-color: rgba(6, 26, 20, 0.45) !important; }
+#home .bg-black\/40 { background-color: rgba(0, 0, 0, 0.55) !important; }
+#home .bg-accent-gold\/20 { background-color: rgba(60, 35, 5, 0.6) !important; }
 
+/* Hero stat blocks */
+#home .grid.grid-cols-2.sm\:grid-cols-4 { gap: 16px !important; }
 #home .grid.grid-cols-2.sm\:grid-cols-4 > div {
-  background: linear-gradient(145deg, rgba(15, 56, 44, 0.88) 0%, rgba(6, 26, 20, 0.95) 100%) !important;
+  background: linear-gradient(145deg, rgba(15, 56, 44, 0.92) 0%, rgba(6, 26, 20, 0.96) 100%) !important;
   border: 1.5px solid rgba(251, 191, 36, 0.65) !important;
   border-radius: 16px !important;
   padding: 14px !important;
-  transform: perspective(800px) rotateX(12deg) rotateY(-6deg) translateZ(35px);
   box-shadow:
-    -6px 8px 0 #061a14,
-    -8px 10px 0 #d97706,
-    0 22px 38px rgba(0, 0, 0, 0.7),
-    inset 0 2px 3px rgba(255, 255, 255, 0.35) !important;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease !important;
+    0 5px 0 #061a14,
+    0 7px 0 #d97706,
+    0 16px 28px rgba(0, 0, 0, 0.5) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
 }
+#home .grid.grid-cols-2.sm\:grid-cols-4 > div:hover { transform: translateY(-4px); }
 
-#home .grid.grid-cols-2.sm\:grid-cols-4 > div:nth-child(even) {
-  transform: perspective(800px) rotateX(12deg) rotateY(6deg) translateZ(35px);
-  box-shadow:
-    6px 8px 0 #061a14,
-    8px 10px 0 #d97706,
-    0 22px 38px rgba(0, 0, 0, 0.7),
-    inset 0 2px 3px rgba(255, 255, 255, 0.35) !important;
-}
-
-#home .grid.grid-cols-2.sm\:grid-cols-4 > div:hover {
-  transform: perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(65px) translateY(-8px) scale(1.06) !important;
-  box-shadow:
-    0 10px 0 #061a14,
-    0 13px 0 #f59e0b,
-    0 30px 55px rgba(0, 0, 0, 0.85),
-    0 0 30px rgba(245, 158, 11, 0.5) !important;
-}
-
-/* 3D Floating Cockpit Search Console */
+/* Hero search panel */
 #home > .relative.z-10 > .mt-6.bg-white\/95 {
-  transform: perspective(1000px) rotateX(14deg) translateZ(55px);
   background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%) !important;
   border: 2px solid #f59e0b !important;
   border-radius: 22px !important;
   box-shadow:
-    0 10px 0 #0f382c,
-    0 14px 0 #d97706,
-    0 35px 65px rgba(0, 0, 0, 0.8),
-    inset 0 3px 4px rgba(255, 255, 255, 1) !important;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+    0 8px 0 #0f382c,
+    0 11px 0 #d97706,
+    0 26px 48px rgba(0, 0, 0, 0.55) !important;
 }
 
-#home > .relative.z-10 > .mt-6.bg-white\/95:hover {
-  transform: perspective(1000px) rotateX(2deg) translateZ(80px) translateY(-6px);
-}
-
-/* 3. FLOATING 3D NAVBAR DECK */
+/* 3. NAVBAR */
 header nav.sticky {
   margin: 10px auto !important;
   max-width: 96% !important;
   border-radius: 20px !important;
   border: 1.5px solid rgba(217, 119, 6, 0.45) !important;
-  background: rgba(255, 255, 255, 0.94) !important;
-  backdrop-filter: blur(18px) !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;          /* a blurred sticky bar is re-blurred on every scroll frame */
   box-shadow:
-    0 6px 0 #0f382c,
-    0 8px 0 #d97706,
-    0 20px 40px rgba(6, 26, 20, 0.25) !important;
-  transform: translateZ(60px);
+    0 5px 0 #0f382c,
+    0 7px 0 #d97706,
+    0 16px 30px rgba(6, 26, 20, 0.2) !important;
 }
 
-/* 4. 3D SCULPTURAL SECTIONS & HEADINGS */
-section {
-  position: relative;
-  transform-style: preserve-3d;
-}
-
+/* 4. SECTION HEADINGS (flat, with a soft raised shadow) */
 section h2.font-cinzel {
-  display: inline-block;
-  transform: perspective(600px) rotateX(8deg) translateZ(20px);
   text-shadow:
     0 1px 0 #ffffff,
     0 2px 0 #d6d3d1,
-    0 3px 0 #a8a29e,
-    0 8px 18px rgba(6, 26, 20, 0.2);
+    0 6px 14px rgba(6, 26, 20, 0.16);
 }
-
 #customizer h2.font-cinzel {
   text-shadow:
     0 1px 0 #d97706,
     0 2px 0 #92400e,
-    0 3px 0 #061a14,
-    0 10px 25px rgba(0, 0, 0, 0.7);
+    0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* 5. TRUE 3D EXTRUDED CARDS (Visibly 3D Even Before Hovering!) */
+/* 5. CARDS: straight, with a raised gold & green edge; lift slightly on hover */
 .tilt-card,
 .tour-card,
 main article.rounded-2xl,
 main a.group.rounded-2xl,
 #lahore-guides a.group {
   position: relative;
-  transform-style: preserve-3d;
   border-radius: 22px !important;
-  border: 2px solid rgba(15, 56, 44, 0.22) !important;
+  border: 2px solid rgba(15, 56, 44, 0.18) !important;
   background: linear-gradient(165deg, #ffffff 0%, #f4fbf7 100%) !important;
-  /* Visible 3D physical slab thickness at rest */
-  transform: perspective(1100px) rotateX(4deg) rotateY(-3deg) translateY(-4px);
+  transform: none;
   box-shadow:
-    -5px 7px 0 #0f382c,
-    -7px 10px 0 #d97706,
-    -12px 24px 38px rgba(6, 26, 20, 0.24),
-    inset 0 2px 2px rgba(255, 255, 255, 0.95) !important;
-  transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.3s ease !important;
-}
-
-.tilt-card:nth-child(even),
-.tour-card:nth-child(even) {
-  transform: perspective(1100px) rotateX(4deg) rotateY(3deg) translateY(-4px);
-  box-shadow:
-    5px 7px 0 #0f382c,
-    7px 10px 0 #d97706,
-    12px 24px 38px rgba(6, 26, 20, 0.24),
-    inset 0 2px 2px rgba(255, 255, 255, 0.95) !important;
-}
-
-.tilt-card.is-tilting,
-.tour-card.is-tilting,
-main article.rounded-2xl.is-tilting,
-main a.group.rounded-2xl.is-tilting {
-  transition: transform 0.08s linear, box-shadow 0.12s ease !important;
-  z-index: 35 !important;
+    0 5px 0 #0f382c,
+    0 7px 0 #d97706,
+    0 16px 28px rgba(6, 26, 20, 0.16) !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
 
 .tilt-card:hover,
@@ -234,203 +157,101 @@ main a.group.rounded-2xl.is-tilting {
 main article.rounded-2xl:hover,
 main a.group.rounded-2xl:hover,
 #lahore-guides a.group:hover {
+  transform: translateY(-4px);
   border-color: #f59e0b !important;
   box-shadow:
-    0 12px 0 #0f382c,
-    0 16px 0 #d97706,
-    0 34px 60px rgba(6, 26, 20, 0.38),
-    0 0 28px rgba(245, 158, 11, 0.32),
-    inset 0 2px 4px rgba(255, 255, 255, 1) !important;
+    0 8px 0 #0f382c,
+    0 10px 0 #d97706,
+    0 24px 40px rgba(6, 26, 20, 0.24) !important;
 }
 
-/* 3D Pop-Out Image Frame Inside Cards */
 .tour-card .slider-track,
 main article.rounded-2xl > img,
 main a.group.rounded-2xl > img {
   border-bottom: 3px solid #d97706;
-  box-shadow: 0 8px 20px rgba(6, 26, 20, 0.22);
 }
 
-/* 3D Floating Badges & Titles Inside Cards */
 .tour-card .slider-track span.absolute,
 .tour-card .frontend-badge {
-  transform: translateZ(42px);
-  box-shadow:
-    0 4px 0 #061a14,
-    0 10px 20px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 0 3px 0 #061a14, 0 6px 12px rgba(0, 0, 0, 0.35) !important;
   border: 1px solid rgba(251, 191, 36, 0.65);
 }
 
-.tour-card h3,
-.tilt-card h3 {
-  transform: translateZ(30px);
-}
+/* Tours slider: room for the card edges */
+.tours-track { padding: 18px 12px 30px !important; }
 
-/* 3D Specular Gold Glare Overlay */
-.pe-3d-glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 30;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  background: radial-gradient(
-    circle at var(--glare-x, 50%) var(--glare-y, 50%),
-    rgba(255, 251, 235, 0.55) 0%,
-    rgba(245, 158, 11, 0.18) 35%,
-    transparent 70%
-  );
-  mix-blend-mode: overlay;
-}
-
-.tilt-card:hover .pe-3d-glare,
-.tour-card:hover .pe-3d-glare {
-  opacity: 1;
-}
-
-/* 6. 3D COVERFLOW CAROUSEL FOR TOURS TRACK */
-.tours-track {
-  perspective: 1400px !important;
-  padding: 24px 16px 36px !important;
-}
-
-/* 7. 3D EXTRUDED PUSH-BUTTONS (Visible 3D Keycap Depth) */
+/* 6. BUTTONS: raised keycap edge, small press on click */
 .btn-shine,
 .tour-whatsapp-cta,
 .cat-pill,
 .enhance-chip {
   position: relative;
-  transform: translateY(-2px) translateZ(20px);
   box-shadow:
-    0 5px 0 #061a14,
-    0 7px 0 #d97706,
-    0 12px 20px rgba(6, 26, 20, 0.3),
-    inset 0 1px 1px rgba(255, 255, 255, 0.45) !important;
-  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease !important;
+    0 4px 0 #061a14,
+    0 6px 0 #d97706,
+    0 10px 16px rgba(6, 26, 20, 0.25) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
-
 .btn-shine:hover,
 .tour-whatsapp-cta:hover,
 .cat-pill:hover,
-.enhance-chip:hover {
-  transform: translateY(-6px) translateZ(34px) scale(1.04) !important;
-  box-shadow:
-    0 8px 0 #061a14,
-    0 11px 0 #f59e0b,
-    0 18px 28px rgba(6, 26, 20, 0.42),
-    inset 0 2px 2px rgba(255, 255, 255, 0.65) !important;
-}
-
+.enhance-chip:hover { transform: translateY(-2px) !important; }
 .btn-shine:active,
 .tour-whatsapp-cta:active,
 .cat-pill:active,
 .enhance-chip:active {
-  transform: translateY(2px) translateZ(10px) !important;
+  transform: translateY(3px) !important;
   box-shadow:
-    0 2px 0 #061a14,
-    0 3px 0 #d97706,
-    0 5px 10px rgba(6, 26, 20, 0.25) !important;
+    0 1px 0 #061a14,
+    0 2px 0 #d97706,
+    0 4px 8px rgba(6, 26, 20, 0.2) !important;
 }
 
-/* 8. 3D FLOATING ICON CUBES */
+/* 7. ICON TILES */
 #services .tilt-card > div:first-child,
 #lahore-guides a.group > div.w-10.h-10 {
-  transform: perspective(400px) rotateX(14deg) rotateY(-14deg) translateZ(38px);
   border: 2px solid #f59e0b;
-  box-shadow:
-    -4px 6px 0 #061a14,
-    -6px 8px 0 #d97706,
-    0 16px 26px rgba(6, 26, 20, 0.32) !important;
+  box-shadow: 0 3px 0 #061a14, 0 5px 0 #d97706, 0 10px 18px rgba(6, 26, 20, 0.25) !important;
 }
 
-#services .tilt-card:hover > div:first-child {
-  transform: perspective(400px) rotateX(-10deg) rotateY(16deg) translateZ(60px) scale(1.15);
-}
-
-/* 9. 3D MAP, FILTER CONSOLE & CUSTOMIZER */
+/* 8. MAP, FILTERS & CUSTOMIZER */
 #frontendTourTools,
 #destinationMap {
   border-radius: 24px !important;
   border: 2px solid #0f382c !important;
-  transform: perspective(1200px) rotateX(2.5deg);
-  box-shadow:
-    0 9px 0 #0f382c,
-    0 12px 0 #d97706,
-    0 26px 50px rgba(6, 26, 20, 0.25) !important;
+  box-shadow: 0 6px 0 #0f382c, 0 8px 0 #d97706, 0 20px 36px rgba(6, 26, 20, 0.2) !important;
 }
-
 #customizer .bg-white\/95 {
   border-radius: 26px !important;
   border: 2.5px solid #f59e0b !important;
-  transform: perspective(1200px) rotateX(3deg);
-  box-shadow:
-    0 12px 0 #0f382c,
-    0 16px 0 #d97706,
-    0 40px 80px rgba(0, 0, 0, 0.75) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  background-color: #fff !important;
+  box-shadow: 0 8px 0 #0f382c, 0 11px 0 #d97706, 0 30px 60px rgba(0, 0, 0, 0.55) !important;
 }
 
-/* 10. 3D GALLERY FRAMES */
+/* 9. GALLERY FRAMES */
 figure.group.relative.overflow-hidden.rounded-2xl {
   border: 2px solid #0f382c !important;
-  transform: perspective(900px) rotateX(6deg) rotateY(-4deg);
-  box-shadow:
-    -5px 7px 0 #0f382c,
-    -7px 10px 0 #d97706,
-    0 20px 35px rgba(6, 26, 20, 0.28) !important;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease !important;
+  box-shadow: 0 5px 0 #0f382c, 0 7px 0 #d97706, 0 16px 28px rgba(6, 26, 20, 0.22) !important;
+  transition: transform 0.25s ease !important;
 }
+figure.group.relative.overflow-hidden.rounded-2xl:hover { transform: translateY(-4px); }
 
-figure.group.relative.overflow-hidden.rounded-2xl:hover {
-  transform: perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(45px) translateY(-10px) scale(1.05) !important;
-  box-shadow:
-    0 12px 0 #0f382c,
-    0 15px 0 #f59e0b,
-    0 32px 55px rgba(6, 26, 20, 0.48) !important;
-  z-index: 25;
-}
-
-/* 11. 3D INTERACTIVE FLOATING GLOBE / MONUMENT WIDGET IN HERO */
-.pe-3d-floating-orb {
-  position: absolute;
-  right: 4%;
-  top: 14%;
-  width: 150px;
-  height: 150px;
-  z-index: 8;
-  pointer-events: none;
-  display: none;
-}
-
-@media (min-width: 1024px) {
-  .pe-3d-floating-orb {
-    display: block;
+/* 10. Animations only when they're welcome */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+  #pe3dHeroCanvas { display: none; }
+}
+/* Phones: keep the hero photo still (the slow zoom repaints a very large image) */
+@media (max-width: 767px) {
+  .hero-parallax-bg { animation: none !important; will-change: auto !important; }
 }
 
-/* 3D Badge in Top Bar */
-.pe-3d-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #d97706 100%);
-  color: #061a14;
-  box-shadow: 0 3px 0 #78350f, 0 6px 14px rgba(245, 158, 11, 0.5);
-  cursor: pointer;
-}
-
-/* Disable 3D when toggled off */
-html.pe-3d-disabled .tilt-card,
-html.pe-3d-disabled .tour-card,
-html.pe-3d-disabled #home > .relative.z-10,
-html.pe-3d-disabled #home .grid.grid-cols-2.sm\:grid-cols-4 > div,
-html.pe-3d-disabled #home > .relative.z-10 > .mt-6.bg-white\/95,
-html.pe-3d-disabled figure.group.relative.overflow-hidden.rounded-2xl {
-  transform: none !important;
-}
+/* Left-over class from the old 3D toggle */
+.pe-3d-badge { display: none !important; }
