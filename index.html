@@ -428,7 +428,7 @@ main article a:hover { color: #92400e; }
 <style id="pe-site-image-motion">img{transition:transform .65s ease,filter .65s ease}a:hover img{transform:scale(1.025);filter:saturate(1.08)}@media(prefers-reduced-motion:reduce){img{transition:none}a:hover img{transform:none}}</style>  <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="css/pe-3d.css?v=20261026-3">
+  <link rel="stylesheet" href="css/pe-3d.css?v=20261026-4">
 </head>
 
 <body class="font-sans text-slate-800 bg-[#faf8f5] antialiased selection:bg-brand-700 selection:text-white overflow-x-hidden m-0 p-0">
@@ -2056,12 +2056,10 @@ main article a:hover { color: #92400e; }
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="bg-gradient-to-br from-brand-900 to-brand-800 rounded-2xl p-6 sm:p-10 text-white shadow-xl flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
         
-        <div class="w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden border-4 border-accent-amber/60 shadow-xl flex-shrink-0">
-          <img 
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" 
-            alt="Bilawal Lead Heritage Tour Guide" 
-            class="w-full h-full object-cover"
-          loading="lazy" decoding="async">
+        <div class="w-44 h-56 sm:w-52 sm:h-64 rounded-2xl overflow-hidden border-4 border-accent-amber/70 shadow-xl flex-shrink-0 bg-brand-950">
+          <img src="images/bilawal.webp" srcset="images/bilawal-sm.webp 300w, images/bilawal.webp 567w" sizes="(min-width:640px) 208px, 176px"
+            alt="Bilawal, founder of Past Enlighten and lead heritage guide, in Lahore"
+            class="w-full h-full object-cover object-[50%_20%]" width="567" height="832" loading="lazy" decoding="async">
         </div>
 
         <div class="text-center lg:text-left flex-1">
@@ -3866,7 +3864,8 @@ main article a:hover { color: #92400e; }
     (function () {
       const init = () => {
         const track = document.getElementById('toursContainer'); if (!track) return;
-        track.addEventListener('scroll', updateTourSlider, { passive: true });
+        let sliderQueued = false;
+        track.addEventListener('scroll', () => { if (!sliderQueued) { sliderQueued = true; requestAnimationFrame(() => { sliderQueued = false; updateTourSlider(); }); } }, { passive: true });
         window.addEventListener('resize', updateTourSlider);
         track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); slideTours(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); slideTours(-1); } });
         // drag with the mouse on desktop
@@ -4042,6 +4041,6 @@ document.addEventListener('keydown',function(event){if(event.key==='Escape')clos
 </script>
 
 
-  <script src="js/pe-3d.js?v=20261026-2" defer></script>
+  <script src="js/pe-3d.js?v=20261026-4" defer></script>
 </body>
 </html>

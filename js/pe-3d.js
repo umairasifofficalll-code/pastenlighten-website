@@ -8,7 +8,7 @@
  *    out of view or the browser tab is hidden;
  *  - lanterns are pre-drawn once and copied (no gradients built every frame);
  *  - skipped on small phones, on "reduce motion" and on data-saver connections.
- * Cards and the hero text no longer tilt (no mouse-driven 3D transforms).
+ * The tours slider has a gentle 3D turn while scrolling; nothing else tilts.
  */
 (function () {
   'use strict';
@@ -133,8 +133,51 @@
     update();
   }
 
+  /* Tours slider: gentle 3D turn towards the centre while scrolling (the only 3D motion on the site).
+     Card positions are measured once (and again on resize / when cards change), so scrolling does
+     no layout work: one requestAnimationFrame per frame writes two CSS variables per visible card. */
+  function initTourCoverflow() {
+    var track = document.getElementById('toursContainer');
+    if (!track || reduceMotion) return;
+    var cards = [], centres = [], queued = false, measuring = false, scrollTimer;
+    function measure() {
+      measuring = false;
+      cards = Array.prototype.filter.call(track.children, function (c) { return c.classList.contains('tour-card') && !c.classList.contains('is-hidden'); });
+      // layout positions (ignore transforms); the track is position:relative so offsetLeft is in scroll coordinates
+      centres = cards.map(function (c) { return c.offsetLeft + c.offsetWidth / 2; });
+      paint();
+    }
+    function paint() {
+      queued = false;
+      var half = track.clientWidth / 2, mid = track.scrollLeft + half;
+      for (var i = 0; i < cards.length; i++) {
+        var d = (centres[i] - mid) / half;
+        if (d < -1.6 || d > 1.6) { if (cards[i]._pe !== 'off') { cards[i].style.setProperty('--pe-ry', '0deg'); cards[i].style.setProperty('--pe-tz', '0px'); cards[i]._pe = 'off'; } continue; }
+        d = Math.max(-1.2, Math.min(1.2, d));
+        var ry = (-d * 11).toFixed(1) + 'deg', tz = ((1 - Math.min(1, Math.abs(d))) * 18).toFixed(1) + 'px';
+        if (cards[i]._pe !== ry + tz) { cards[i].style.setProperty('--pe-ry', ry); cards[i].style.setProperty('--pe-tz', tz); cards[i]._pe = ry + tz; }
+      }
+    }
+    function onScroll() {
+      track.classList.add('pe-scrolling');
+      clearTimeout(scrollTimer); scrollTimer = setTimeout(function () { track.classList.remove('pe-scrolling'); }, 140);
+      if (!queued) { queued = true; requestAnimationFrame(paint); }
+    }
+    function remeasure() { if (!measuring) { measuring = true; requestAnimationFrame(measure); } }
+    track.addEventListener('scroll', onScroll, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(track); else window.addEventListener('resize', remeasure);
+    new MutationObserver(function (recs) {
+      for (var i = 0; i < recs.length; i++) if (recs[i].target !== track || recs[i].type === 'childList') { remeasure(); return; }
+    }).observe(track, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    document.addEventListener('pe:catalog', remeasure);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { track.classList.toggle('pe-offscreen', !es[0].isIntersecting); }, { rootMargin: '100px' }).observe(track);
+    }
+    measure();
+  }
+
   function start() {
-    var go = function () { try { initHero(); } catch (e) { /* decoration only */ } };
+    var go = function () { try { initHero(); } catch (e) { /* decoration only */ } try { initTourCoverflow(); } catch (e) {} };
     if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 300);
   }
   if (document.readyState === 'complete') start(); else window.addEventListener('load', start);

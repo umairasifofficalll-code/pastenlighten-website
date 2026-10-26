@@ -274,3 +274,32 @@ html.dark-mode .tour-card p { color: #d1d5db !important; }
 html.dark-mode #lahore-guides a.group .text-brand-800 { color: #6ee7b7 !important; }
 html.dark-mode #home > .relative.z-10 > .mt-6.bg-white\/95,
 html.dark-mode #customizer .bg-white\/95 { background: #10221c !important; }
+
+/* 12. TOURS SLIDER: the only place with 3D motion.
+   Cards turn gently towards the centre as the row scrolls (set by js/pe-3d.js through
+   --pe-ry / --pe-tz) and lift on hover. Each card is its own GPU layer, so scrolling
+   only moves layers and never repaints the cards. */
+#toursContainer { perspective: none; position: relative; }
+#toursContainer > .tour-card {
+  --pe-ry: 0deg; --pe-tz: 0px; --pe-lift: 0px;
+  transform: perspective(1100px) rotateY(var(--pe-ry)) translateZ(var(--pe-tz)) translateY(var(--pe-lift));
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style;
+  transition: transform 0.18s ease-out, border-color 0.25s ease !important;
+}
+#toursContainer > .tour-card:hover {
+  --pe-lift: -6px;
+  transform: perspective(1100px) rotateY(var(--pe-ry)) translateZ(var(--pe-tz)) translateY(var(--pe-lift));
+  box-shadow:
+    0 5px 0 #0f382c,
+    0 7px 0 #d97706,
+    0 16px 28px rgba(6, 26, 20, 0.16) !important;          /* same shadow as at rest: no repaint on hover */
+}
+#toursContainer.pe-scrolling > .tour-card { transition: border-color 0.25s ease !important; }
+#toursContainer .slider-track img { transition: transform 0.4s ease !important; }
+/* Image strip on the first card only moves while the slider is on screen */
+#toursContainer.pe-offscreen .animate-slider-rtl { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  #toursContainer > .tour-card { transform: none !important; will-change: auto; }
+}
