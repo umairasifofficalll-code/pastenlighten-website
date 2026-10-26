@@ -290,6 +290,7 @@
 
 <script src="js/prices.js?v=20261021-3"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
+<script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/booking-confirm.js"></script>
 <script>
 (function () {
@@ -326,14 +327,20 @@
   var form = $('bookingForm');
   var tourSel = $('tour');
 
-  // ---- build tour list
-  var ph = new Option('Choose a tour…', ''); ph.disabled = true; ph.selected = true; tourSel.add(ph);
-  var groups = {};
-  TOURS.forEach(function (t) {
-    if (!groups[t.group]) { groups[t.group] = document.createElement('optgroup'); groups[t.group].label = t.group; tourSel.appendChild(groups[t.group]); }
-    groups[t.group].appendChild(new Option(t.name, t.id));
-  });
+  // ---- build tour list (the built-in list above, replaced by the live list from the admin dashboard when it loads)
+  function buildSelect() {
+    var keep = tourSel.value;
+    tourSel.innerHTML = '';
+    var ph = new Option('Choose a tour…', ''); ph.disabled = true; tourSel.add(ph);
+    var groups = {};
+    TOURS.forEach(function (t) {
+      if (!groups[t.group]) { groups[t.group] = document.createElement('optgroup'); groups[t.group].label = t.group; tourSel.appendChild(groups[t.group]); }
+      groups[t.group].appendChild(new Option(t.name, t.id));
+    });
+    tourSel.value = keep && tourById(keep) ? keep : '';
+  }
   var tourById = function (id) { return TOURS.find(function (t) { return t.id === id; }); };
+  buildSelect();
 
   // ---- dates
   var todayISO = (function () { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); })();
@@ -362,8 +369,9 @@
   }
   // ?tour= from links elsewhere on the site wins over a saved draft
   var params = new URLSearchParams(location.search);
-  var wanted = params.get('tour');
+  var wanted = params.get('tour'), tourTouched = false;
   if (wanted && tourById(wanted)) tourSel.value = wanted;
+  tourSel.addEventListener('change', function () { tourTouched = true; });
   if (params.get('date') && params.get('date') >= todayISO) $('date').value = params.get('date');
 
   // ---- steppers
@@ -399,7 +407,7 @@
     $('sumStyle').textContent = st ? st.value : '—';
     $('tourInfo').textContent = t ? (t.duration + ' · starts from ' + t.start) : '';
     // ---- Price calculator (prices from js/prices.js; deposit % from the team's booking terms)
-    var P = window.PE_PRICES && t ? window.PE_PRICES.tours[PRICE_ID[t.id]] : null;
+    var P = window.PE_PRICES && t ? window.PE_PRICES.tours[t.priceId || PRICE_ID[t.id]] : null;
     var adults = Math.max(1, parseInt($('adults').value, 10) || 1), kids = Math.max(0, parseInt($('children').value, 10) || 0);
     var calc = $('priceCalc'), usd = function (n) { return 'US$' + Math.round(n).toLocaleString('en-US'); };
     if (P) {
@@ -448,6 +456,19 @@
     } else note.classList.add('hidden');
   }
   if (window.PEBackend && PEBackend.terms) { PEBackend.terms(); document.addEventListener('pe:terms', function () { update(); }); }
+  // Live tours & prices saved by the team in the admin dashboard (js/pe-catalog.js)
+  if (window.PECatalog) PECatalog.onChange(function (P) {
+    var GROUP = { 'Kashmir': 'Northern Pakistan', 'Other': 'More tours' };
+    var custom = TOURS.filter(function (t) { return t.id === 'custom'; });
+    TOURS = Object.keys(P).map(function (id) {
+      var t = P[id];
+      return { group: GROUP[t.region] || t.region, id: t.slug || id, priceId: id, name: t.name, duration: t.duration, start: t.start || '—', multi: t.multi, north: t.north };
+    }).concat(custom);
+    buildSelect();
+    if (wanted && !tourTouched && tourById(wanted)) tourSel.value = wanted;
+    else if (!tourSel.value && draft && draft.tour && tourById(draft.tour)) tourSel.value = draft.tour;
+    update();
+  });
   form.addEventListener('input', function () { update(); saveDraft(); });
   form.addEventListener('change', function () { update(); saveDraft(); });
   update();

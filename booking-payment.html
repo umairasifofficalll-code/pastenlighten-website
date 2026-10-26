@@ -103,16 +103,21 @@
   </main>
   <footer class="bg-brand-950 text-slate-400 text-xs"><div class="max-w-4xl mx-auto px-4 py-6">&copy; 2026 Past Enlighten Tour Guides. All rights reserved. · <a href="privacy.html" class="underline">Privacy</a> · <a href="booking.html" class="underline">Book a tour</a></div></footer>
 <script src="js/prices.js"></script>
+<script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script>
 (function () {
   'use strict';
   // Price range from the price list
-  try {
-    var t = Object.values(window.PE_PRICES.tours).sort(function (a, b) { return a.solo - b.solo; });
-    var el = document.querySelector('[data-price-range]');
-    if (el && t.length) el.textContent = 'US$' + t[0].solo.toLocaleString('en-US') + ' to US$' + t[t.length - 1].solo.toLocaleString('en-US');
-  } catch (e) {}
+  function priceRange() {
+    try {
+      var t = Object.values(window.PE_PRICES.tours).sort(function (a, b) { return a.solo - b.solo; });
+      var el = document.querySelector('[data-price-range]');
+      if (el && t.length) el.textContent = 'US$' + t[0].solo.toLocaleString('en-US') + ' to US$' + t[t.length - 1].solo.toLocaleString('en-US');
+    } catch (e) {}
+  }
+  priceRange();
+  if (window.PECatalog) PECatalog.onChange(priceRange);   // live prices from the admin dashboard
   // Terms written by the team in the admin dashboard
   if (!window.PEBackend) return;
   window.PEBackend.terms().then(function (j) {

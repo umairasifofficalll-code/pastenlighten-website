@@ -399,6 +399,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/prices.js?v=20261021-3"></script>
+<script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/noor-knowledge.js?v=20261025-2"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/booking-confirm.js" defer></script>
@@ -2860,7 +2861,7 @@ main article a:hover { color: #92400e; }
     function peSoloNote(key) { return peTour(key) ? 'Groups of 2+ pay less per person' : ''; }
 
     function openTourDetails(key) {
-      const tour = TOURS_DATA[key];
+      const tour = TOURS_DATA[key] || catalogDetails(key);
       if (!tour) return;
 
       const modal = document.getElementById('tourDetailsModal');
@@ -3001,6 +3002,39 @@ main article a:hover { color: #92400e; }
     const WEBSITE_URL = "https://pastenlighten.com/";
     const TOUR_DATA = {"source": "Past_Enlighten_Chatbot_Data_Accuracy_Improved.xlsx", "notice": "Tour details for Noor. Public prices are per person in USD for a SOLO traveller (see js/prices.js); groups of 2+ pay less and the team confirms group prices in writing.", "pricing": [], "tours": [{"Tour ID": "L1", "Region": "Lahore", "Tour Name": "Lahore Full Day Tour", "Duration": "Full day", "Format": "Private or group", "Transport": "Sedan car pick & drop", "What's Included": "All sightseeing tickets and entrances, pick & drop by sedan car", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Fort Road Food Street, Delhi Gate, Shahi Hammam, Surjan Singh Street, Nikah Wali Gali, Usman Ki Baithak, Wazir Khan Mosque, Shalimar Gardens, Wagah Border Flag Lowering Ceremony", "On TripAdvisor": "Yes – 'Lahore Heritage and Sightseeing Guided Tour' {TRIPADVISOR_URL}"}, {"Tour ID": "L2", "Region": "Lahore", "Tour Name": "Lahore Half Day Tour", "Duration": "Half day (about 4 hours)", "Format": "Private or group", "Transport": "Rangila rickshaw ride inside the city", "What's Included": "All sightseeing entrance tickets, shoe baskets for mosques, Rangila rickshaw ride inside the Walled City", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Fort, Badshahi Mosque, Tomb of Iqbal, Hazuri Bagh, Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Nikah Wali Gali", "On TripAdvisor": "No"}, {"Tour ID": "L3", "Region": "Lahore", "Tour Name": "Lahore Walled City Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "Walking", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Delhi Gate, Shahi Hammam, Wazir Khan Mosque, Surjan Singh Street, Usman Ki Baithak, Nikah Wali Gali", "On TripAdvisor": "No"}, {"Tour ID": "L4", "Region": "Lahore", "Tour Name": "Lahore Museums Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "On request", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Lahore Museum, National History Museum", "On TripAdvisor": "No"}, {"Tour ID": "L5", "Region": "Lahore", "Tour Name": "Lahore Shrines Tour", "Duration": "Half day to full day", "Format": "Private or group", "Transport": "On request", "What's Included": "On request – our team confirms", "Not Included": "Meals and accommodation not included", "Places Covered": "Madho Lal Hussain Shrine, Mian Mir Shrine, Shah Jamal Shrine, Data Darbar (qawwali 4:00–6:00 PM)", "On TripAdvisor": "No"}, {"Tour ID": "L6", "Region": "Lahore", "Tour Name": "Lahore Sufi Nights Tour", "Duration": "Night", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Shah Jamal Shrine only – drum beats (dhol) and dhamal", "On TripAdvisor": "No"}, {"Tour ID": "L7", "Region": "Lahore", "Tour Name": "Lahore Outskirts – Shahdara Complex Tour", "Duration": "Half day", "Format": "Private or group", "Transport": "Not included – guests come in their own transport", "What's Included": "Guide", "Not Included": "Meals and accommodation not included", "Places Covered": "Tomb of Jahangir, Tomb of Noor Jahan, Tomb of Asif Jah", "On TripAdvisor": "No"}, {"Tour ID": "L8", "Region": "Lahore", "Tour Name": "Lahore Shopping Tour (5:00–9:00 PM)", "Duration": "Evening, 4 hours", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Anarkali Bazaar, Liberty Market, Emporium Mall", "On TripAdvisor": "No"}, {"Tour ID": "L9", "Region": "Lahore", "Tour Name": "Sheikhupura Excursion", "Duration": "Full day", "Format": "Private or group", "Transport": "Optional", "What's Included": "Guide; transport optional", "Not Included": "Meals and accommodation not included", "Places Covered": "Sheikhupura Fort, Hiran Minar", "On TripAdvisor": "No"}, {"Tour ID": "I1", "Region": "Islamabad", "Tour Name": "Islamabad Full Day City Tour (Islamabad & Rawalpindi)", "Duration": "Full day", "Format": "Private or group", "Transport": "Transport within Islamabad", "What's Included": "Guide, transport within Islamabad", "Not Included": "Meals and accommodation not included", "Places Covered": "Pakistan Monument, Lok Virsa Museum, Faisal Mosque, Daman-e-Koh, Saidpur Village, Raja Bazaar", "On TripAdvisor": "No"}, {"Tour ID": "N1", "Region": "North Pakistan", "Tour Name": "Hunza Tour (4–5 Days)", "Duration": "4–5 days", "Format": "Private or group", "Transport": "By road", "What's Included": "See team for inclusions", "Not Included": "Details confirmed by team", "Places Covered": "Altit Fort, Baltit Fort, Karimabad Market, Duikar sunset, Attabad Lake, Hussaini Suspension Bridge, Borith Lake, Passu Cones, Nagar Valley, Nagar Village", "On TripAdvisor": "No"}, {"Tour ID": "N2", "Region": "North Pakistan", "Tour Name": "Skardu Tour (5–7 Days)", "Duration": "5–7 days", "Format": "Private or group", "Transport": "By road from Islamabad", "What's Included": "Food and accommodation added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Upper & Lower Kachura Lake, Shigar Fort, Shigar Valley, Organic Village, Sok Valley, Deosai National Park, Sarfaranga Cold Desert, Satpara Lake, Masrur Rock", "On TripAdvisor": "No"}, {"Tour ID": "N3", "Region": "North Pakistan", "Tour Name": "Grand North Pakistan Tour (16 Days)", "Duration": "16 days", "Format": "Group or private", "Transport": "By road, Islamabad to Islamabad", "What's Included": "Transport and fuel, expert local guides, accommodation, two meals per day (half board)", "Not Included": "Details confirmed by team", "Places Covered": "Naran / Babusar Pass (or KKH & Besham), Gilgit, Hunza (3 days), Skardu, Fairy Meadows, back to Islamabad", "On TripAdvisor": "No"}, {"Tour ID": "S1", "Region": "South Punjab", "Tour Name": "Bahawalpur & Cholistan Tour (3–4 Days)", "Duration": "3–4 days", "Format": "Private or group", "Transport": "By road", "What's Included": "Food added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Bahawalpur palaces (Noor Mahal, Darbar Mahal, Sadiq Garh Palace), Cholistan Desert, desert life", "On TripAdvisor": "No"}, {"Tour ID": "S2", "Region": "South Punjab", "Tour Name": "Lahore – Harappa – Multan Tour (5 Days)", "Duration": "5 days", "Format": "Private or group", "Transport": "By road from Lahore", "What's Included": "Food added – team confirms details", "Not Included": "Details confirmed by team", "Places Covered": "Harappa ruins; Multan shrines of Shah Rukn-e-Alam, Bahauddin Zakariya and Shah Shams; Multan old city walk", "On TripAdvisor": "No"}], "contact": {"whatsapp": "923344770455", "website": "https://pastenlighten.com/", "email": "infopastenlighten@gmail.com"}};
     if (window.PE_PRICES) TOUR_DATA.pricing = Object.entries(window.PE_PRICES.tours).map(([id, t]) => ({ id, tour: t.name, duration: t.duration, solo_price_usd_per_person: t.solo, includes: t.includes, season: t.season }));
+    // Tours added in the admin dashboard have no hand-written itinerary here: build one from the saved details.
+    function catalogDetails(key) {
+      const t = window.PE_PRICES && PE_PRICES.tours[key];
+      if (!t || !t.slug) return null;
+      return { title: t.shortName || t.name, fullName: (t.shortName && t.shortName !== t.name) ? t.name : t.region + (t.start ? ' · from ' + t.start : ''), duration: t.duration, image: t.imageUrl || t.image,
+        locality: [t.region, t.start ? 'starts from ' + t.start : ''].filter(Boolean).join(', '), language: 'English and Urdu',
+        summary: t.summary, highlights: t.highlights && t.highlights.length ? t.highlights : [t.summary], includes: t.includes };
+    }
+    // Live tours & prices from the admin dashboard (js/pe-catalog.js): keep Noor, the itinerary pop-up and the booking pop-up in step.
+    if (window.PECatalog) PECatalog.onChange(function (P) {
+      TOUR_DATA.pricing = Object.entries(P).map(([id, t]) => ({ id, tour: t.name, duration: t.duration, solo_price_usd_per_person: t.solo, includes: t.includes, season: t.season }));
+      Object.entries(P).forEach(([id, t]) => {
+        const key = t.detailsKey && TOURS_DATA[t.detailsKey] ? t.detailsKey : id;
+        if (TOURS_DATA[key]) {            // keep the hand-written itinerary, but use the team's latest highlights and duration
+          if (t.highlights && t.highlights.length) TOURS_DATA[key].highlights = t.highlights;
+          TOURS_DATA[key].duration = t.duration;
+        } else TOURS_DATA[key] = catalogDetails(id);
+      });
+      const sel = document.getElementById('modalTourSelect');
+      if (sel) {
+        const keep = sel.value;
+        sel.innerHTML = '';
+        Object.values(P).forEach(t => sel.add(new Option(t.name, t.name)));
+        sel.add(new Option('Custom itinerary', 'Custom itinerary'));
+        if ([...sel.options].some(o => o.value === keep)) sel.value = keep;
+      }
+      const run = () => {
+        if (typeof enhanceTourCards === 'function') enhanceTourCards();
+        if (typeof applyTourFilters === 'function' && document.getElementById('tourResultCount')) applyTourFilters();
+        else if (typeof updateTourSlider === 'function') updateTourSlider();
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else setTimeout(run, 0);
+    });
     const conversationHistory = [];
     const MAX_HISTORY_MESSAGES = 12;
 
@@ -3065,7 +3099,7 @@ main article a:hover { color: #92400e; }
       'N5': 'grand 16 day sixteen whole north complete', 'N3': 'fairy meadows nanga parbat', 'S1': 'desert cholistan bahawalpur', 'L3': 'museum museums', 'I1': 'islamabad rawalpindi', 'N2': 'skardu deosai', 'N1': 'hunza' };
     function noorTours() {
       const P = (window.PE_PRICES && window.PE_PRICES.tours) || {};
-      return Object.keys(P).map(id => Object.assign({ id, places: NOOR_PLACES[id] || '', aliases: NOOR_ALIASES[id] || '' }, P[id]));
+      return Object.keys(P).map(id => Object.assign({ id, places: NOOR_PLACES[id] || [P[id].summary, (P[id].highlights || []).join(', ')].filter(Boolean).join(' '), aliases: NOOR_ALIASES[id] || '' }, P[id]));
     }
     const usd = n => 'US$' + Number(n).toLocaleString('en-US');
     function noorGroupSize(q) {
@@ -4006,6 +4040,7 @@ document.addEventListener('keydown',function(event){if(event.key==='Escape')clos
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addTourBookingLinks);
   else addTourBookingLinks();
+  document.addEventListener('pe:catalog', function () { setTimeout(addTourBookingLinks, 0); });   // tours added in the admin dashboard
 })();
 </script>
 
