@@ -1685,10 +1685,11 @@ main article a:hover { color: #92400e; }
           <div id="customTourSummary" class="mb-4 p-4 sm:p-5 rounded-2xl bg-brand-950/90 border border-emerald-400/20 shadow-inner text-white" aria-live="polite">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div><div class="text-[10px] uppercase tracking-widest text-amber-300 font-bold">Your tour summary</div><div class="text-xs text-stone-300 mt-1">This is what we'll plan for you. Change anything above and it updates here.</div></div>
-              <a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20I%20would%20like%20a%20price%20for%20a%20custom%20tour." target="_blank" rel="noopener" class="self-start sm:self-auto text-[11px] font-bold text-emerald-300 underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>For prices, connect with our team</a>
+              <a href="https://wa.me/923344770455?text=Hello%20Past%20Enlighten%2C%20I%20would%20like%20a%20price%20for%20a%20custom%20tour." target="_blank" rel="noopener" class="self-start sm:self-auto text-[11px] font-bold text-emerald-300 underline underline-offset-2"><i class="fa-brands fa-whatsapp mr-1"></i>Questions? WhatsApp our team</a>
             </div>
             <dl id="customSummaryList" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3 text-[11px]"></dl>
             <div class="mt-3"><div class="text-[10px] uppercase tracking-wider text-stone-400">Destinations</div><ul id="customSummaryDests" class="mt-1 flex flex-wrap gap-1.5"></ul></div>
+            <div id="customPriceBox" class="mt-4 rounded-xl border border-amber-300/30 bg-black/20 p-3 sm:p-4" aria-live="polite"></div>
           </div>
 
           <div class="mb-4">
@@ -2799,7 +2800,8 @@ main article a:hover { color: #92400e; }
         name: val('custName'), phone: val('custPhone'), start_city: val('custStartCity'), format: val('custFormat'),
         transport: val('custTransport'), days: parseInt(val('custDays'), 10) || 1, guests: parseInt(val('custGuests'), 10) || 1,
         destinations: Array.from(document.querySelectorAll('input[name="custDest"]:checked')).map(cb => cb.value),
-        notes: val('custNotes')
+        notes: val('custNotes'),
+        estimate: (typeof customEstimate === 'function' && customEstimate().total) ? 'US$' + Math.round(customEstimate().total).toLocaleString('en-US') + ' (website estimate)' : ''
       }, e.target) : null;
       const waLines = [
         'Hello Past Enlighten!',
@@ -2813,6 +2815,7 @@ main article a:hover { color: #92400e; }
         `*Guests:* ${val('custGuests')}`,
         `*Destinations:* ${dests || 'Not selected'}`,
         val('custNotes') ? `*Preferences:* ${val('custNotes')}` : '',
+        (typeof customEstimate === 'function' && customEstimate().total) ? `*Website estimate:* US$${Math.round(customEstimate().total).toLocaleString('en-US')} for ${val('custGuests') || 1} guest(s)` : '',
         'Please send me a quote with the price and inclusions.'
       ];
       openWhatsApp(waLines);
@@ -3942,7 +3945,7 @@ openTourDetails = function(key){
 
 
 
-// Live summary of the custom tour the visitor is building (no prices: the team sends a written quote).
+// Live summary of the custom tour the visitor is building, with a price estimate from the live tour prices.
 function updateCustomQuote(){
  const list=document.getElementById('customSummaryList'), dests=document.getElementById('customSummaryDests');
  if(!list||!dests)return;
@@ -3961,7 +3964,55 @@ function updateCustomQuote(){
  list.innerHTML=rows.map(([k,val])=>`<div class="rounded-lg bg-white/5 border border-white/10 p-2"><dt class="text-stone-400">${k}</dt><dd class="font-bold text-white break-words">${esc(val)}</dd></div>`).join('');
  const chosen=[...document.querySelectorAll('input[name="custDest"]:checked')].map(x=>x.value);
  dests.innerHTML=chosen.length?chosen.map(d=>`<li class="px-2 py-1 rounded-full bg-amber-400/15 border border-amber-300/30 text-amber-100 text-[11px] font-semibold">${esc(d)}</li>`).join(''):'<li class="text-[11px] text-stone-400">No destinations selected yet. Tick the places you want to see.</li>';
+ renderCustomPrice(customEstimate(), esc);
 }
+// ---- Custom tour price estimate: built from the same live prices as the tour cards and booking form
+const CUSTOM_DEST_TOUR={'Lahore Walled City & Fort':'L-WALK','Wagah Border Ceremony':'L1','Islamabad & Faisal Mosque':'I1','Hunza Valley (Passu & Attabad)':'N1',
+ 'Skardu & Deosai Plains':'N2','Fairy Meadows (Nanga Parbat)':'N3','Shah Jamal Sufi Night':'L4','Katas Raj & Khewra Salt Mine':null};
+function customEstimate(){
+ const P=(window.PE_PRICES&&PE_PRICES.tours)||{};
+ const v=id=>(document.getElementById(id)?.value||'').trim();
+ const guests=Math.max(1,Math.min(40,parseInt(v('custGuests'),10)||1));
+ const shared=/shared/i.test(v('custFormat'));
+ const tier=shared?'shared':guests===1?'solo':guests===2?'twoTraveller':guests<=4?'threeToFour':guests<=8?'fiveToEight':'ninePlus';
+ const tierLabel=shared?'small-group price':{solo:'solo price',twoTraveller:'price for 2',threeToFour:'price for 3–4',fiveToEight:'price for 5–8',ninePlus:'price for 9+'}[tier];
+ const chosen=[...document.querySelectorAll('input[name="custDest"]:checked')].map(x=>x.value);
+ let ids=[], missing=[];
+ chosen.forEach(d=>{ const id=CUSTOM_DEST_TOUR[d]; if(id===undefined||id===null) missing.push(d); else if(!ids.includes(id)) ids.push(id); });
+ // Lahore walk + Wagah = the full-day tour (it already includes the Walled City and Lahore Fort)
+ if(ids.includes('L1')) ids=ids.filter(x=>x!=='L-WALK');
+ // Hunza + Skardu + Fairy Meadows together = the Grand Northern Pakistan Tour
+ let merged='';
+ if(['N1','N2','N3'].every(x=>ids.includes(x))&&P['N5']){ ids=ids.filter(x=>!['N1','N2','N3'].includes(x)); ids.push('N5'); merged='Hunza, Skardu and Fairy Meadows together are our 16-day Grand Northern Pakistan Tour.'; }
+ const lines=[]; let total=0;
+ ids.forEach(id=>{
+  const t=P[id]; if(!t){missing.push(id);return;}
+  const pp=t.prices&&Number.isFinite(Number(t.prices[tier]))?Number(t.prices[tier]):(tier==='solo'?Number(t.solo):null);
+  if(pp==null){missing.push(t.name);return;}
+  lines.push({name:t.name,duration:t.duration,pp,sub:pp*guests}); total+=pp*guests;
+ });
+ const dep=window.PE_TERMS&&PE_TERMS.terms&&PE_TERMS.terms.deposit, pct=dep&&(dep.match(/(\d{1,2})\s*%/)||[])[1];
+ return {lines,total,missing,guests,tierLabel,pct:pct?Number(pct):null,merged,guideOnly:/guide only/i.test(v('custTransport')),chosen:chosen.length};
+}
+function renderCustomPrice(e,esc){
+ const box=document.getElementById('customPriceBox'); if(!box)return;
+ const usd=n=>'US$'+Math.round(n).toLocaleString('en-US');
+ if(!e.chosen){box.innerHTML='<div class="text-[11px] text-stone-300">Tick the places you want to see and your estimated price appears here.</div>';return;}
+ let h='<div class="flex items-center justify-between gap-2"><div class="text-[10px] uppercase tracking-widest text-amber-300 font-bold">Estimated price</div><div class="text-[10px] text-stone-400">'+e.guests+' guest'+(e.guests>1?'s':'')+' · '+e.tierLabel+'</div></div>';
+ if(e.lines.length){
+  h+='<div class="mt-2 divide-y divide-white/10">'+e.lines.map(l=>`<div class="flex items-start justify-between gap-3 py-1.5 text-[11.5px]"><div><div class="font-semibold text-white">${esc(l.name)}</div><div class="text-stone-400">${esc(l.duration)} · ${usd(l.pp)} × ${e.guests}</div></div><div class="font-bold text-white whitespace-nowrap">${usd(l.sub)}</div></div>`).join('')+'</div>';
+  h+=`<div class="mt-2 pt-2 border-t border-amber-300/30 flex items-end justify-between"><div class="text-xs font-bold text-amber-200">Estimated total</div><div class="text-xl font-extrabold text-amber-300">${usd(e.total)}</div></div>`;
+  h+=`<div class="text-[11px] text-stone-300 text-right">about ${usd(e.total/e.guests)} per person</div>`;
+  if(e.pct){const d=Math.round(e.total*e.pct/100);h+=`<div class="mt-1 text-[11px] text-stone-300 flex justify-between"><span>Deposit to confirm (${e.pct}%)</span><span class="font-bold text-white">${usd(d)}</span></div>`;}
+ }
+ if(e.merged)h+=`<div class="mt-2 text-[11px] text-emerald-300">${esc(e.merged)}</div>`;
+ if(e.missing.length)h+=`<div class="mt-2 text-[11px] text-amber-200">${esc(e.missing.join(', '))}: priced in your written quote.</div>`;
+ if(e.guideOnly&&e.lines.length)h+='<div class="mt-1 text-[11px] text-stone-300">These prices include a car with driver. Guide only is usually less; we confirm it in your quote.</div>';
+ h+='<div class="mt-2 text-[10.5px] text-stone-400 leading-relaxed">Estimate from our standard tour prices, in US dollars. Hotels between regions, extra days and travel between cities are added in your written quote, and combining tours can lower the price.</div>';
+ box.innerHTML=h;
+}
+document.addEventListener('pe:catalog',()=>updateCustomQuote());
+document.addEventListener('pe:terms',()=>updateCustomQuote());
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('input[name="custDest"]').forEach(el=>el.addEventListener('change',updateCustomQuote));
  const ctf=document.getElementById('customTourForm');ctf?.addEventListener('input',updateCustomQuote);ctf?.addEventListener('change',updateCustomQuote);
