@@ -37,7 +37,7 @@
     '.pec-details{margin:16px 0 0;padding:12px 14px;border:1px solid #e7e5e4;border-radius:14px;background:#fafaf9;text-align:left;font-size:.85rem}',
     '.pec-details div{display:flex;justify-content:space-between;gap:12px;padding:4px 0}',
     '.pec-details div+div{border-top:1px dashed #e7e5e4}',
-    '.pec-details dt{color:#64748b;flex:none}',
+    '.pec-details dt{color:#64748b;flex:0 1 48%}',
     '.pec-details dd{margin:0;font-weight:700;color:#0a261e;text-align:right;overflow-wrap:anywhere}',
     '.pec-next{margin:16px 0 0;padding:0;list-style:none;text-align:left;font-size:.85rem;color:#334155}',
     '.pec-next li{display:flex;gap:10px;align-items:flex-start;padding:5px 0}',
