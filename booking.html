@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
@@ -53,6 +53,7 @@
   <script>try{if(localStorage.getItem("pe_dark")==="1")document.documentElement.classList.add("dark-mode")}catch(e){}</script>
   <link rel="stylesheet" href="css/dark.css">
   <script src="js/theme.js" defer></script>
+  <link rel="stylesheet" href="css/pe-3d.css">
 </head>
 <body class="font-sans antialiased">
   <a href="#bookingForm" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 bg-white text-brand-900 px-3 py-2 rounded-lg font-bold">Skip to booking form</a>
@@ -620,5 +621,6 @@
   window.addEventListener('pagehide', function () { if (!$('sentPanel').classList.contains('hidden')) clearDraft(); });
 })();
 </script>
+  <script src="js/pe-3d.js" defer></script>
 </body>
 </html>
