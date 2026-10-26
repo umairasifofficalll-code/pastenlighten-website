@@ -1,305 +1,219 @@
 /* ==========================================================================
-   PAST ENLIGHTEN — depth styling (pe-3d.css), performance version
-   Keeps the gold & emerald "raised" look (layered edge shadows) without tilting,
-   perspective or translateZ, which made text overlap, looked blurry and cost a lot
-   of work on every scroll and mouse move. Only transform/opacity are animated.
+   PAST ENLIGHTEN — site theme (pe-3d.css), loaded on every page
+   Colour scheme (Oct 2026), each colour has one job:
+     brand green  #0A261E  headings, menu, footer, hero shade, dark mode
+     gold         #F59E0B  main actions only (Book / Explore), headline accent
+     action green #047857  WhatsApp and chat only
+     label amber  #B45309  small labels on light backgrounds (readable at 11px)
+     warm cream   #FAF8F5  page background;  sand #F3EFE8  alternate sections
+     white cards with a soft shadow and a thin warm border (#E8E1D6)
+   Only the tours slider has 3D motion. Only transform/opacity are animated.
    ========================================================================== */
-
-/* 1. PAGE BACKGROUND */
-body {
-  background:
-    radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.10) 0%, transparent 40%),
-    radial-gradient(circle at 85% 28%, rgba(16, 185, 129, 0.10) 0%, transparent 45%),
-    linear-gradient(180deg, #061a14 0%, #0b2920 18%, #eef5f2 18.5%, #e6f0ec 100%) !important;
-  overflow-x: hidden;
+:root {
+  --pe-green: #0a261e; --pe-green-950: #061a14; --pe-green-800: #0f382c; --pe-green-700: #164e3f;
+  --pe-gold: #f59e0b; --pe-gold-deep: #d97706; --pe-action: #047857; --pe-action-dark: #065f46;
+  --pe-label: #b45309; --pe-cream: #faf8f5; --pe-sand: #f3efe8; --pe-line: #e8e1d6;
+  --pe-ink: #1f2937; --pe-muted: #57534e;
+  --pe-shadow: 0 1px 2px rgba(6, 26, 20, 0.05), 0 10px 28px rgba(6, 26, 20, 0.08);
+  --pe-shadow-hover: 0 2px 4px rgba(6, 26, 20, 0.06), 0 20px 40px rgba(6, 26, 20, 0.14);
 }
 
-/* 2. HERO */
+/* 1. PAGE & SECTION BACKGROUNDS (light theme) */
+html:not(.dark-mode) body { background: var(--pe-cream) !important; overflow-x: hidden; }
+html:not(.dark-mode) section.bg-white,
+html:not(.dark-mode) main > section.bg-white { background-color: var(--pe-cream) !important; }
+html:not(.dark-mode) section.bg-warmgray,
+html:not(.dark-mode) section.bg-stone-50,
+html:not(.dark-mode) section[class*="bg-stone-100"] { background-color: var(--pe-sand) !important; }
+html:not(.dark-mode) section.border-stone-200,
+html:not(.dark-mode) section.border-b,
+html:not(.dark-mode) section.border-t { border-color: var(--pe-line) !important; }
+
+/* 2. TEXT COLOURS */
+/* Small orange labels were too faint on light backgrounds; use the darker label amber there */
+html:not(.dark-mode) .text-accent-gold,
+html:not(.dark-mode) .text-amber-600 { color: var(--pe-label) !important; }
+/* …but keep bright gold where the background is dark green */
+#home .text-accent-gold, footer .text-accent-gold, .bg-brand-950 .text-accent-gold, .bg-brand-900 .text-accent-gold,
+.bg-brand-800 .text-accent-gold, [class*="from-brand-9"] .text-accent-gold, [class*="from-emerald-9"] .text-accent-gold,
+#customizer .text-accent-gold, .sticky-mobile-book .text-accent-gold { color: #fbbf24 !important; }
+#customizer .bg-white\/95 .text-accent-gold { color: var(--pe-label) !important; }
+html:not(.dark-mode) .text-slate-600 { color: var(--pe-muted); }
+
+/* Section headings: crisp, no stacked shadows */
+section h2.font-cinzel { text-shadow: none; }
+
+/* 3. HERO */
 #home {
   min-height: 690px !important;
-  border-bottom: 4px solid #d97706;
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+  border-bottom: 3px solid var(--pe-gold);
 }
-
-#pe3dHeroCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-/* Static perspective floor grid (drawn once, not animated) */
-#home::after {
-  content: '';
-  position: absolute;
-  left: -20%;
-  right: -20%;
-  bottom: -15%;
-  height: 58%;
+#pe3dHeroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+#home::after {               /* static perspective floor grid */
+  content: ''; position: absolute; left: -20%; right: -20%; bottom: -15%; height: 58%;
   background-image:
-    linear-gradient(to right, rgba(245, 158, 11, 0.16) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 158, 11, 0.16) 1px, transparent 1px);
+    linear-gradient(to right, rgba(245, 158, 11, 0.14) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 158, 11, 0.14) 1px, transparent 1px);
   background-size: 56px 56px;
-  transform: perspective(550px) rotateX(68deg);
-  transform-origin: center bottom;
+  transform: perspective(550px) rotateX(68deg); transform-origin: center bottom;
   mask-image: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 85%);
   -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 85%);
-  z-index: 2;
-  pointer-events: none;
+  z-index: 2; pointer-events: none;
 }
-
 #home > .relative.z-10 { z-index: 15 !important; }
-
-/* Headline: raised gold edge, flat (no 3D push), so it never covers the badges above it */
-#home h1 {
-  letter-spacing: 0.04em;
-  text-shadow:
-    0 1px 0 #d97706,
-    0 2px 0 #b45309,
-    0 3px 0 #78350f,
-    0 4px 0 #061a14,
-    0 14px 28px rgba(0, 0, 0, 0.75) !important;
+#home h1 { letter-spacing: 0.04em; text-shadow: 0 2px 0 rgba(6, 26, 20, 0.9), 0 12px 28px rgba(0, 0, 0, 0.6) !important; }
+#home h1 span {               /* gold headline line, solid colour (crisp) */
+  background: none !important; -webkit-text-fill-color: var(--pe-gold) !important; color: var(--pe-gold) !important;
+  text-shadow: 0 2px 0 rgba(6, 26, 20, 0.9), 0 12px 28px rgba(0, 0, 0, 0.55) !important;
 }
-/* The gold gradient line: shadows behind transparent text made it look muddy */
-#home h1 span {
-  text-shadow: none !important;
-  filter: drop-shadow(0 3px 0 rgba(6, 26, 20, 0.9)) drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
-}
-
-/* Hero glass elements: the blur was recalculated every frame over the moving photo.
-   Solid tinted panels look the same and cost nothing. */
-#home [class*="backdrop-blur"] {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-#home .bg-white\/10 { background-color: rgba(6, 26, 20, 0.55) !important; }
-#home .bg-white\/15 { background-color: rgba(6, 26, 20, 0.45) !important; }
-#home .bg-black\/40 { background-color: rgba(0, 0, 0, 0.55) !important; }
-#home .bg-accent-gold\/20 { background-color: rgba(60, 35, 5, 0.6) !important; }
-
-/* Hero stat blocks */
-#home .grid.grid-cols-2.sm\:grid-cols-4 { gap: 16px !important; }
+/* No blur over the moving photo: solid tinted panels */
+#home [class*="backdrop-blur"] { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+#home .bg-white\/10 { background-color: rgba(6, 26, 20, 0.72) !important; }
+#home .bg-white\/15 { background-color: transparent !important; border: 1.5px solid rgba(255, 255, 255, 0.6) !important; }
+#home .bg-black\/40 { background-color: rgba(6, 26, 20, 0.7) !important; }
+#home .bg-accent-gold\/20 { background-color: rgba(6, 26, 20, 0.7) !important; border-color: rgba(252, 211, 77, 0.45) !important; }
+#home .grid.grid-cols-2.sm\:grid-cols-4 { gap: 14px !important; }
 #home .grid.grid-cols-2.sm\:grid-cols-4 > div {
-  background: linear-gradient(145deg, rgba(15, 56, 44, 0.92) 0%, rgba(6, 26, 20, 0.96) 100%) !important;
-  border: 1.5px solid rgba(251, 191, 36, 0.65) !important;
-  border-radius: 16px !important;
-  padding: 14px !important;
-  box-shadow:
-    0 5px 0 #061a14,
-    0 7px 0 #d97706,
-    0 16px 28px rgba(0, 0, 0, 0.5) !important;
-  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  background: rgba(6, 26, 20, 0.78) !important; border: 1px solid rgba(252, 211, 77, 0.35) !important;
+  border-radius: 14px !important; padding: 12px 16px !important; box-shadow: none !important;
+  transition: transform 0.2s ease !important;
 }
-#home .grid.grid-cols-2.sm\:grid-cols-4 > div:hover { transform: translateY(-4px); }
-
-/* Hero search panel */
+#home .grid.grid-cols-2.sm\:grid-cols-4 > div:hover { transform: translateY(-3px); }
+/* Hero action buttons: gold = main action; the others are outlines */
+#home a.bg-gradient-to-r.from-accent-gold { background: var(--pe-gold) !important; color: var(--pe-green-950) !important; box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35) !important; }
+#home .bg-emerald-600 { background: transparent !important; border: 1.5px solid rgba(255, 255, 255, 0.6) !important; box-shadow: none !important; }
 #home > .relative.z-10 > .mt-6.bg-white\/95 {
-  background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 100%) !important;
-  border: 2px solid #f59e0b !important;
-  border-radius: 22px !important;
-  box-shadow:
-    0 8px 0 #0f382c,
-    0 11px 0 #d97706,
-    0 26px 48px rgba(0, 0, 0, 0.55) !important;
+  background: #fff !important; border: 1px solid var(--pe-line) !important; border-radius: 20px !important;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.35) !important;
 }
 
-/* 3. NAVBAR */
+/* 4. MENU BAR */
 header nav.sticky {
-  margin: 10px auto !important;
-  max-width: 96% !important;
-  border-radius: 20px !important;
-  border: 1.5px solid rgba(217, 119, 6, 0.45) !important;
   background: rgba(255, 255, 255, 0.98) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;          /* a blurred sticky bar is re-blurred on every scroll frame */
-  box-shadow:
-    0 5px 0 #0f382c,
-    0 7px 0 #d97706,
-    0 16px 30px rgba(6, 26, 20, 0.2) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border-bottom: 1px solid var(--pe-line) !important;
+  box-shadow: 0 4px 18px rgba(6, 26, 20, 0.06) !important;
 }
+/* "Book Tour" in the menu is the main action: gold */
+header nav button.bg-gradient-to-r.from-brand-800 {
+  background: var(--pe-gold) !important; color: var(--pe-green-950) !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35) !important;
+}
+header nav button.bg-gradient-to-r.from-brand-800 .text-accent-amber { color: var(--pe-green-950) !important; }
+header nav a.bg-accent-light { background: #fff !important; border: 1.5px solid var(--pe-green-800) !important; color: var(--pe-green-800) !important; }
+header nav a.bg-accent-light .text-accent-gold { color: var(--pe-green-800) !important; }
 
-/* 4. SECTION HEADINGS (flat, with a soft raised shadow) */
-section h2.font-cinzel {
-  text-shadow:
-    0 1px 0 #ffffff,
-    0 2px 0 #d6d3d1,
-    0 6px 14px rgba(6, 26, 20, 0.16);
-}
-#customizer h2.font-cinzel {
-  text-shadow:
-    0 1px 0 #d97706,
-    0 2px 0 #92400e,
-    0 8px 20px rgba(0, 0, 0, 0.6);
-}
-
-/* 5. CARDS: straight, with a raised gold & green edge; lift slightly on hover */
+/* 5. CARDS: white, soft shadow, thin warm border; lift on hover */
 .tilt-card,
 .tour-card,
 main article.rounded-2xl,
 main a.group.rounded-2xl,
 #lahore-guides a.group {
   position: relative;
-  border-radius: 22px !important;
-  border: 2px solid rgba(15, 56, 44, 0.18) !important;
-  background: linear-gradient(165deg, #ffffff 0%, #f4fbf7 100%) !important;
-  transform: none;
-  box-shadow:
-    0 5px 0 #0f382c,
-    0 7px 0 #d97706,
-    0 16px 28px rgba(6, 26, 20, 0.16) !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--pe-line) !important;
+  background: #fff !important;
+  box-shadow: var(--pe-shadow) !important;
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
-
 .tilt-card:hover,
 .tour-card:hover,
 main article.rounded-2xl:hover,
 main a.group.rounded-2xl:hover,
 #lahore-guides a.group:hover {
-  transform: translateY(-4px);
-  border-color: #f59e0b !important;
-  box-shadow:
-    0 8px 0 #0f382c,
-    0 10px 0 #d97706,
-    0 24px 40px rgba(6, 26, 20, 0.24) !important;
+  transform: translateY(-5px);
+  border-color: #f3d48a !important;
+  box-shadow: var(--pe-shadow-hover) !important;
 }
-
-.tour-card .slider-track,
-main article.rounded-2xl > img,
-main a.group.rounded-2xl > img {
-  border-bottom: 3px solid #d97706;
+.tour-card .slider-track span.absolute, .tour-card .frontend-badge { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18) !important; }
+#services .tilt-card > div:first-child { box-shadow: none !important; }
+.enhance-panel, #frontendTourTools, #destinationMap {
+  background: #fff; border: 1px solid var(--pe-line) !important; border-radius: 20px !important; box-shadow: var(--pe-shadow) !important;
 }
-
-.tour-card .slider-track span.absolute,
-.tour-card .frontend-badge {
-  box-shadow: 0 3px 0 #061a14, 0 6px 12px rgba(0, 0, 0, 0.35) !important;
-  border: 1px solid rgba(251, 191, 36, 0.65);
-}
-
-/* Tours slider: room for the card edges */
-.tours-track { padding: 18px 12px 30px !important; }
-
-/* 6. BUTTONS: raised keycap edge, small press on click */
-.btn-shine,
-.tour-whatsapp-cta,
-.cat-pill,
-.enhance-chip {
-  position: relative;
-  box-shadow:
-    0 4px 0 #061a14,
-    0 6px 0 #d97706,
-    0 10px 16px rgba(6, 26, 20, 0.25) !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-}
-.btn-shine:hover,
-.tour-whatsapp-cta:hover,
-.cat-pill:hover,
-.enhance-chip:hover { transform: translateY(-2px) !important; }
-.btn-shine:active,
-.tour-whatsapp-cta:active,
-.cat-pill:active,
-.enhance-chip:active {
-  transform: translateY(3px) !important;
-  box-shadow:
-    0 1px 0 #061a14,
-    0 2px 0 #d97706,
-    0 4px 8px rgba(6, 26, 20, 0.2) !important;
-}
-
-/* 7. ICON TILES */
-#services .tilt-card > div:first-child,
-#lahore-guides a.group > div.w-10.h-10 {
-  border: 2px solid #f59e0b;
-  box-shadow: 0 3px 0 #061a14, 0 5px 0 #d97706, 0 10px 18px rgba(6, 26, 20, 0.25) !important;
-}
-
-/* 8. MAP, FILTERS & CUSTOMIZER */
-#frontendTourTools,
-#destinationMap {
-  border-radius: 24px !important;
-  border: 2px solid #0f382c !important;
-  box-shadow: 0 6px 0 #0f382c, 0 8px 0 #d97706, 0 20px 36px rgba(6, 26, 20, 0.2) !important;
-}
-#customizer .bg-white\/95 {
-  border-radius: 26px !important;
-  border: 2.5px solid #f59e0b !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  background-color: #fff !important;
-  box-shadow: 0 8px 0 #0f382c, 0 11px 0 #d97706, 0 30px 60px rgba(0, 0, 0, 0.55) !important;
-}
-
-/* 9. GALLERY FRAMES */
-figure.group.relative.overflow-hidden.rounded-2xl {
-  border: 2px solid #0f382c !important;
-  box-shadow: 0 5px 0 #0f382c, 0 7px 0 #d97706, 0 16px 28px rgba(6, 26, 20, 0.22) !important;
-  transition: transform 0.25s ease !important;
-}
+figure.group.relative.overflow-hidden.rounded-2xl { border: 1px solid var(--pe-line) !important; box-shadow: var(--pe-shadow) !important; transition: transform 0.25s ease !important; }
 figure.group.relative.overflow-hidden.rounded-2xl:hover { transform: translateY(-4px); }
-
-/* 10. Animations only when they're welcome */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  #pe3dHeroCanvas { display: none; }
-}
-/* Phones: keep the hero photo still (the slow zoom repaints a very large image) */
-@media (max-width: 767px) {
-  .hero-parallax-bg { animation: none !important; will-change: auto !important; }
+#customizer .bg-white\/95 {
+  background: #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border: 1px solid var(--pe-line) !important; border-radius: 22px !important; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Left-over class from the old 3D toggle */
-.pe-3d-badge { display: none !important; }
+/* Prices on cards: brand green */
+.tour-card [data-pe-price], main article [data-pe-price] { color: var(--pe-green); }
 
-/* 11. DARK THEME: cards keep a dark surface so their light text stays readable */
-html.dark-mode .tilt-card,
-html.dark-mode .tour-card,
-html.dark-mode main article.rounded-2xl,
-html.dark-mode main a.group.rounded-2xl,
-html.dark-mode #lahore-guides a.group {
-  background: linear-gradient(165deg, #14291f 0%, #0d1d17 100%) !important;
-  border-color: rgba(245, 158, 11, 0.28) !important;
-  color: #e5e7eb !important;
+/* 6. BUTTONS: flat with a soft shadow; small press on click */
+.btn-shine, .tour-whatsapp-cta, .cat-pill, .enhance-chip {
+  position: relative;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease !important;
 }
-html.dark-mode #lahore-guides a.group h3,
-html.dark-mode .tour-card h3,
-html.dark-mode main article.rounded-2xl h3 { color: #fde68a !important; }
-html.dark-mode #lahore-guides a.group p,
-html.dark-mode .tour-card p { color: #d1d5db !important; }
-html.dark-mode #lahore-guides a.group .text-brand-800 { color: #6ee7b7 !important; }
-html.dark-mode #home > .relative.z-10 > .mt-6.bg-white\/95,
-html.dark-mode #customizer .bg-white\/95 { background: #10221c !important; }
+.btn-shine:hover, .tour-whatsapp-cta:hover, .cat-pill:hover, .enhance-chip:hover { transform: translateY(-1px); }
+.btn-shine:active, .tour-whatsapp-cta:active, .cat-pill:active, .enhance-chip:active { transform: translateY(1px); }
+/* Filter pills: white with a border; the selected one is brand green */
+html:not(.dark-mode) .cat-pill:not(.active), html:not(.dark-mode) .enhance-chip:not(.active) {
+  background: #fff !important; color: #44403c !important; border: 1px solid var(--pe-line) !important; box-shadow: none !important;
+}
+.cat-pill.active, .enhance-chip.active { background: var(--pe-green-800) !important; color: #fff !important; border: 1px solid var(--pe-green-800) !important; }
+/* Card buttons: "View Itinerary" stays brand green; booking buttons gold */
+.tour-card button.bg-brand-800 { background: var(--pe-green-800) !important; box-shadow: none !important; }
+.bg-accent-gold { background-color: var(--pe-gold) !important; color: var(--pe-green-950) !important; }
 
-/* 12. TOURS SLIDER: the only place with 3D motion.
-   Cards turn gently towards the centre as the row scrolls (set by js/pe-3d.js through
-   --pe-ry / --pe-tz) and lift on hover. Each card is its own GPU layer, so scrolling
-   only moves layers and never repaints the cards. */
+/* 7. ONE ACTION GREEN for WhatsApp & chat */
+.bg-emerald-600 { background-color: var(--pe-action) !important; }
+.hover\:bg-emerald-500:hover, .hover\:bg-emerald-700:hover, .bg-emerald-600:hover { background-color: var(--pe-action-dark) !important; }
+html:not(.dark-mode) .text-emerald-600, html:not(.dark-mode) .text-emerald-700, html:not(.dark-mode) .text-emerald-800 { color: var(--pe-action) !important; }
+.border-emerald-600 { border-color: var(--pe-action) !important; }
+.tour-whatsapp-cta { background: #fff !important; color: var(--pe-action) !important; border: 1.5px solid var(--pe-action) !important; box-shadow: none !important; }
+.tour-whatsapp-cta:hover { background: #ecfdf5 !important; }
+
+/* 8. TOURS SLIDER: the only place with 3D motion.
+   Cards turn gently towards the centre while the row scrolls (js/pe-3d.js sets --pe-ry / --pe-tz).
+   Each card is its own GPU layer, so scrolling never repaints the cards. */
+.tours-track { padding: 18px 12px 30px !important; }
 #toursContainer { perspective: none; position: relative; }
 #toursContainer > .tour-card {
   --pe-ry: 0deg; --pe-tz: 0px; --pe-lift: 0px;
   transform: perspective(1100px) rotateY(var(--pe-ry)) translateZ(var(--pe-tz)) translateY(var(--pe-lift));
-  will-change: transform;
-  backface-visibility: hidden;
-  contain: layout style;
+  will-change: transform; backface-visibility: hidden; contain: layout style;
   transition: transform 0.18s ease-out, border-color 0.25s ease !important;
 }
 #toursContainer > .tour-card:hover {
   --pe-lift: -6px;
   transform: perspective(1100px) rotateY(var(--pe-ry)) translateZ(var(--pe-tz)) translateY(var(--pe-lift));
-  box-shadow:
-    0 5px 0 #0f382c,
-    0 7px 0 #d97706,
-    0 16px 28px rgba(6, 26, 20, 0.16) !important;          /* same shadow as at rest: no repaint on hover */
+  box-shadow: var(--pe-shadow) !important;      /* same shadow as at rest: no repaint on hover */
 }
 #toursContainer.pe-scrolling > .tour-card { transition: border-color 0.25s ease !important; }
 #toursContainer .slider-track img { transition: transform 0.4s ease !important; }
-/* Image strip on the first card only moves while the slider is on screen */
 #toursContainer.pe-offscreen .animate-slider-rtl { animation-play-state: paused; }
+
+/* 9. DARK THEME */
+html.dark-mode .tilt-card,
+html.dark-mode .tour-card,
+html.dark-mode main article.rounded-2xl,
+html.dark-mode main a.group.rounded-2xl,
+html.dark-mode #lahore-guides a.group {
+  background: #10221c !important; border-color: #24443a !important; color: #e5e7eb !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35) !important;
+}
+html.dark-mode #lahore-guides a.group h3, html.dark-mode .tour-card h3, html.dark-mode main article.rounded-2xl h3 { color: #fde68a !important; }
+html.dark-mode #lahore-guides a.group p, html.dark-mode .tour-card p { color: #cbd5e1 !important; }
+html.dark-mode #lahore-guides a.group .text-brand-800 { color: #6ee7b7 !important; }
+html.dark-mode .tour-card [data-pe-price], html.dark-mode main article [data-pe-price] { color: #fff; }
+html.dark-mode .tour-whatsapp-cta { background: transparent !important; color: #6ee7b7 !important; border-color: #34d399 !important; }
+html.dark-mode .text-accent-gold { color: #fbbf24 !important; }
+html.dark-mode header nav.sticky { background: #0d1d17 !important; border-color: #24443a !important; }
+html.dark-mode .enhance-panel, html.dark-mode #frontendTourTools, html.dark-mode #destinationMap { background: #10221c; border-color: #24443a !important; }
+html.dark-mode #home > .relative.z-10 > .mt-6.bg-white\/95, html.dark-mode #customizer .bg-white\/95 { background: #10221c !important; border-color: #24443a !important; }
+
+/* 10. MOTION PREFERENCES */
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  #pe3dHeroCanvas { display: none; }
   #toursContainer > .tour-card { transform: none !important; will-change: auto; }
+}
+@media (max-width: 767px) { .hero-parallax-bg { animation: none !important; will-change: auto !important; } }
+.pe-3d-badge { display: none !important; }
+
+/* Header "Book a tour" on inner pages is the main action too: gold */
+header a[href$="booking.html"].bg-brand-800 {
+  background: var(--pe-gold) !important; color: var(--pe-green-950) !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35) !important;
 }
