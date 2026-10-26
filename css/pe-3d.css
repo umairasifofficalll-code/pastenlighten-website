@@ -255,3 +255,22 @@ figure.group.relative.overflow-hidden.rounded-2xl:hover { transform: translateY(
 
 /* Left-over class from the old 3D toggle */
 .pe-3d-badge { display: none !important; }
+
+/* 11. DARK THEME: cards keep a dark surface so their light text stays readable */
+html.dark-mode .tilt-card,
+html.dark-mode .tour-card,
+html.dark-mode main article.rounded-2xl,
+html.dark-mode main a.group.rounded-2xl,
+html.dark-mode #lahore-guides a.group {
+  background: linear-gradient(165deg, #14291f 0%, #0d1d17 100%) !important;
+  border-color: rgba(245, 158, 11, 0.28) !important;
+  color: #e5e7eb !important;
+}
+html.dark-mode #lahore-guides a.group h3,
+html.dark-mode .tour-card h3,
+html.dark-mode main article.rounded-2xl h3 { color: #fde68a !important; }
+html.dark-mode #lahore-guides a.group p,
+html.dark-mode .tour-card p { color: #d1d5db !important; }
+html.dark-mode #lahore-guides a.group .text-brand-800 { color: #6ee7b7 !important; }
+html.dark-mode #home > .relative.z-10 > .mt-6.bg-white\/95,
+html.dark-mode #customizer .bg-white\/95 { background: #10221c !important; }
