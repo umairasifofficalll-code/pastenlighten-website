@@ -258,6 +258,7 @@
             <dl id="priceCalc" class="calc hidden" aria-live="polite">
               <div><dt id="calcAdultsLabel">Adults</dt><dd id="calcAdults"></dd></div>
               <div id="calcKidsRow"><dt id="calcKidsLabel">Children under 5 (50%)</dt><dd id="calcKids"></dd></div>
+              <div id="calcCarRow" hidden><dt>Car with driver</dt><dd id="calcCar"></dd></div>
               <div class="calc-total"><dt>Estimated total</dt><dd id="calcTotal"></dd></div>
               <div id="calcDepositRow" class="calc-sub"><dt id="calcDepositLabel">Deposit</dt><dd id="calcDeposit"></dd></div>
               <div id="calcBalanceRow" class="calc-sub"><dt>Rest on arrival</dt><dd id="calcBalance"></dd></div>
@@ -298,7 +299,7 @@
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-wrap justify-between gap-2"><span>&copy; 2026 Past Enlighten Tour Guides. All rights reserved.</span><span><a href="reviews.html" class="underline">Reviews</a> &middot; Fort Road, Walled City, Lahore &middot; +92 334 4770455</span></div>
   </footer>
 
-<script src="js/prices.js?v=20261028-1"></script>
+<script src="js/prices.js?v=20261028-2"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/booking-confirm.js?v=20261027-1"></script>
@@ -427,7 +428,7 @@
     var priceId = t ? (t.priceId || PRICE_ID[t.id]) : null;
     var P = window.PE_PRICES && t ? window.PE_PRICES.tours[priceId] : null;
     var adults = Math.max(1, parseInt($('adults').value, 10) || 1), kids = Math.max(0, parseInt($('children').value, 10) || 0);
-    // short tours: ask about transport; with a car the price per person changes (js/prices.js → PE_TRANSPORT)
+    // short tours: ask about transport; a car adds a flat amount to the total (js/prices.js → PE_TRANSPORT)
     var tRule = P && window.PE_TRANSPORT ? PE_TRANSPORT.forTour(priceId) : null;
     var wantsCar = !!tRule && (form.querySelector('input[name="needTransport"]:checked') || {}).value === 'Yes';
     $('transportAsk').classList.toggle('hidden', !tRule);
@@ -436,7 +437,7 @@
     if (tRule) {
       var nAll = adults + kids;
       tp.classList.toggle('hidden', !wantsCar);
-      tp.textContent = 'With a car for ' + nAll + ' traveller' + (nAll > 1 ? 's' : '') + ': US$' + PE_TRANSPORT.price(priceId, nAll) + ' per person (US$' + tRule.small + ' for 4 people or fewer, US$' + tRule.large + ' for 5 or more). Change the number of travellers below.';
+      tp.textContent = 'Car with driver for ' + nAll + ' traveller' + (nAll > 1 ? 's' : '') + ': +US$' + PE_TRANSPORT.fee(priceId, nAll) + ' added to the total (US$' + tRule.small + ' for 1–4 people, US$' + tRule.large + ' for 5 or more).';
     }
     var calc = $('priceCalc'), usd = function (n) { return 'US$' + Math.round(n).toLocaleString('en-US'); };
     if (P) {
@@ -445,9 +446,11 @@
       var tier = shared ? 'shared' : nPeople === 1 ? 'solo' : nPeople === 2 ? 'twoTraveller' : nPeople <= 4 ? 'threeToFour' : nPeople <= 8 ? 'fiveToEight' : 'ninePlus';
       var tierLabel = shared ? 'small-group price' : { solo: 'solo price', twoTraveller: 'price for 2', threeToFour: 'price for 3–4', fiveToEight: 'price for 5–8', ninePlus: 'price for 9+' }[tier];
       var pp = (P.prices && Number.isFinite(P.prices[tier])) ? P.prices[tier] : (nPeople === 1 ? P.solo : null);
-      if (wantsCar) { pp = PE_TRANSPORT.price(priceId, nPeople); tierLabel = 'with car and driver, ' + nPeople + ' traveller' + (nPeople > 1 ? 's' : ''); }
+      var carFee = wantsCar ? PE_TRANSPORT.fee(priceId, nPeople) : 0;
       if (pp != null) {
-        var adultTotal = adults * pp, kidTotal = kids * pp * 0.5, total = adultTotal + kidTotal;
+        var adultTotal = adults * pp, kidTotal = kids * pp * 0.5, total = adultTotal + kidTotal + carFee;
+        $('calcCarRow').hidden = !carFee;
+        $('calcCar').textContent = carFee ? usd(carFee) : '';
         $('sumPrice').textContent = usd(pp) + ' per person (' + tierLabel + ')';
         $('calcAdultsLabel').textContent = adults + ' adult' + (adults > 1 ? 's' : '') + ' × ' + usd(pp);
         $('calcAdults').textContent = usd(adultTotal);
@@ -455,7 +458,7 @@
         $('calcKidsLabel').textContent = kids + ' child' + (kids > 1 ? 'ren' : '') + ' under 5 × ' + usd(pp * 0.5);
         $('calcKids').textContent = usd(kidTotal);
         $('calcTotal').textContent = usd(total);
-        lastEstimate = { pp: pp, total: total, label: tierLabel };
+        lastEstimate = { pp: pp, total: total, label: tierLabel, car: carFee };
         var dep = window.PE_TERMS && window.PE_TERMS.terms && window.PE_TERMS.terms.deposit;
         var pct = dep && (dep.match(/(\d{1,2})\s*%/) || [])[1];
         $('calcDepositRow').hidden = $('calcBalanceRow').hidden = !pct;
@@ -545,7 +548,7 @@
       '*Start date:* ' + fmtDate(v('date')) + ($('flexible').checked ? ' (dates are flexible)' : ''),
       '*Travellers:* ' + people(),
       '*Transport:* ' + transportText(),
-      lastEstimate ? '*Price:* US$' + lastEstimate.pp + ' per person (' + lastEstimate.label + '), estimated total US$' + Math.round(lastEstimate.total).toLocaleString('en-US') : null,
+      lastEstimate ? '*Price:* US$' + lastEstimate.pp + ' per person (' + lastEstimate.label + ')' + (lastEstimate.car ? ' + US$' + lastEstimate.car + ' car with driver' : '') + ', estimated total US$' + Math.round(lastEstimate.total).toLocaleString('en-US') : null,
       t.multi ? '*Accommodation:* ' + v('stay') : null,
       v('pickup') ? '*Pickup:* ' + v('pickup') : null,
       '*Guide language:* ' + v('language'),
@@ -587,7 +590,9 @@
       ['Start date', fmtDate(v('date')) + ($('flexible').checked ? ' (flexible)' : '')],
       ['Travellers', people()],
       ['Transport', transportText()]
-    ].concat(lastEstimate ? [['Price per person', 'US$' + lastEstimate.pp + ' (' + lastEstimate.label + ')'], ['Estimated total', 'US$' + Math.round(lastEstimate.total).toLocaleString('en-US')]] : []).concat([
+    ].concat(lastEstimate ? [['Price per person', 'US$' + lastEstimate.pp + ' (' + lastEstimate.label + ')']]
+      .concat(lastEstimate.car ? [['Car with driver', '+US$' + lastEstimate.car]] : [])
+      .concat([['Estimated total', 'US$' + Math.round(lastEstimate.total).toLocaleString('en-US')]]) : []).concat([
       ['Name', v('name')],
       ['WhatsApp / phone', v('phone')],
       ['Email', v('email')]

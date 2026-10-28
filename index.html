@@ -398,7 +398,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
   </style>
 
 
-<script src="js/prices.js?v=20261028-1"></script>
+<script src="js/prices.js?v=20261028-2"></script>
 <script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/noor-knowledge.js?v=20261025-2"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
@@ -1673,6 +1673,14 @@ main article a:hover { color: #92400e; }
                 <input type="checkbox" name="custDest" value="Shah Jamal Sufi Night" class="accent-brand-800 rounded">
                 <span class="text-slate-800 font-medium">Shah Jamal Sufi</span>
               </label>
+              <label class="flex items-center gap-2 p-2 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer hover:border-brand-700 transition">
+                <input type="checkbox" id="custOtherOn" class="accent-brand-800 rounded">
+                <span class="text-slate-800 font-medium">Other places</span>
+              </label>
+            </div>
+            <div id="custOtherWrap" class="mt-2 hidden">
+              <label for="custOther" class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Other places you'd like to visit</label>
+              <input type="text" id="custOther" maxlength="300" placeholder="e.g. Murree, Taxila, Chitral, Kalash Valley, Hingol National Park…" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:ring-2 focus:ring-brand-700 focus:outline-none" />
             </div>
           </div>
 
@@ -2816,12 +2824,12 @@ main article a:hover { color: #92400e; }
     function handleCustomTourSubmit(e) {
       e.preventDefault();
       const val = id => (document.getElementById(id)?.value || '').trim();
-      const dests = Array.from(document.querySelectorAll('input[name="custDest"]:checked')).map(cb => cb.value).join(', ');
+      const dests = customDestinations().join(', ');
       const saved = window.PEBackend ? window.PEBackend.save('custom_tour', {
         name: val('custName'), phone: val('custPhone'), start_city: val('custStartCity'), format: val('custFormat'),
         transport: val('custTransport'), days: parseInt(val('custDays'), 10) || 1, guests: parseInt(val('custGuests'), 10) || 1,
-        destinations: Array.from(document.querySelectorAll('input[name="custDest"]:checked')).map(cb => cb.value),
-        notes: ['Hotel: ' + val('custHotel'), val('custNotes')].filter(Boolean).join('\n')
+        destinations: customDestinations().map(d => d.slice(0, 80)),
+        notes: ['Hotel: ' + val('custHotel'), document.getElementById('custOtherOn')?.checked && val('custOther') ? 'Other places: ' + val('custOther') : '', val('custNotes')].filter(Boolean).join('\n')
       }, e.target) : null;
       const waLines = [
         'Hello Past Enlighten!',
@@ -2880,7 +2888,7 @@ main article a:hover { color: #92400e; }
     function peSoloNote(key) {
       if (!peTour(key)) return '';
       const id = PE_KEY_TO_PRICE[key] || key, r = window.PE_TRANSPORT && PE_TRANSPORT.forTour(id);
-      return 'Groups of 2+ pay less per person' + (r ? `. Without transport; with a car: US$${r.small} pp (up to 4) or US$${r.large} pp (5+)` : '');
+      return 'Groups of 2+ pay less per person' + (r ? `. Car with driver: +US$${r.small} total (1–4 people) or +US$${r.large} (5+)` : '');
     }
 
     function openTourDetails(key) {
@@ -2992,15 +3000,16 @@ main article a:hover { color: #92400e; }
       const car = !!rule && document.getElementById('bookingTransport')?.value === 'Yes';
       if (!id) return { id: null, rule: null, car: false, n };
       const t = P[id], tier = n === 1 ? 'solo' : n === 2 ? 'twoTraveller' : n <= 4 ? 'threeToFour' : n <= 8 ? 'fiveToEight' : 'ninePlus';
-      let pp = car ? PE_TRANSPORT.price(id, n) : (t.prices && Number.isFinite(Number(t.prices[tier])) ? Number(t.prices[tier]) : (n === 1 ? Number(t.solo) : null));
-      return { id, rule, car, n, pp, total: pp ? pp * n : null, tour: t };
+      const pp = t.prices && Number.isFinite(Number(t.prices[tier])) ? Number(t.prices[tier]) : (n === 1 ? Number(t.solo) : null);
+      const fee = car ? PE_TRANSPORT.fee(id, n) : 0;
+      return { id, rule, car, n, pp, fee, total: pp ? pp * n + fee : null, tour: t };
     }
     function updateQuickBooking() {
       const q = quickBookingPrice(), wrap = document.getElementById('bookingTransportWrap'), line = document.getElementById('bookingPriceLine');
       if (!wrap || !line) return;
       wrap.classList.toggle('hidden', !q.rule);
       if (q.pp) {
-        line.textContent = 'US$' + q.pp + ' per person × ' + q.n + ' = US$' + q.total.toLocaleString('en-US') + (q.car ? ' (with car and driver)' : q.rule ? ' (without transport)' : '') + '. Final price confirmed in writing.';
+        line.textContent = 'US$' + q.pp + ' per person × ' + q.n + (q.fee ? ' + US$' + q.fee + ' car with driver' : '') + ' = US$' + q.total.toLocaleString('en-US') + (q.rule && !q.car ? ' (without transport)' : '') + '. Final price confirmed in writing.';
         line.classList.remove('hidden');
       } else line.classList.add('hidden');
     }
@@ -3014,7 +3023,7 @@ main article a:hover { color: #92400e; }
       const val = id => (document.getElementById(id)?.value || '').trim();
       const q = quickBookingPrice();
       const transport = q.rule ? (q.car ? 'Yes, car with driver (pickup and drop-off)' : 'No transport (we meet the guide)') : '';
-      const priceText = q.pp ? `US$${q.pp} per person × ${q.n} = US$${q.total.toLocaleString('en-US')}` : '';
+      const priceText = q.pp ? `US$${q.pp} per person × ${q.n}${q.fee ? ` + US$${q.fee} car with driver` : ''} = US$${q.total.toLocaleString('en-US')}` : '';
       const saved = window.PEBackend ? window.PEBackend.save('quick_booking', {
         name: val('bookingName'), phone: val('bookingPhone'), date: val('bookingDate'),
         guests: parseInt(val('bookingGuests'), 10) || 1, tour: val('modalTourSelect'),
@@ -4006,6 +4015,14 @@ openTourDetails = function(key){
 
 
 
+// Ticked destinations plus the visitor's own "Other places"
+function customDestinations(){
+ const list=[...document.querySelectorAll('input[name="custDest"]:checked')].map(x=>x.value);
+ const on=document.getElementById('custOtherOn')?.checked, other=(document.getElementById('custOther')?.value||'').trim();
+ document.getElementById('custOtherWrap')?.classList.toggle('hidden',!on);
+ if(on&&other) list.push('Other: '+other);
+ return list;
+}
 // Live summary of the custom tour the visitor is building (prices are sent in the team's written quote).
 function updateCustomQuote(){
  const list=document.getElementById('customSummaryList'), dests=document.getElementById('customSummaryDests');
@@ -4024,13 +4041,14 @@ function updateCustomQuote(){
  ];
  if(v('custNotes'))rows.push(['Preferences',v('custNotes')]);
  list.innerHTML=rows.map(([k,val])=>`<div class="rounded-lg bg-white/5 border border-white/10 p-2"><dt class="text-stone-400">${k}</dt><dd class="font-bold text-white break-words">${esc(val)}</dd></div>`).join('');
- const chosen=[...document.querySelectorAll('input[name="custDest"]:checked')].map(x=>x.value);
+ const chosen=customDestinations();
  dests.innerHTML=chosen.length?chosen.map(d=>`<li class="px-2 py-1 rounded-full bg-amber-400/15 border border-amber-300/30 text-amber-100 text-[11px] font-semibold">${esc(d)}</li>`).join(''):'<li class="text-[11px] text-stone-400">No destinations selected yet. Tick the places you want to see.</li>';
 }
 
 document.addEventListener('pe:terms',()=>updateCustomQuote());
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('input[name="custDest"]').forEach(el=>el.addEventListener('change',updateCustomQuote));
+ ['custOtherOn','custOther'].forEach(id=>{const e=document.getElementById(id);e?.addEventListener('input',updateCustomQuote);e?.addEventListener('change',()=>{updateCustomQuote();if(id==='custOtherOn'&&e.checked)document.getElementById('custOther')?.focus();});});
  const ctf=document.getElementById('customTourForm');ctf?.addEventListener('input',updateCustomQuote);ctf?.addEventListener('change',updateCustomQuote);
 });
 </script>

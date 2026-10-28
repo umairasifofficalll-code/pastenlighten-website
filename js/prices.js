@@ -369,22 +369,23 @@ window.PE_PRICE_FOR_PARTY = function (id, partySize, shared) {
 })();
 /*
  * Transport add-on for the short Lahore tours (half day / 3–4 hours / evening / night).
- * These tours are priced without transport. If the guest wants a car with driver, the price per person becomes:
- *   US$70 tours → US$90 for 4 people or fewer, US$100 for 5 or more
- *   US$40 tours → US$65 for 4 people or fewer, US$100 for 5 or more
+ * These tours are priced without transport. If the guest wants a car with driver, a fixed amount is added
+ * to the TOTAL (per-person prices stay the same):
+ *   US$70 tours → + US$15 for fewer than 5 people, + US$30 for 5 or more
+ *   US$40 tours → + US$25 for fewer than 5 people, + US$60 for 5 or more
  * Keyed by the tour's normal solo price, so it applies to every short tour priced at US$70 or US$40.
  */
 window.PE_TRANSPORT = {
-  rules: { 70: { small: 90, large: 100 }, 40: { small: 65, large: 100 } },
-  smallMax: 4,
+  rules: { 70: { small: 15, large: 30 }, 40: { small: 25, large: 60 } },
+  largeFrom: 5,
   forTour: function (id) {
     var t = window.PE_PRICES && window.PE_PRICES.tours && window.PE_PRICES.tours[id];
     if (!t || /\d+\s*days?\s*\/\s*\d+\s*nights?/i.test(t.duration || '')) return null;
     return this.rules[Number(t.solo)] || null;
   },
-  price: function (id, people) {
+  fee: function (id, people) {
     var r = this.forTour(id);
     if (!r) return null;
-    return Number(people) <= this.smallMax ? r.small : r.large;
+    return Number(people) >= this.largeFrom ? r.large : r.small;
   }
 };
