@@ -108,6 +108,15 @@
             <p id="tourErr" class="err">Please choose a tour, or "Custom itinerary".</p>
             <p id="tourInfo" class="hint"></p>
           </div>
+          <div id="transportAsk" class="mt-4 hidden rounded-xl border border-stone-200 bg-stone-50 p-4">
+            <span class="label">Do you need transport?</span>
+            <p class="hint" style="margin-top:0">This tour is priced without a car. We can add a private car with driver, with hotel pickup and drop-off.</p>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <label class="choice"><input type="radio" name="needTransport" value="No" checked> No, we'll meet the guide</label>
+              <label class="choice"><input type="radio" name="needTransport" value="Yes"> Yes, add a car with driver</label>
+            </div>
+            <p id="transportPrice" class="hint hidden"></p>
+          </div>
           <div class="mt-4 grid sm:grid-cols-2 gap-3">
             <div>
               <span class="label">Tour style</span>
@@ -116,7 +125,7 @@
                 <label class="choice"><input type="radio" name="style" value="Small group"> Small group</label>
               </div>
             </div>
-            <div>
+            <div id="transportSelectWrap">
               <label class="label" for="transport">Transport</label>
               <select id="transport" name="transport" class="field">
                 <option value="Please include transport">Please include transport</option>
@@ -289,7 +298,7 @@
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-wrap justify-between gap-2"><span>&copy; 2026 Past Enlighten Tour Guides. All rights reserved.</span><span><a href="reviews.html" class="underline">Reviews</a> &middot; Fort Road, Walled City, Lahore &middot; +92 334 4770455</span></div>
   </footer>
 
-<script src="js/prices.js?v=20261021-3"></script>
+<script src="js/prices.js?v=20261028-1"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/booking-confirm.js?v=20261027-1"></script>
@@ -397,7 +406,14 @@
   var PRICE_ID = { 'lahore-heritage-walk': 'L-WALK', 'lahore-full-day': 'L1', 'walled-city-rickshaw': 'L2', 'museums-fort': 'L3', 'sufi-night': 'L4',
     'shopping': 'L5', 'shahdara': 'L6', 'sheikhupura': 'L7', 'islamabad': 'I1', 'naran-kaghan': 'N-NARAN', 'swat': 'N-SWAT', 'neelum': 'N-NEELUM',
     'hunza': 'N1', 'skardu': 'N2', 'fairy-meadows': 'N3', 'grand-16': 'N5', 'bahawalpur': 'S1', 'harappa-multan': 'S2' };
+  var lastEstimate = null;
+  function transportText() {
+    var ask = !$('transportAsk').classList.contains('hidden');
+    if (!ask) return ($('transport').value || '').trim();
+    return (form.querySelector('input[name="needTransport"]:checked') || {}).value === 'Yes' ? 'Yes, car with driver (pickup and drop-off)' : 'No transport (we meet the guide)';
+  }
   function update() {
+    lastEstimate = null;
     var t = tourById(tourSel.value);
     $('sumTour').textContent = t ? t.name : 'Choose a tour';
     $('sumDuration').textContent = t ? t.duration : '—';
@@ -408,8 +424,20 @@
     $('sumStyle').textContent = st ? st.value : '—';
     $('tourInfo').textContent = t ? (t.duration + ' · starts from ' + t.start) : '';
     // ---- Price calculator (prices from js/prices.js; deposit % from the team's booking terms)
-    var P = window.PE_PRICES && t ? window.PE_PRICES.tours[t.priceId || PRICE_ID[t.id]] : null;
+    var priceId = t ? (t.priceId || PRICE_ID[t.id]) : null;
+    var P = window.PE_PRICES && t ? window.PE_PRICES.tours[priceId] : null;
     var adults = Math.max(1, parseInt($('adults').value, 10) || 1), kids = Math.max(0, parseInt($('children').value, 10) || 0);
+    // short tours: ask about transport; with a car the price per person changes (js/prices.js → PE_TRANSPORT)
+    var tRule = P && window.PE_TRANSPORT ? PE_TRANSPORT.forTour(priceId) : null;
+    var wantsCar = !!tRule && (form.querySelector('input[name="needTransport"]:checked') || {}).value === 'Yes';
+    $('transportAsk').classList.toggle('hidden', !tRule);
+    $('transportSelectWrap').classList.toggle('hidden', !!tRule);
+    var tp = $('transportPrice');
+    if (tRule) {
+      var nAll = adults + kids;
+      tp.classList.toggle('hidden', !wantsCar);
+      tp.textContent = 'With a car for ' + nAll + ' traveller' + (nAll > 1 ? 's' : '') + ': US$' + PE_TRANSPORT.price(priceId, nAll) + ' per person (US$' + tRule.small + ' for 4 people or fewer, US$' + tRule.large + ' for 5 or more). Change the number of travellers below.';
+    }
     var calc = $('priceCalc'), usd = function (n) { return 'US$' + Math.round(n).toLocaleString('en-US'); };
     if (P) {
       var nPeople = adults + kids;
@@ -417,6 +445,7 @@
       var tier = shared ? 'shared' : nPeople === 1 ? 'solo' : nPeople === 2 ? 'twoTraveller' : nPeople <= 4 ? 'threeToFour' : nPeople <= 8 ? 'fiveToEight' : 'ninePlus';
       var tierLabel = shared ? 'small-group price' : { solo: 'solo price', twoTraveller: 'price for 2', threeToFour: 'price for 3–4', fiveToEight: 'price for 5–8', ninePlus: 'price for 9+' }[tier];
       var pp = (P.prices && Number.isFinite(P.prices[tier])) ? P.prices[tier] : (nPeople === 1 ? P.solo : null);
+      if (wantsCar) { pp = PE_TRANSPORT.price(priceId, nPeople); tierLabel = 'with car and driver, ' + nPeople + ' traveller' + (nPeople > 1 ? 's' : ''); }
       if (pp != null) {
         var adultTotal = adults * pp, kidTotal = kids * pp * 0.5, total = adultTotal + kidTotal;
         $('sumPrice').textContent = usd(pp) + ' per person (' + tierLabel + ')';
@@ -426,6 +455,7 @@
         $('calcKidsLabel').textContent = kids + ' child' + (kids > 1 ? 'ren' : '') + ' under 5 × ' + usd(pp * 0.5);
         $('calcKids').textContent = usd(kidTotal);
         $('calcTotal').textContent = usd(total);
+        lastEstimate = { pp: pp, total: total, label: tierLabel };
         var dep = window.PE_TERMS && window.PE_TERMS.terms && window.PE_TERMS.terms.deposit;
         var pct = dep && (dep.match(/(\d{1,2})\s*%/) || [])[1];
         $('calcDepositRow').hidden = $('calcBalanceRow').hidden = !pct;
@@ -514,7 +544,8 @@
       '*Style:* ' + style,
       '*Start date:* ' + fmtDate(v('date')) + ($('flexible').checked ? ' (dates are flexible)' : ''),
       '*Travellers:* ' + people(),
-      '*Transport:* ' + v('transport'),
+      '*Transport:* ' + transportText(),
+      lastEstimate ? '*Price:* US$' + lastEstimate.pp + ' per person (' + lastEstimate.label + '), estimated total US$' + Math.round(lastEstimate.total).toLocaleString('en-US') : null,
       t.multi ? '*Accommodation:* ' + v('stay') : null,
       v('pickup') ? '*Pickup:* ' + v('pickup') : null,
       '*Guide language:* ' + v('language'),
@@ -541,7 +572,7 @@
       return {
         tour: t ? t.name : tourSel.value, tour_id: tourSel.value,
         style: (form.querySelector('input[name="style"]:checked') || {}).value || '',
-        transport: val('transport'), custom_places: t && t.id === 'custom' ? val('customPlaces') : '',
+        transport: transportText(), custom_places: t && t.id === 'custom' ? val('customPlaces') : '',
         date: val('date'), flexible: $('flexible').checked,
         adults: parseInt($('adults').value, 10) || 1, children: parseInt($('children').value, 10) || 0,
         pickup: val('pickup'), stay: t && t.multi ? val('stay') : '',
@@ -555,10 +586,12 @@
       ['Tour', t ? t.name : tourSel.value],
       ['Start date', fmtDate(v('date')) + ($('flexible').checked ? ' (flexible)' : '')],
       ['Travellers', people()],
+      ['Transport', transportText()]
+    ].concat(lastEstimate ? [['Price per person', 'US$' + lastEstimate.pp + ' (' + lastEstimate.label + ')'], ['Estimated total', 'US$' + Math.round(lastEstimate.total).toLocaleString('en-US')]] : []).concat([
       ['Name', v('name')],
       ['WhatsApp / phone', v('phone')],
       ['Email', v('email')]
-    ];
+    ]);
   }
   function popup(channel, t, text, saved, ref) {
     if (!window.PEConfirm) return;

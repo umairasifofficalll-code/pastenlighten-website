@@ -398,7 +398,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
   </style>
 
 
-<script src="js/prices.js?v=20261021-3"></script>
+<script src="js/prices.js?v=20261028-1"></script>
 <script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/noor-knowledge.js?v=20261025-2"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
@@ -1592,7 +1592,7 @@ main article a:hover { color: #92400e; }
         <form id="customTourForm" onsubmit="handleCustomTourSubmit(event)">
           <input type="text" name="website" class="pe-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
               <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">1. Starting City</label>
               <select id="custStartCity" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-brand-700 focus:outline-none">
@@ -1622,11 +1622,23 @@ main article a:hover { color: #92400e; }
                 <option value="Without Transport (Guide Only)">Without Transport (Guide Only)</option>
               </select>
             </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">4. Hotel</label>
+              <select id="custHotel" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-brand-700 focus:outline-none">
+                <option value="Standard hotels (3-star / good guesthouses)">Standard (3-star / good guesthouses)</option>
+                <option value="Comfort hotels (4-star)">Comfort (4-star)</option>
+                <option value="Luxury hotels (5-star / best available)">Luxury (5-star / best available)</option>
+                <option value="Budget guesthouses">Budget guesthouses</option>
+                <option value="I will book my own hotels">I will book my own hotels</option>
+                <option value="No hotel needed (day trips only)">No hotel needed (day trips only)</option>
+              </select>
+            </div>
           </div>
 
           <div class="mb-4">
             <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              4. Select Destinations to Combine:
+              5. Select Destinations to Combine:
             </label>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <label class="flex items-center gap-1.5 p-2 rounded-lg border border-slate-200 bg-stone-50 hover:bg-amber-50 cursor-pointer">
@@ -1690,7 +1702,6 @@ main article a:hover { color: #92400e; }
             </div>
             <dl id="customSummaryList" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3 text-[11px]"></dl>
             <div class="mt-3"><div class="text-[10px] uppercase tracking-wider text-stone-400">Destinations</div><ul id="customSummaryDests" class="mt-1 flex flex-wrap gap-1.5"></ul></div>
-            <div id="customPriceBox" class="mt-4 rounded-xl border border-amber-300/30 bg-black/20 p-3 sm:p-4" aria-live="polite"></div>
           </div>
 
           <div class="mb-4">
@@ -2431,6 +2442,14 @@ main article a:hover { color: #92400e; }
             </select>
           </div>
         </div>
+        <div id="bookingTransportWrap" class="hidden rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+          <label for="bookingTransport" class="block font-semibold uppercase text-slate-500 mb-0.5">Do you need transport?</label>
+          <select id="bookingTransport" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-700 focus:outline-none bg-white">
+            <option value="No">No, we'll meet the guide</option>
+            <option value="Yes">Yes, add a car with driver (pickup and drop-off)</option>
+          </select>
+        </div>
+        <p id="bookingPriceLine" class="hidden rounded-lg bg-brand-50 border border-brand-100 px-3 py-2 font-semibold text-brand-900"></p>
         <div>
           <label class="block font-semibold uppercase text-slate-500 mb-0.5">Special Notes</label>
           <textarea id="bookingNotes" rows="2" placeholder="Dietary preference, photography focus..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-700 focus:outline-none"></textarea>
@@ -2793,17 +2812,6 @@ main article a:hover { color: #92400e; }
       window.open(`https://wa.me/923344770455?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
     }
 
-    // Price lines for the confirmation pop-up (same estimate as the summary box)
-    function customPriceRows() {
-      if (typeof customEstimate !== 'function') return [];
-      const e = customEstimate(), usd = n => 'US$' + Math.round(n).toLocaleString('en-US');
-      if (!e.lines.length) return e.chosen ? [['Estimated price', 'In your written quote']] : [];
-      const rows = e.lines.map(l => [l.name, usd(l.pp) + ' × ' + e.guests + ' = ' + usd(l.sub)]);
-      rows.push(['Estimated total', usd(e.total) + ' (about ' + usd(e.total / e.guests) + ' per person)']);
-      if (e.pct) rows.push(['Deposit to confirm (' + e.pct + '%)', usd(Math.round(e.total * e.pct / 100))]);
-      if (e.missing.length) rows.push(['Priced in your quote', e.missing.join(', ')]);
-      return rows;
-    }
 
     function handleCustomTourSubmit(e) {
       e.preventDefault();
@@ -2813,8 +2821,7 @@ main article a:hover { color: #92400e; }
         name: val('custName'), phone: val('custPhone'), start_city: val('custStartCity'), format: val('custFormat'),
         transport: val('custTransport'), days: parseInt(val('custDays'), 10) || 1, guests: parseInt(val('custGuests'), 10) || 1,
         destinations: Array.from(document.querySelectorAll('input[name="custDest"]:checked')).map(cb => cb.value),
-        notes: val('custNotes'),
-        estimate: (typeof customEstimate === 'function' && customEstimate().total) ? 'US$' + Math.round(customEstimate().total).toLocaleString('en-US') + ' (website estimate)' : ''
+        notes: ['Hotel: ' + val('custHotel'), val('custNotes')].filter(Boolean).join('\n')
       }, e.target) : null;
       const waLines = [
         'Hello Past Enlighten!',
@@ -2824,11 +2831,12 @@ main article a:hover { color: #92400e; }
         `*Starting city:* ${val('custStartCity')}`,
         `*Format:* ${val('custFormat')}`,
         `*Transport:* ${val('custTransport')}`,
+        `*Hotel:* ${val('custHotel')}`,
         `*Days:* ${val('custDays')}`,
         `*Guests:* ${val('custGuests')}`,
         `*Destinations:* ${dests || 'Not selected'}`,
         val('custNotes') ? `*Preferences:* ${val('custNotes')}` : '',
-        ...customPriceRows().map(([k, v]) => `*${k}:* ${v}`),
+
         'Please send me a quote with the price and inclusions.'
       ];
       openWhatsApp(waLines);
@@ -2836,8 +2844,7 @@ main article a:hover { color: #92400e; }
         channel: 'whatsapp', title: 'Custom tour request ready!', name: val('custName'), saved,
         message: 'WhatsApp has opened with your custom tour plan already written. Press Send there so our team can build your quote.',
         details: [['Starting city', val('custStartCity')], ['Length', (val('custDays') || '1') + ' day(s)'], ['Guests', val('custGuests')],
-                  ['Destinations', dests || 'Not selected yet'], ['Name', val('custName')], ['Phone', val('custPhone')]]
-          .concat(customPriceRows()),
+                  ['Hotel', val('custHotel')], ['Destinations', dests || 'Not selected yet'], ['Name', val('custName')], ['Phone', val('custPhone')]],
         whatsappText: waLines.filter(Boolean).join('\n')
       });
     }
@@ -2870,7 +2877,11 @@ main article a:hover { color: #92400e; }
     function peTour(key) { const p = window.PE_PRICES && window.PE_PRICES.tours[PE_KEY_TO_PRICE[key] || key]; return p || null; }
     function peSoloLabel(key) { return peTour(key) ? 'Solo traveller, per person' : 'Price'; }
     function peSoloPrice(key) { const t = peTour(key); return t ? 'US$' + t.solo.toLocaleString('en-US') : '<a href="https://wa.me/923344770455" target="_blank" rel="noopener" class="text-emerald-700 underline">Ask our team</a>'; }
-    function peSoloNote(key) { return peTour(key) ? 'Groups of 2+ pay less per person' : ''; }
+    function peSoloNote(key) {
+      if (!peTour(key)) return '';
+      const id = PE_KEY_TO_PRICE[key] || key, r = window.PE_TRANSPORT && PE_TRANSPORT.forTour(id);
+      return 'Groups of 2+ pay less per person' + (r ? `. Without transport; with a car: US$${r.small} pp (up to 4) or US$${r.large} pp (5+)` : '');
+    }
 
     function openTourDetails(key) {
       const tour = TOURS_DATA[key] || catalogDetails(key);
@@ -2962,6 +2973,7 @@ main article a:hover { color: #92400e; }
         select.value = match.value;
       }
       modal.classList.remove('hidden');
+      updateQuickBooking();
       setTimeout(() => document.getElementById('bookingName')?.focus(), 50);
     }
 
@@ -2969,12 +2981,44 @@ main article a:hover { color: #92400e; }
       document.getElementById('bookingModal').classList.add('hidden');
     }
 
+    // Price for the home-page booking pop-up. Short tours ask about transport (js/prices.js → PE_TRANSPORT).
+    function quickBookingPrice() {
+      const P = (window.PE_PRICES && PE_PRICES.tours) || {};
+      const name = (document.getElementById('modalTourSelect')?.value || '').trim();
+      const norm = v => String(v).toLowerCase().replace(/^[a-z]\d+\s*•\s*/, '').replace(/[^a-z0-9]+/g, ' ').trim();
+      const id = Object.keys(P).find(k => norm(P[k].name) === norm(name)) || Object.keys(P).find(k => { const a = norm(P[k].name), b = norm(name); return b && (a.includes(b) || b.includes(a)); });
+      const n = Math.max(1, parseInt(document.getElementById('bookingGuests')?.value, 10) || 1);
+      const rule = id && window.PE_TRANSPORT ? PE_TRANSPORT.forTour(id) : null;
+      const car = !!rule && document.getElementById('bookingTransport')?.value === 'Yes';
+      if (!id) return { id: null, rule: null, car: false, n };
+      const t = P[id], tier = n === 1 ? 'solo' : n === 2 ? 'twoTraveller' : n <= 4 ? 'threeToFour' : n <= 8 ? 'fiveToEight' : 'ninePlus';
+      let pp = car ? PE_TRANSPORT.price(id, n) : (t.prices && Number.isFinite(Number(t.prices[tier])) ? Number(t.prices[tier]) : (n === 1 ? Number(t.solo) : null));
+      return { id, rule, car, n, pp, total: pp ? pp * n : null, tour: t };
+    }
+    function updateQuickBooking() {
+      const q = quickBookingPrice(), wrap = document.getElementById('bookingTransportWrap'), line = document.getElementById('bookingPriceLine');
+      if (!wrap || !line) return;
+      wrap.classList.toggle('hidden', !q.rule);
+      if (q.pp) {
+        line.textContent = 'US$' + q.pp + ' per person × ' + q.n + ' = US$' + q.total.toLocaleString('en-US') + (q.car ? ' (with car and driver)' : q.rule ? ' (without transport)' : '') + '. Final price confirmed in writing.';
+        line.classList.remove('hidden');
+      } else line.classList.add('hidden');
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      ['modalTourSelect', 'bookingGuests', 'bookingTransport'].forEach(id => { const el = document.getElementById(id); el?.addEventListener('input', updateQuickBooking); el?.addEventListener('change', updateQuickBooking); });
+    });
+    document.addEventListener('pe:catalog', () => updateQuickBooking());
+
     function handleBookingSubmit(e) {
       e.preventDefault();
       const val = id => (document.getElementById(id)?.value || '').trim();
+      const q = quickBookingPrice();
+      const transport = q.rule ? (q.car ? 'Yes, car with driver (pickup and drop-off)' : 'No transport (we meet the guide)') : '';
+      const priceText = q.pp ? `US$${q.pp} per person × ${q.n} = US$${q.total.toLocaleString('en-US')}` : '';
       const saved = window.PEBackend ? window.PEBackend.save('quick_booking', {
         name: val('bookingName'), phone: val('bookingPhone'), date: val('bookingDate'),
-        guests: parseInt(val('bookingGuests'), 10) || 1, tour: val('modalTourSelect'), notes: val('bookingNotes')
+        guests: parseInt(val('bookingGuests'), 10) || 1, tour: val('modalTourSelect'),
+        notes: [transport ? 'Transport: ' + transport : '', priceText ? 'Website price: ' + priceText : '', val('bookingNotes')].filter(Boolean).join('\n')
       }, e.target) : null;
       closeBookingModal();
       const waLines = [
@@ -2985,13 +3029,16 @@ main article a:hover { color: #92400e; }
         `*Date:* ${val('bookingDate')}`,
         `*Guests:* ${val('bookingGuests')}`,
         `*Tour:* ${val('modalTourSelect')}`,
+        transport ? `*Transport:* ${transport}` : '',
+        priceText ? `*Price:* ${priceText}` : '',
         val('bookingNotes') ? `*Notes:* ${val('bookingNotes')}` : ''
       ];
       openWhatsApp(waLines);
       if (window.PEConfirm) window.PEConfirm.show({
         channel: 'whatsapp', name: val('bookingName'), saved,
-        details: [['Tour', val('modalTourSelect')], ['Date', val('bookingDate')], ['Guests', val('bookingGuests')],
-                  ['Name', val('bookingName')], ['Phone', val('bookingPhone')]],
+        details: [['Tour', val('modalTourSelect')], ['Date', val('bookingDate')], ['Guests', val('bookingGuests')]]
+          .concat(transport ? [['Transport', transport]] : []).concat(priceText ? [['Price', priceText]] : [])
+          .concat([['Name', val('bookingName')], ['Phone', val('bookingPhone')]]),
         whatsappText: waLines.filter(Boolean).join('\n')
       });
       else showToast('Opening WhatsApp to send your booking request…');
@@ -3938,7 +3985,7 @@ window.addEventListener('DOMContentLoaded',()=>{
  enhanceTourCards();applyTourFilters();renderRecent();renderRecommendations();enhanceReviewsAndFaq();installDateGuestQuote();updateCustomQuote();setTimeout(initTourMap,100);
  document.querySelectorAll('#tourSearch,#tourTypeFilter,#tourPriceFilter,#tourRatingFilter,#tourSort').forEach(e=>e.addEventListener('input',applyTourFilters));
  document.querySelectorAll('[data-quick-filter]').forEach(b=>b.addEventListener('click',()=>setRegionFilter(b.dataset.quickFilter)));
- ['custDays','custGuests','custTransport'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateCustomQuote));
+ ['custDays','custGuests','custTransport','custHotel'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateCustomQuote));
  document.getElementById('reviewSearch')?.addEventListener('input',filterReviews);document.getElementById('reviewRating')?.addEventListener('change',filterReviews);document.getElementById('faqSearch')?.addEventListener('input',filterFaq);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLightbox();closeTourModal();closeBookingModal();document.getElementById('compareModal')?.classList.add('hidden')}});
  ['tourDetailsModal','bookingModal','compareModal'].forEach(id=>{const m=document.getElementById(id);m?.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden')})});
@@ -3959,7 +4006,7 @@ openTourDetails = function(key){
 
 
 
-// Live summary of the custom tour the visitor is building, with a price estimate from the live tour prices.
+// Live summary of the custom tour the visitor is building (prices are sent in the team's written quote).
 function updateCustomQuote(){
  const list=document.getElementById('customSummaryList'), dests=document.getElementById('customSummaryDests');
  if(!list||!dests)return;
@@ -3970,6 +4017,7 @@ function updateCustomQuote(){
   ['Starting city',v('custStartCity')],
   ['Tour format',v('custFormat')],
   ['Transport',v('custTransport')],
+  ['Hotel',v('custHotel')],
   ['Length',days+' day'+(days>1?'s':'')],
   ['Guests',guests+' guest'+(guests>1?'s':'')],
   ['Lead traveller',v('custName')||'Add your name below']
@@ -3978,54 +4026,8 @@ function updateCustomQuote(){
  list.innerHTML=rows.map(([k,val])=>`<div class="rounded-lg bg-white/5 border border-white/10 p-2"><dt class="text-stone-400">${k}</dt><dd class="font-bold text-white break-words">${esc(val)}</dd></div>`).join('');
  const chosen=[...document.querySelectorAll('input[name="custDest"]:checked')].map(x=>x.value);
  dests.innerHTML=chosen.length?chosen.map(d=>`<li class="px-2 py-1 rounded-full bg-amber-400/15 border border-amber-300/30 text-amber-100 text-[11px] font-semibold">${esc(d)}</li>`).join(''):'<li class="text-[11px] text-stone-400">No destinations selected yet. Tick the places you want to see.</li>';
- renderCustomPrice(customEstimate(), esc);
 }
-// ---- Custom tour price estimate: built from the same live prices as the tour cards and booking form
-const CUSTOM_DEST_TOUR={'Lahore Walled City & Fort':'L-WALK','Wagah Border Ceremony':'L1','Islamabad & Faisal Mosque':'I1','Hunza Valley (Passu & Attabad)':'N1',
- 'Skardu & Deosai Plains':'N2','Fairy Meadows (Nanga Parbat)':'N3','Shah Jamal Sufi Night':'L4','Katas Raj & Khewra Salt Mine':null};
-function customEstimate(){
- const P=(window.PE_PRICES&&PE_PRICES.tours)||{};
- const v=id=>(document.getElementById(id)?.value||'').trim();
- const guests=Math.max(1,Math.min(40,parseInt(v('custGuests'),10)||1));
- const shared=/shared/i.test(v('custFormat'));
- const tier=shared?'shared':guests===1?'solo':guests===2?'twoTraveller':guests<=4?'threeToFour':guests<=8?'fiveToEight':'ninePlus';
- const tierLabel=shared?'small-group price':{solo:'solo price',twoTraveller:'price for 2',threeToFour:'price for 3–4',fiveToEight:'price for 5–8',ninePlus:'price for 9+'}[tier];
- const chosen=[...document.querySelectorAll('input[name="custDest"]:checked')].map(x=>x.value);
- let ids=[], missing=[];
- chosen.forEach(d=>{ const id=CUSTOM_DEST_TOUR[d]; if(id===undefined||id===null) missing.push(d); else if(!ids.includes(id)) ids.push(id); });
- // Lahore walk + Wagah = the full-day tour (it already includes the Walled City and Lahore Fort)
- if(ids.includes('L1')) ids=ids.filter(x=>x!=='L-WALK');
- // Hunza + Skardu + Fairy Meadows together = the Grand Northern Pakistan Tour
- let merged='';
- if(['N1','N2','N3'].every(x=>ids.includes(x))&&P['N5']){ ids=ids.filter(x=>!['N1','N2','N3'].includes(x)); ids.push('N5'); merged='Hunza, Skardu and Fairy Meadows together are our 16-day Grand Northern Pakistan Tour.'; }
- const lines=[]; let total=0;
- ids.forEach(id=>{
-  const t=P[id]; if(!t){missing.push(id);return;}
-  const pp=t.prices&&Number.isFinite(Number(t.prices[tier]))?Number(t.prices[tier]):(tier==='solo'?Number(t.solo):null);
-  if(pp==null){missing.push(t.name);return;}
-  lines.push({name:t.name,duration:t.duration,pp,sub:pp*guests}); total+=pp*guests;
- });
- const dep=window.PE_TERMS&&PE_TERMS.terms&&PE_TERMS.terms.deposit, pct=dep&&(dep.match(/(\d{1,2})\s*%/)||[])[1];
- return {lines,total,missing,guests,tierLabel,pct:pct?Number(pct):null,merged,guideOnly:/guide only/i.test(v('custTransport')),chosen:chosen.length};
-}
-function renderCustomPrice(e,esc){
- const box=document.getElementById('customPriceBox'); if(!box)return;
- const usd=n=>'US$'+Math.round(n).toLocaleString('en-US');
- if(!e.chosen){box.innerHTML='<div class="text-[11px] text-stone-300">Tick the places you want to see and your estimated price appears here.</div>';return;}
- let h='<div class="flex items-center justify-between gap-2"><div class="text-[10px] uppercase tracking-widest text-amber-300 font-bold">Estimated price</div><div class="text-[10px] text-stone-400">'+e.guests+' guest'+(e.guests>1?'s':'')+' · '+e.tierLabel+'</div></div>';
- if(e.lines.length){
-  h+='<div class="mt-2 divide-y divide-white/10">'+e.lines.map(l=>`<div class="flex items-start justify-between gap-3 py-1.5 text-[11.5px]"><div><div class="font-semibold text-white">${esc(l.name)}</div><div class="text-stone-400">${esc(l.duration)} · ${usd(l.pp)} × ${e.guests}</div></div><div class="font-bold text-white whitespace-nowrap">${usd(l.sub)}</div></div>`).join('')+'</div>';
-  h+=`<div class="mt-2 pt-2 border-t border-amber-300/30 flex items-end justify-between"><div class="text-xs font-bold text-amber-200">Estimated total</div><div class="text-xl font-extrabold text-amber-300">${usd(e.total)}</div></div>`;
-  h+=`<div class="text-[11px] text-stone-300 text-right">about ${usd(e.total/e.guests)} per person</div>`;
-  if(e.pct){const d=Math.round(e.total*e.pct/100);h+=`<div class="mt-1 text-[11px] text-stone-300 flex justify-between"><span>Deposit to confirm (${e.pct}%)</span><span class="font-bold text-white">${usd(d)}</span></div>`;}
- }
- if(e.merged)h+=`<div class="mt-2 text-[11px] text-emerald-300">${esc(e.merged)}</div>`;
- if(e.missing.length)h+=`<div class="mt-2 text-[11px] text-amber-200">${esc(e.missing.join(', '))}: priced in your written quote.</div>`;
- if(e.guideOnly&&e.lines.length)h+='<div class="mt-1 text-[11px] text-stone-300">These prices include a car with driver. Guide only is usually less; we confirm it in your quote.</div>';
- h+='<div class="mt-2 text-[10.5px] text-stone-400 leading-relaxed">Estimate from our standard tour prices, in US dollars. Hotels between regions, extra days and travel between cities are added in your written quote, and combining tours can lower the price.</div>';
- box.innerHTML=h;
-}
-document.addEventListener('pe:catalog',()=>updateCustomQuote());
+
 document.addEventListener('pe:terms',()=>updateCustomQuote());
 document.addEventListener('DOMContentLoaded',()=>{
  document.querySelectorAll('input[name="custDest"]').forEach(el=>el.addEventListener('change',updateCustomQuote));
