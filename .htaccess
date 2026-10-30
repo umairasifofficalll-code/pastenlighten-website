@@ -1,0 +1,30 @@
+# Past Enlighten — Hostinger (Apache/LiteSpeed)
+Options -Indexes
+RewriteEngine On
+
+# Always use https://pastenlighten.com (no www)
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^(.*)$ https://pastenlighten.com/$1 [R=301,L]
+
+# Never serve the git folder or text notes
+RewriteRule (^|/)\.git(/|$) - [F,L]
+RewriteRule ^(ADMIN-VIDEO-REVIEWS-GUIDE|GITHUB-UPLOAD-README)\.txt$ - [F,L]
+
+# Old WordPress addresses -> home page
+RewriteRule ^(wp-admin|wp-login\.php|wp-content|wp-includes)(/.*)?$ https://pastenlighten.com/ [R=301,L]
+
+# Browser caching (files use ?v= version strings)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType image/webp "access plus 90 days"
+  ExpiresByType image/png "access plus 90 days"
+  ExpiresByType image/jpeg "access plus 90 days"
+  ExpiresByType video/mp4 "access plus 90 days"
+</IfModule>
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/xml
+</IfModule>
