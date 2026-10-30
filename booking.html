@@ -164,9 +164,15 @@
           </div>
           <p id="seasonNote" class="hidden mt-3 text-sm rounded-xl bg-amber-50 border border-amber-200 text-amber-900 p-3"></p>
           <div class="mt-4 grid sm:grid-cols-2 gap-4">
-            <div>
+            <div id="pickupWrap">
               <label class="label" for="pickup">Pickup point</label>
               <input id="pickup" name="pickup" class="field" placeholder="Hotel name, airport, or area">
+            </div>
+            <div id="meetWrap" class="hidden">
+              <span class="label">Meeting point</span>
+              <p class="rounded-xl border border-stone-200 bg-stone-50 px-3 py-2.5 text-sm font-semibold text-brand-900"><span id="meetText">Fort Road Food Street, Gate No. 4, Lahore</span>
+                <a id="meetMap" class="block text-xs font-bold text-brand-800 underline mt-1" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Fort+Road+Food+Street+Lahore">Open in Google Maps</a></p>
+              <p class="hint">Your guide meets you here. Choose transport above if you'd like to be picked up.</p>
             </div>
             <div id="stayWrap">
               <label class="label" for="stay">Accommodation</label>
@@ -215,6 +221,10 @@
                 <option value="">Choose…</option><option>TripAdvisor</option><option>Google search</option><option>Instagram / Facebook</option><option>Friend or family</option><option>Hotel or travel agent</option><option>Other</option>
               </select>
             </div>
+          </div>
+          <div id="extraFieldsBookingWrap" class="mt-4 hidden">
+            <div id="extraFieldsBooking" class="grid sm:grid-cols-2 gap-4"></div>
+            <p id="extrasErr" class="err">Please answer the questions marked *.</p>
           </div>
           <div class="mt-4">
             <label class="label" for="notes">Anything else? <span class="normal-case font-medium text-slate-400">(optional)</span></label>
@@ -300,6 +310,7 @@
   </footer>
 
 <script src="js/prices.js?v=20261028-2"></script>
+<script src="js/pe-booking-settings.js?v=20261030-1"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/booking-confirm.js?v=20261027-1"></script>
@@ -408,6 +419,20 @@
     'shopping': 'L5', 'shahdara': 'L6', 'sheikhupura': 'L7', 'islamabad': 'I1', 'naran-kaghan': 'N-NARAN', 'swat': 'N-SWAT', 'neelum': 'N-NEELUM',
     'hunza': 'N1', 'skardu': 'N2', 'fairy-meadows': 'N3', 'grand-16': 'N5', 'bahawalpur': 'S1', 'harappa-multan': 'S2' };
   var lastEstimate = null;
+  var MEET_DEFAULT = 'Fort Road Food Street, Gate No. 4, Lahore';
+  function meetingPoint() {
+    var bs = window.PE_BOOKING_SETTINGS && PE_BOOKING_SETTINGS.settings;
+    return (bs && bs.meeting_point) || MEET_DEFAULT;
+  }
+  // Pickup only when the guest has transport; otherwise they meet the guide at the meeting point
+  function needsPickup(t) {
+    if (!t || t.id === 'custom') return true;
+    if (!$('transportAsk').classList.contains('hidden')) return (form.querySelector('input[name="needTransport"]:checked') || {}).value === 'Yes';
+    return !/guide only/i.test($('transport').value || '');
+  }
+  function meetingText(t) {
+    return t && /lahore/i.test(t.start || '') ? meetingPoint() : 'Confirmed with your quote';
+  }
   function transportText() {
     var ask = !$('transportAsk').classList.contains('hidden');
     if (!ask) return ($('transport').value || '').trim();
@@ -439,6 +464,15 @@
       tp.classList.toggle('hidden', !wantsCar);
       tp.textContent = 'Car with driver for ' + nAll + ' traveller' + (nAll > 1 ? 's' : '') + ': +US$' + PE_TRANSPORT.fee(priceId, nAll) + ' added to the total (US$' + tRule.small + ' for 1–4 people, US$' + tRule.large + ' for 5 or more).';
     }
+    var pick = needsPickup(t);
+    $('pickupWrap').classList.toggle('hidden', !pick);
+    $('meetWrap').classList.toggle('hidden', pick);
+    if (!pick) {
+      var mt = meetingText(t);
+      $('meetText').textContent = mt;
+      $('meetMap').classList.toggle('hidden', mt === 'Confirmed with your quote');
+      $('meetMap').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(mt);
+    }
     var calc = $('priceCalc'), usd = function (n) { return 'US$' + Math.round(n).toLocaleString('en-US'); };
     if (P) {
       var nPeople = adults + kids;
@@ -448,14 +482,15 @@
       var pp = (P.prices && Number.isFinite(P.prices[tier])) ? P.prices[tier] : (nPeople === 1 ? P.solo : null);
       var carFee = wantsCar ? PE_TRANSPORT.fee(priceId, nPeople) : 0;
       if (pp != null) {
-        var adultTotal = adults * pp, kidTotal = kids * pp * 0.5, total = adultTotal + kidTotal + carFee;
+        var cf = window.PEBooking ? PEBooking.childFactor() : 0.5, ca = window.PEBooking ? PEBooking.childAge() : 5;
+        var adultTotal = adults * pp, kidTotal = kids * pp * cf, total = adultTotal + kidTotal + carFee;
         $('calcCarRow').hidden = !carFee;
         $('calcCar').textContent = carFee ? usd(carFee) : '';
         $('sumPrice').textContent = usd(pp) + ' per person (' + tierLabel + ')';
         $('calcAdultsLabel').textContent = adults + ' adult' + (adults > 1 ? 's' : '') + ' × ' + usd(pp);
         $('calcAdults').textContent = usd(adultTotal);
         $('calcKidsRow').hidden = !kids;
-        $('calcKidsLabel').textContent = kids + ' child' + (kids > 1 ? 'ren' : '') + ' under 5 × ' + usd(pp * 0.5);
+        $('calcKidsLabel').textContent = kids + ' child' + (kids > 1 ? 'ren' : '') + ' under ' + ca + ' × ' + usd(pp * cf);
         $('calcKids').textContent = usd(kidTotal);
         $('calcTotal').textContent = usd(total);
         lastEstimate = { pp: pp, total: total, label: tierLabel, car: carFee };
@@ -468,8 +503,8 @@
           $('calcDeposit').textContent = usd(depAmt);
           $('calcBalance').textContent = usd(Math.round(total) - depAmt);
         }
-        calc.classList.remove('hidden');
-        $('sumPriceNote').innerHTML = 'Estimate for a ' + (shared ? 'small-group' : 'private') + ' tour, in US dollars. Children aged 5 and over count as adults. Your final price is confirmed in writing before you pay. <a href="booking-payment.html" class="underline">Payment terms</a>';
+        calc.classList.toggle('hidden', !!(window.PEBooking && !PEBooking.feature('calculator')));
+        $('sumPriceNote').innerHTML = 'Estimate for a ' + (shared ? 'small-group' : 'private') + ' tour, in US dollars. Children aged ' + ca + ' and over count as adults. Your final price is confirmed in writing before you pay. <a href="booking-payment.html" class="underline">Payment terms</a>';
       } else {
         calc.classList.add('hidden');
         $('sumPrice').textContent = usd(P.solo) + ' per person (solo traveller)';
@@ -490,6 +525,7 @@
     } else note.classList.add('hidden');
   }
   if (window.PEBackend && PEBackend.terms) { PEBackend.terms(); document.addEventListener('pe:terms', function () { update(); }); }
+  document.addEventListener('pe:booking-settings', function () { update(); });
   // Live tours & prices saved by the team in the admin dashboard (js/pe-catalog.js)
   if (window.PECatalog) PECatalog.onChange(function (P) {
     var GROUP = { 'Kashmir': 'Northern Pakistan', 'Other': 'More tours' };
@@ -523,7 +559,11 @@
   function validate() {
     var bad = [];
     if (setErr('tour', !tourSel.value)) bad.push('tour');
-    if (setErr('date', !$('date').value || $('date').value < todayISO)) bad.push('date');
+    if (setErr('date', !$('date').value || $('date').value < (window.PE_BOOKING_MIN_DATE || todayISO))) bad.push('date');
+    var ex = window.PEBooking ? PEBooking.extras(form) : { missing: [] };
+    var exErr = $('extrasErr');
+    if (exErr) exErr.classList.toggle('show', ex.missing.length > 0);
+    if (ex.missing.length) bad.push(form.querySelector('[data-pe-extra] [required]').id);
     if (setErr('name', $('name').value.trim().length < 2)) bad.push('name');
     var digits = $('phone').value.replace(/\D/g, '');
     if (setErr('phone', digits.length < 8 || digits.length > 15)) bad.push('phone');
@@ -550,7 +590,7 @@
       '*Transport:* ' + transportText(),
       lastEstimate ? '*Price:* US$' + lastEstimate.pp + ' per person (' + lastEstimate.label + ')' + (lastEstimate.car ? ' + US$' + lastEstimate.car + ' car with driver' : '') + ', estimated total US$' + Math.round(lastEstimate.total).toLocaleString('en-US') : null,
       t.multi ? '*Accommodation:* ' + v('stay') : null,
-      v('pickup') ? '*Pickup:* ' + v('pickup') : null,
+      needsPickup(t) ? (v('pickup') ? '*Pickup:* ' + v('pickup') : null) : '*Meeting point:* ' + meetingText(t),
       '*Guide language:* ' + v('language'),
       '',
       '*Name:* ' + v('name'),
@@ -558,10 +598,11 @@
       '*WhatsApp/phone:* ' + v('phone'),
       v('email') ? '*Email:* ' + v('email') : null,
       v('heard') ? '*Found you via:* ' + v('heard') : null,
-      v('notes') ? '*Notes:* ' + v('notes') : null,
+      v('notes') ? '*Notes:* ' + v('notes') : null
+    ].concat(window.PEBooking ? PEBooking.extras(form).list.map(function (x) { var i = x.indexOf(': '); return '*' + x.slice(0, i) + ':* ' + x.slice(i + 2); }) : []).concat([
       '',
       'Please send availability and a written quote.'
-    ];
+    ]);
     // drop empty optional lines but keep intentional blank separators single
     return lines.filter(function (l) { return l !== null; }).join('\n').trim();
   }
@@ -578,9 +619,10 @@
         transport: transportText(), custom_places: t && t.id === 'custom' ? val('customPlaces') : '',
         date: val('date'), flexible: $('flexible').checked,
         adults: parseInt($('adults').value, 10) || 1, children: parseInt($('children').value, 10) || 0,
-        pickup: val('pickup'), stay: t && t.multi ? val('stay') : '',
+        pickup: needsPickup(t) ? val('pickup') : 'Meeting point: ' + meetingText(t), stay: t && t.multi ? val('stay') : '',
         name: val('name'), country: val('country'), phone: val('phone'), email: val('email'),
-        language: val('language'), heard: val('heard'), notes: val('notes'), consent: $('consent').checked, via: lastVia
+        language: val('language'), heard: val('heard'), notes: val('notes'), consent: $('consent').checked, via: lastVia,
+        extras: window.PEBooking ? PEBooking.extras(form).list : []
       };
   }
   function confirmDetails(t) {
@@ -596,7 +638,7 @@
       ['Name', v('name')],
       ['WhatsApp / phone', v('phone')],
       ['Email', v('email')]
-    ]);
+    ]).concat(window.PEBooking ? PEBooking.extras(form).rows : []);
   }
   function popup(channel, t, text, saved, ref) {
     if (!window.PEConfirm) return;

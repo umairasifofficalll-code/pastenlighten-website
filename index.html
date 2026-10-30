@@ -399,6 +399,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/prices.js?v=20261028-2"></script>
+<script src="js/pe-booking-settings.js?v=20261030-1"></script>
 <script src="js/pe-catalog.js?v=20261026-1"></script>
 <script src="js/noor-knowledge.js?v=20261025-2"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
@@ -429,6 +430,23 @@ main article a:hover { color: #92400e; }
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="css/pe-3d.css?v=20261027-1">
+<style id="pe-intro-style">
+.pe-intro-points li{display:flex;gap:8px;align-items:flex-start;font-size:14px;font-weight:600;color:#1f2937}
+.pe-intro-points .pe-tick{flex:none;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--pe-gold,#f59e0b);color:#061a14;font-size:12px;font-weight:900}
+.pe-intro-figure{margin:0;border-radius:20px;overflow:hidden;background:#0a261e;box-shadow:0 18px 40px rgba(6,26,20,.18)}
+.pe-intro-stage{aspect-ratio:4/3;background:#0a261e}
+.pe-intro-media,.pe-intro-media img,.pe-intro-media video,.pe-intro-media iframe{width:100%;height:100%;display:block;border:0}
+.pe-intro-media img{object-fit:cover;object-position:50% 20%}.pe-intro-media.big video{object-fit:contain;background:#000}
+.pe-intro-caption{padding:10px 14px;font-size:13px;color:#e7e5e4;background:#0a261e}
+.pe-intro-caption:empty{display:none}
+.pe-intro-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}
+.pe-intro-thumbs button{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;border:2px solid transparent;padding:0;background:#0a261e;cursor:pointer}
+.pe-intro-thumbs button.on,.pe-intro-thumbs button:focus-visible{border-color:var(--pe-gold,#f59e0b)}
+.pe-intro-thumbs .pe-intro-media{position:absolute;inset:0}
+.pe-play{position:absolute;z-index:2;inset:0;margin:auto;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.pe-vid-ph{display:flex;align-items:center;justify-content:center;height:100%;color:#fde68a;font-size:11px;font-weight:700}
+html.dark-mode .pe-intro-points li{color:#e5e7eb}
+</style>
 <script src="js/pe-theme.js?v=20261027-1"></script>
 </head>
 
@@ -718,6 +736,31 @@ main article a:hover { color: #92400e; }
             Custom-built routes whether you are an international solo traveler, a visiting photography enthusiast, or a family.
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INTRODUCTION (managed in Admin → Introduction; js/pe-intro.js) ================= -->
+  <section id="introduction" class="py-14 bg-white border-b border-stone-200 scroll-mt-24" aria-labelledby="introTitle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <span class="text-accent-gold font-bold tracking-widest text-[11px] uppercase" data-intro-eyebrow>Introduction</span>
+        <h2 id="introTitle" class="font-cinzel text-2xl sm:text-3xl font-extrabold text-brand-900 mt-1" data-intro-title>Meet Bilawal &amp; Past Enlighten</h2>
+        <div class="mt-4 space-y-3 text-slate-700 leading-relaxed text-sm sm:text-base" data-intro-text>
+          <p>Past Enlighten is a small Lahore tour company based on Fort Road in the Walled City, founded by Bilawal, who grew up in the old city around the Badshahi Mosque and Lahore Fort.</p>
+        </div>
+        <ul class="pe-intro-points mt-5 grid sm:grid-cols-2 gap-2" data-intro-highlights></ul>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="guide.html" class="btn-shine inline-flex items-center gap-2 bg-brand-800 text-white text-sm font-bold px-5 py-2.5 rounded-full">Read Bilawal's story</a>
+          <a href="https://wa.me/923344770455?text=Hello%20Bilawal%2C%20I%20would%20like%20to%20plan%20a%20tour." target="_blank" rel="noopener" class="btn-shine inline-flex items-center gap-2 bg-emerald-600 text-white text-sm font-bold px-5 py-2.5 rounded-full"><i class="fa-brands fa-whatsapp"></i> Talk to Bilawal</a>
+        </div>
+      </div>
+      <div>
+        <figure class="pe-intro-figure">
+          <div class="pe-intro-stage" data-intro-stage></div>
+          <figcaption class="pe-intro-caption" data-intro-caption></figcaption>
+        </figure>
+        <div class="pe-intro-thumbs" data-intro-thumbs></div>
       </div>
     </div>
   </section>
@@ -1712,6 +1755,8 @@ main article a:hover { color: #92400e; }
             <div class="mt-3"><div class="text-[10px] uppercase tracking-wider text-stone-400">Destinations</div><ul id="customSummaryDests" class="mt-1 flex flex-wrap gap-1.5"></ul></div>
           </div>
 
+          <div id="extraFieldsCustom" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4"></div>
+
           <div class="mb-4">
             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Special Preferences</label>
             <input type="text" id="custNotes" placeholder="e.g. Photography focus, vegetarian meals, airport pickup..." class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-700 focus:ring-2 focus:ring-brand-700 focus:outline-none" />
@@ -2078,9 +2123,9 @@ main article a:hover { color: #92400e; }
       <div class="bg-gradient-to-br from-brand-900 to-brand-800 rounded-2xl p-6 sm:p-10 text-white shadow-xl flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
         
         <div class="w-44 h-56 sm:w-52 sm:h-64 rounded-2xl overflow-hidden border-4 border-accent-amber/70 shadow-xl flex-shrink-0 bg-brand-950">
-          <img src="images/bilawal-founder.webp" srcset="images/bilawal-founder-sm.webp 420w, images/bilawal-founder.webp 900w" sizes="(min-width:640px) 208px, 176px"
+          <img src="images/bilawal-portrait.webp" srcset="images/bilawal-portrait-sm.webp 420w, images/bilawal-portrait.webp 900w" sizes="(min-width:640px) 208px, 176px"
             alt="Bilawal, founder of Past Enlighten and lead heritage guide, in Lahore"
-            class="w-full h-full object-cover object-[66%_15%]" width="900" height="1183" loading="lazy" decoding="async">
+            class="w-full h-full object-cover object-[50%_12%]" width="900" height="1125" loading="lazy" decoding="async">
         </div>
 
         <div class="text-center lg:text-left flex-1">
@@ -2458,6 +2503,7 @@ main article a:hover { color: #92400e; }
           </select>
         </div>
         <p id="bookingPriceLine" class="hidden rounded-lg bg-brand-50 border border-brand-100 px-3 py-2 font-semibold text-brand-900"></p>
+        <div id="extraFieldsQuick" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
         <div>
           <label class="block font-semibold uppercase text-slate-500 mb-0.5">Special Notes</label>
           <textarea id="bookingNotes" rows="2" placeholder="Dietary preference, photography focus..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-700 focus:outline-none"></textarea>
@@ -2825,11 +2871,13 @@ main article a:hover { color: #92400e; }
       e.preventDefault();
       const val = id => (document.getElementById(id)?.value || '').trim();
       const dests = customDestinations().join(', ');
+      const ex = window.PEBooking ? PEBooking.extras(e.target) : { list: [], rows: [] };
       const saved = window.PEBackend ? window.PEBackend.save('custom_tour', {
         name: val('custName'), phone: val('custPhone'), start_city: val('custStartCity'), format: val('custFormat'),
         transport: val('custTransport'), days: parseInt(val('custDays'), 10) || 1, guests: parseInt(val('custGuests'), 10) || 1,
         destinations: customDestinations().map(d => d.slice(0, 80)),
-        notes: ['Hotel: ' + val('custHotel'), document.getElementById('custOtherOn')?.checked && val('custOther') ? 'Other places: ' + val('custOther') : '', val('custNotes')].filter(Boolean).join('\n')
+        notes: ['Hotel: ' + val('custHotel'), document.getElementById('custOtherOn')?.checked && val('custOther') ? 'Other places: ' + val('custOther') : '', val('custNotes')].filter(Boolean).join('\n'),
+        extras: ex.list
       }, e.target) : null;
       const waLines = [
         'Hello Past Enlighten!',
@@ -2839,10 +2887,11 @@ main article a:hover { color: #92400e; }
         `*Starting city:* ${val('custStartCity')}`,
         `*Format:* ${val('custFormat')}`,
         `*Transport:* ${val('custTransport')}`,
-        `*Hotel:* ${val('custHotel')}`,
+        (!window.PEBooking || PEBooking.feature('hotel')) ? `*Hotel:* ${val('custHotel')}` : '',
         `*Days:* ${val('custDays')}`,
         `*Guests:* ${val('custGuests')}`,
         `*Destinations:* ${dests || 'Not selected'}`,
+        ...ex.rows.map(([k, v]) => `*${k}:* ${v}`),
         val('custNotes') ? `*Preferences:* ${val('custNotes')}` : '',
 
         'Please send me a quote with the price and inclusions.'
@@ -2852,7 +2901,7 @@ main article a:hover { color: #92400e; }
         channel: 'whatsapp', title: 'Custom tour request ready!', name: val('custName'), saved,
         message: 'WhatsApp has opened with your custom tour plan already written. Press Send there so our team can build your quote.',
         details: [['Starting city', val('custStartCity')], ['Length', (val('custDays') || '1') + ' day(s)'], ['Guests', val('custGuests')],
-                  ['Hotel', val('custHotel')], ['Destinations', dests || 'Not selected yet'], ['Name', val('custName')], ['Phone', val('custPhone')]],
+                  ['Hotel', val('custHotel')], ['Destinations', dests || 'Not selected yet']].concat(ex.rows).concat([['Name', val('custName')], ['Phone', val('custPhone')]]),
         whatsappText: waLines.filter(Boolean).join('\n')
       });
     }
@@ -3017,17 +3066,20 @@ main article a:hover { color: #92400e; }
       ['modalTourSelect', 'bookingGuests', 'bookingTransport'].forEach(id => { const el = document.getElementById(id); el?.addEventListener('input', updateQuickBooking); el?.addEventListener('change', updateQuickBooking); });
     });
     document.addEventListener('pe:catalog', () => updateQuickBooking());
+    document.addEventListener('pe:booking-settings', () => updateQuickBooking());
 
     function handleBookingSubmit(e) {
       e.preventDefault();
       const val = id => (document.getElementById(id)?.value || '').trim();
+      const ex = window.PEBooking ? PEBooking.extras(e.target) : { list: [], rows: [] };
       const q = quickBookingPrice();
       const transport = q.rule ? (q.car ? 'Yes, car with driver (pickup and drop-off)' : 'No transport (we meet the guide)') : '';
       const priceText = q.pp ? `US$${q.pp} per person × ${q.n}${q.fee ? ` + US$${q.fee} car with driver` : ''} = US$${q.total.toLocaleString('en-US')}` : '';
       const saved = window.PEBackend ? window.PEBackend.save('quick_booking', {
         name: val('bookingName'), phone: val('bookingPhone'), date: val('bookingDate'),
         guests: parseInt(val('bookingGuests'), 10) || 1, tour: val('modalTourSelect'),
-        notes: [transport ? 'Transport: ' + transport : '', priceText ? 'Website price: ' + priceText : '', val('bookingNotes')].filter(Boolean).join('\n')
+        notes: [transport ? 'Transport: ' + transport : '', priceText ? 'Website price: ' + priceText : '', val('bookingNotes')].filter(Boolean).join('\n'),
+        extras: ex.list
       }, e.target) : null;
       closeBookingModal();
       const waLines = [
@@ -3040,6 +3092,7 @@ main article a:hover { color: #92400e; }
         `*Tour:* ${val('modalTourSelect')}`,
         transport ? `*Transport:* ${transport}` : '',
         priceText ? `*Price:* ${priceText}` : '',
+        ...ex.rows.map(([k, v]) => `*${k}:* ${v}`),
         val('bookingNotes') ? `*Notes:* ${val('bookingNotes')}` : ''
       ];
       openWhatsApp(waLines);
@@ -3047,7 +3100,7 @@ main article a:hover { color: #92400e; }
         channel: 'whatsapp', name: val('bookingName'), saved,
         details: [['Tour', val('modalTourSelect')], ['Date', val('bookingDate')], ['Guests', val('bookingGuests')]]
           .concat(transport ? [['Transport', transport]] : []).concat(priceText ? [['Price', priceText]] : [])
-          .concat([['Name', val('bookingName')], ['Phone', val('bookingPhone')]]),
+          .concat(ex.rows).concat([['Name', val('bookingName')], ['Phone', val('bookingPhone')]]),
         whatsappText: waLines.filter(Boolean).join('\n')
       });
       else showToast('Opening WhatsApp to send your booking request…');
@@ -4126,6 +4179,7 @@ document.addEventListener('keydown',function(event){if(event.key==='Escape')clos
 </script>
 
 
+  <script src="js/pe-intro.js?v=20261030-1" defer></script>
   <script src="js/pe-3d.js?v=20261026-4" defer></script>
 </body>
 </html>
