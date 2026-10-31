@@ -42,11 +42,14 @@
     var box = el('div', 'pe-intro-media' + (big ? ' big' : ''));
     if (m.type === 'image') {
       var s = src(m.url); if (!s) return null;
-      var img = el('img'); img.src = s; img.alt = m.caption || ''; img.loading = 'lazy'; img.decoding = 'async';
+      var img = el('img'); img.alt = m.caption || ''; img.loading = big ? 'eager' : 'lazy'; img.decoding = 'async';
+      // thumbnails use the small copy (name-sm.webp) when the website has one, and fall back to the full photo
+      var small = !big && /^images\/[\w.-]+\.webp$/.test(m.url) && !/-sm\.webp$/.test(m.url) ? src(m.url.replace(/\.webp$/, '-sm.webp')) : '';
+      if (small) { img.src = small; img.onerror = function () { img.onerror = null; img.src = s; }; } else img.src = s;
       box.appendChild(img);
     } else if (m.type === 'video') {
       var v = src(m.url); if (!v) return null;
-      if (!big) { box.appendChild(el('span', 'pe-play', '▶')); var p = src(m.poster); if (p) { var pi = el('img'); pi.src = p; pi.alt = ''; pi.loading = 'lazy'; box.appendChild(pi); } else box.appendChild(el('div', 'pe-vid-ph', 'Video')); }
+      if (!big) { box.appendChild(el('span', 'pe-play', '▶')); var p = src(m.poster); if (p) { var pi = el('img'); pi.src = p; pi.alt = ''; pi.decoding = 'async'; box.appendChild(pi); } else box.appendChild(el('div', 'pe-vid-ph', 'Video')); }
       else { var vid = el('video'); vid.controls = true; vid.preload = 'none'; vid.playsInline = true; vid.src = v; var po = src(m.poster); if (po) vid.poster = po; box.appendChild(vid); }
     } else if (m.type === 'embed') {
       var e = embed(m.url); if (!e) return null;
