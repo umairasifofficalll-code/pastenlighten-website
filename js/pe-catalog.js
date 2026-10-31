@@ -21,6 +21,8 @@
   var ICON = { 'Lahore': 'fa-landmark', 'Islamabad': 'fa-city', 'Northern Pakistan': 'fa-mountain', 'Kashmir': 'fa-tree', 'South Punjab': 'fa-sun' };
   var SAFE_ID = /^[A-Za-z0-9-]{1,60}$/;
   var applied = null;
+  // Tours that have their own page at tours/<slug>.html (built by tools/build-tour-pages.js), keyed by tour ID or itinerary key.
+  var PAGES = window.PE_TOUR_PAGES = {"L-WALK":"lahore-heritage-walk","L1":"lahore-full-day","L2":"walled-city-rickshaw","L3":"museums-fort","L4":"sufi-night","L5":"shopping","L6":"shahdara","L7":"sheikhupura","I1":"islamabad","N-NARAN":"naran-kaghan","N-SWAT":"swat-malam-jabba","N-NEELUM":"neelum-kashmir","N1":"hunza","N2":"skardu","N3":"fairy-meadows","N5":"grand-northern-16-day","S1":"bahawalpur","S2":"harappa-multan","lahore":"lahore-heritage-walk","naran":"naran-kaghan","swat":"swat-malam-jabba","kashmir":"neelum-kashmir"};
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -124,6 +126,7 @@
       '<p class="text-sm text-slate-600 leading-relaxed mt-2 flex-1">' + esc(t.summary) + '</p>' +
       '<p class="mt-3 text-sm"><span class="text-[11px] uppercase font-bold tracking-wide text-slate-500">Solo traveller</span> <span class="font-extrabold text-brand-900 text-lg" data-pe-price="' + esc(id) + '">' + usd(t.solo) + '</span> <span class="text-xs text-slate-500">per person</span><span class="block text-xs font-semibold text-emerald-700">Groups of 2+ pay less per person</span></p>' +
       '<div class="mt-4 flex items-center justify-between gap-3">' +
+      (PAGES[id] ? '<a href="' + esc(ROOT + 'tours/' + PAGES[id] + '.html') + '" class="text-sm font-bold text-brand-800 underline">Tour details</a>' : '') +
       (t.guideUrl ? '<a href="' + esc(/^https:/.test(t.guideUrl) ? t.guideUrl : ROOT + t.guideUrl) + '" class="text-sm font-bold text-brand-800 underline">Read the guide</a>' : '') +
       '<a href="' + esc(ROOT + 'booking.html?tour=' + encodeURIComponent(t.slug)) + '" class="ml-auto inline-flex items-center gap-1.5 bg-brand-800 hover:bg-brand-900 text-white text-sm font-bold px-4 py-2 rounded-full">Book</a></div></div>';
     return a;
