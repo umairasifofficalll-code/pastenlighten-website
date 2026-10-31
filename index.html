@@ -400,7 +400,7 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 <script src="js/prices.js?v=20261028-2"></script>
 <script src="js/pe-booking-settings.js?v=20261030-1"></script>
-<script src="js/pe-catalog.js?v=20261026-1"></script>
+<script src="js/pe-catalog.js?v=20261031-1"></script>
 <script src="js/noor-knowledge.js?v=20261025-2"></script>
 <script src="js/pe-backend.js?v=20261025-1"></script>
 <script src="js/booking-confirm.js?v=20261027-1" defer></script>
@@ -867,7 +867,6 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
                 <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 3-4 Hours</span>
-                <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 4.9 (124)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Lahore Fort & Walled City</h3>
               <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
@@ -1187,7 +1186,6 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
                 <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 4 Days / 3 Nights</span>
-                <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 4.9 (88)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Naran Kaghan & Saif-ul-Malook</h3>
               <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
@@ -1221,7 +1219,6 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
                 <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 3 Days / 2 Nights</span>
-                <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 4.8 (64)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Swat Valley & Malam Jabba</h3>
               <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
@@ -1255,7 +1252,6 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
             <div>
               <div class="flex items-center justify-between text-xs text-slate-500 mb-1">
                 <span><i class="fa-regular fa-clock text-accent-gold mr-1"></i> 5 Days / 4 Nights</span>
-                <span class="text-amber-500 font-bold"><i class="fa-solid fa-star text-xs"></i> 5.0 (92)</span>
               </div>
               <h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">Neelum & Kashmir Valley</h3>
               <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">
@@ -2970,6 +2966,7 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
         </div>
 
         <p class="text-slate-600 text-xs leading-relaxed mb-3">${tour.summary}</p>
+        ${(window.PE_TOUR_PAGES||{})[key] ? `<a href="tours/${window.PE_TOUR_PAGES[key]}.html" class="inline-flex items-center gap-1 text-xs font-bold text-brand-800 underline mb-3">See the full tour page <i class="fa-solid fa-arrow-right text-[10px]"></i></a>` : ''}
 
         <div class="mb-3">
           <h4 class="font-bold text-brand-900 text-xs uppercase mb-1.5">Highlights</h4>

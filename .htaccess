@@ -10,9 +10,39 @@ RewriteRule ^(.*)$ https://pastenlighten.com/$1 [R=301,L]
 # Never serve the git folder or text notes
 RewriteRule (^|/)\.git(/|$) - [F,L]
 RewriteRule ^(ADMIN-VIDEO-REVIEWS-GUIDE|GITHUB-UPLOAD-README)\.txt$ - [F,L]
+RewriteRule ^tools/ - [F,L]
 
 # Old WordPress addresses -> home page
 RewriteRule ^(wp-admin|wp-login\.php|wp-content|wp-includes)(/.*)?$ https://pastenlighten.com/ [R=301,L]
+
+# Old WordPress tour and info pages -> the matching page on the new site
+# (these addresses are still in Google results and old links shared by guests)
+RewriteRule ^lahore-fort-guided-tour/?$ https://pastenlighten.com/tours/lahore-heritage-walk.html [R=301,L]
+RewriteRule ^lahore-wallet-city-tour/?$ https://pastenlighten.com/tours/lahore-heritage-walk.html [R=301,L]
+RewriteRule ^unesco-world-heritage-tours/?$ https://pastenlighten.com/tours/lahore-heritage-walk.html [R=301,L]
+RewriteRule ^rangeela-rickshaw-tour/?$ https://pastenlighten.com/tours/walled-city-rickshaw.html [R=301,L]
+RewriteRule ^tonga-ride-tour/?$ https://pastenlighten.com/blog/lahore-tonga-rangeela-rickshaw-sightseeing-guide.html [R=301,L]
+RewriteRule ^(shrines-tour|sufi-music-tour|lahore-night-tour)/?$ https://pastenlighten.com/tours/sufi-night.html [R=301,L]
+RewriteRule ^shopping-tour/?$ https://pastenlighten.com/tours/shopping.html [R=301,L]
+RewriteRule ^wahgha-border-tour/?$ https://pastenlighten.com/tours/lahore-full-day.html [R=301,L]
+RewriteRule ^shalimar-bagh-tour/?$ https://pastenlighten.com/blog/shalimar-gardens-lahore-guide.html [R=301,L]
+RewriteRule ^jahangirs-tomb-and-bara-dari/?$ https://pastenlighten.com/tours/shahdara.html [R=301,L]
+RewriteRule ^hiran-minar-tour/?$ https://pastenlighten.com/tours/sheikhupura.html [R=301,L]
+RewriteRule ^islamabad-tour/?$ https://pastenlighten.com/tours/islamabad.html [R=301,L]
+RewriteRule ^naran-kaghan-tour/?$ https://pastenlighten.com/tours/naran-kaghan.html [R=301,L]
+RewriteRule ^(swat-valley-tour|gandhara-heritage-tour)/?$ https://pastenlighten.com/tours/swat-malam-jabba.html [R=301,L]
+RewriteRule ^kashmir-valley-tour/?$ https://pastenlighten.com/tours/neelum-kashmir.html [R=301,L]
+RewriteRule ^(ancient-silk-route-exploration|cherry-blossom-delight)/?$ https://pastenlighten.com/tours/hunza.html [R=301,L]
+RewriteRule ^jeep-safari-tour/?$ https://pastenlighten.com/tours/skardu.html [R=301,L]
+RewriteRule ^(bahawalpur-tour|cholistan-desert-tour)/?$ https://pastenlighten.com/tours/bahawalpur.html [R=301,L]
+RewriteRule ^(multan-tour|archeological-site-tour)/?$ https://pastenlighten.com/tours/harappa-multan.html [R=301,L]
+RewriteRule ^(village-tour|rohtas-fort-tour|sikh-heritage-tour)/?$ https://pastenlighten.com/tours/index.html#lahore [R=301,L,NE]
+RewriteRule ^kalash-cultural-exploration/?$ https://pastenlighten.com/tours/index.html#northern-pakistan [R=301,L,NE]
+RewriteRule ^(karachi-tour|peshawar-tour)/?$ https://pastenlighten.com/tours/index.html [R=301,L]
+RewriteRule ^introduction/?$ https://pastenlighten.com/guide.html [R=301,L]
+RewriteRule ^testimonials/?$ https://pastenlighten.com/reviews.html [R=301,L]
+RewriteRule ^contact-us/?$ https://pastenlighten.com/booking.html [R=301,L]
+RewriteRule ^photo-gallery/?$ https://pastenlighten.com/ [R=301,L]
 
 # Browser caching (files use ?v= version strings)
 <IfModule mod_expires.c>
