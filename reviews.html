@@ -134,6 +134,7 @@
         <h2 id="reviewsHeading" class="font-cinzel text-2xl font-bold text-brand-900">Guest reviews</h2>
         <div id="filters" class="flex flex-wrap gap-2" role="group" aria-label="Filter reviews by tour type"></div>
       </div>
+      <p class="text-xs text-slate-500 mt-2">Copied word for word from our <a id="googleLink2" class="underline" target="_blank" rel="noopener" href="https://www.google.com/maps/place/PastenlightenTours/@31.5861793,74.3141325,17z/data=!4m8!3m7!1s0xa16ae1387f0138cf:0xbfedd58c36e4af7a!8m2!3d31.5861793!4d74.3141325!9m1!1b1!16s%2Fg%2F11x7pqtqcw?hl=en">Google business profile</a>. Google shows review dates as “6 months ago”, so the months here are approximate.</p>
       <div id="reviewsGrid" class="mt-5 grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       <div id="emptyState" class="hidden mt-5 bg-white rounded-2xl border border-dashed border-stone-300 p-8 text-center">
         <i class="fa-regular fa-comments text-3xl text-accent-gold"></i>
@@ -227,7 +228,7 @@
   // ===== OWNER SETTINGS =====
   // Paste your real listing links here. While empty, the buttons search for the listing instead.
   var TRIPADVISOR_URL = '';
-  var GOOGLE_REVIEWS_URL = '';
+  var GOOGLE_REVIEWS_URL = 'https://www.google.com/maps/place/PastenlightenTours/@31.5861793,74.3141325,17z/data=!4m8!3m7!1s0xa16ae1387f0138cf:0xbfedd58c36e4af7a!8m2!3d31.5861793!4d74.3141325!9m1!1b1!16s%2Fg%2F11x7pqtqcw?hl=en';
 
   // ===== REVIEWS =====
   // Add only real reviews from real guests, copied word for word, with a link to where they were posted.
@@ -260,63 +261,73 @@
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function stars(n) { n = Math.round(n); return '★★★★★'.slice(0, n) + '<span class="text-stone-300">' + '★★★★★'.slice(0, 5 - n) + '</span>'; }
-  function month(ym) { if (!ym) return ''; var d = new Date(ym + '-01T00:00:00'); return isNaN(d) ? ym : d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }); }
+  function month(ym) { if (!ym) return ''; if (/^\d{4}$/.test(ym)) return ym; var d = new Date(ym + '-01T00:00:00'); return isNaN(d) ? ym : d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }); }
   function safeUrl(u) { return /^https:\/\//i.test(u || '') ? u : ''; }
 
-  // Only reviews with a valid source link are shown, so every review can be checked.
-  var valid = REVIEWS.filter(function (r) { return r && r.text && r.rating >= 1 && r.rating <= 5 && safeUrl(r.url); });
+  function start(all, google) {
+    // Only reviews with a valid source link are shown, so every review can be checked.
+    var valid = all.filter(function (r) { return r && r.text && r.rating >= 1 && r.rating <= 5 && safeUrl(r.url); });
 
-  // Summary
-  if (valid.length) {
-    var avg = valid.reduce(function (s, r) { return s + Number(r.rating); }, 0) / valid.length;
-    $('avgRating').textContent = avg.toFixed(1);
-    $('avgStars').innerHTML = stars(avg);
-    $('countText').textContent = 'Average of ' + valid.length + ' review' + (valid.length > 1 ? 's' : '') + ' shown below';
-  } else {
-    $('summaryCard').querySelector('p').textContent = 'Reviews';
-    $('avgRating').textContent = 'Coming soon';
-    $('avgRating').className = 'font-cinzel text-2xl font-extrabold text-white';
-    $('countText').textContent = 'Read our reviews on TripAdvisor and Google below.';
-  }
+    // Summary
+    if (google && google.count) {
+      $('summaryCard').querySelector('p').textContent = 'Google rating';
+      $('avgRating').textContent = Number(google.rating).toFixed(1);
+      $('avgStars').innerHTML = stars(google.rating);
+      $('countText').innerHTML = 'From ' + google.count + ' reviews on <a class="underline" target="_blank" rel="noopener" href="' + esc(GOOGLE_REVIEWS_URL) + '">Google</a>';
+    } else if (valid.length) {
+      var avg = valid.reduce(function (s, r) { return s + Number(r.rating); }, 0) / valid.length;
+      $('avgRating').textContent = avg.toFixed(1);
+      $('avgStars').innerHTML = stars(avg);
+      $('countText').textContent = 'Average of ' + valid.length + ' review' + (valid.length > 1 ? 's' : '') + ' shown below';
+    } else {
+      $('summaryCard').querySelector('p').textContent = 'Reviews';
+      $('avgRating').textContent = 'Coming soon';
+      $('avgRating').className = 'font-cinzel text-2xl font-extrabold text-white';
+      $('countText').textContent = 'Read our reviews on TripAdvisor and Google below.';
+    }
 
-  // Filters
-  var TYPES = { all: 'All', lahore: 'Lahore', islamabad: 'Islamabad', northern: 'Northern Pakistan', other: 'Other' };
-  var present = ['all'].concat(Object.keys(TYPES).filter(function (k) { return k !== 'all' && valid.some(function (r) { return (r.type || 'other') === k; }); }));
-  var current = 'all';
-  if (present.length > 2) {
-    $('filters').innerHTML = present.map(function (k) { return '<button type="button" class="chip" data-type="' + k + '" aria-pressed="' + (k === 'all') + '">' + TYPES[k] + '</button>'; }).join('');
-    $('filters').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-type]'); if (!b) return;
-      current = b.dataset.type;
-      $('filters').querySelectorAll('[data-type]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-      render();
+    // Filters
+    var TYPES = { all: 'All', lahore: 'Lahore', islamabad: 'Islamabad', northern: 'Northern Pakistan', other: 'Other' };
+    var present = ['all'].concat(Object.keys(TYPES).filter(function (k) { return k !== 'all' && valid.some(function (r) { return (r.type || 'other') === k; }); }));
+    var current = 'all';
+    if (present.length > 2) {
+      $('filters').innerHTML = present.map(function (k) { return '<button type="button" class="chip" data-type="' + k + '" aria-pressed="' + (k === 'all') + '">' + TYPES[k] + '</button>'; }).join('');
+      $('filters').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-type]'); if (!b) return;
+        current = b.dataset.type;
+        $('filters').querySelectorAll('[data-type]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        render();
+      });
+    }
+
+    function render() {
+      var list = valid
+        .filter(function (r) { return current === 'all' || (r.type || 'other') === current; })
+        .sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+      $('emptyState').classList.toggle('hidden', list.length > 0);
+      $('reviewsGrid').innerHTML = list.map(function (r) {
+        return '<article class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm flex flex-col">' +
+          '<div class="flex items-center justify-between gap-2"><span class="text-amber-500 text-lg" aria-label="' + r.rating + ' out of 5 stars">' + stars(r.rating) + '</span>' +
+          '<span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">' + esc(r.source || '') + '</span></div>' +
+          (r.title ? '<h3 class="font-cinzel font-bold text-brand-900 mt-2">' + esc(r.title) + '</h3>' : '') +
+          '<p class="review-text text-sm text-slate-700 leading-relaxed mt-2" style="white-space:pre-line">' + esc(r.text) + '</p>' +
+          (String(r.text).length > 320 ? '<button type="button" class="more self-start text-xs font-bold text-brand-800 mt-1">Read more</button>' : '') +
+          '<div class="mt-auto pt-4 flex items-end justify-between gap-2 text-xs text-slate-500">' +
+            '<span><strong class="block text-slate-800 text-sm">' + esc(r.name) + '</strong>' + esc([r.country, r.tour].filter(Boolean).join(' · ')) + (r.date ? '<br>' + esc(month(r.date)) : '') + (r.translated ? '<br><em>Translated by Google</em>' : '') + '</span>' +
+            '<a href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener" class="font-bold text-brand-800 underline whitespace-nowrap">View original</a>' +
+          '</div></article>';
+      }).join('');
+    }
+    $('reviewsGrid').addEventListener('click', function (e) {
+      var b = e.target.closest('.more'); if (!b) return;
+      var t = b.previousElementSibling; var open = t.classList.toggle('open');
+      b.textContent = open ? 'Show less' : 'Read more';
     });
+    render();
   }
-
-  function render() {
-    var list = valid
-      .filter(function (r) { return current === 'all' || (r.type || 'other') === current; })
-      .sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
-    $('emptyState').classList.toggle('hidden', list.length > 0);
-    $('reviewsGrid').innerHTML = list.map(function (r) {
-      return '<article class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm flex flex-col">' +
-        '<div class="flex items-center justify-between gap-2"><span class="text-amber-500 text-lg" aria-label="' + r.rating + ' out of 5 stars">' + stars(r.rating) + '</span>' +
-        '<span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">' + esc(r.source || '') + '</span></div>' +
-        (r.title ? '<h3 class="font-cinzel font-bold text-brand-900 mt-2">' + esc(r.title) + '</h3>' : '') +
-        '<p class="review-text text-sm text-slate-700 leading-relaxed mt-2">' + esc(r.text) + '</p>' +
-        (String(r.text).length > 320 ? '<button type="button" class="more self-start text-xs font-bold text-brand-800 mt-1">Read more</button>' : '') +
-        '<div class="mt-auto pt-4 flex items-end justify-between gap-2 text-xs text-slate-500">' +
-          '<span><strong class="block text-slate-800 text-sm">' + esc(r.name) + '</strong>' + esc([r.country, r.tour].filter(Boolean).join(' · ')) + (r.date ? '<br>' + esc(month(r.date)) : '') + '</span>' +
-          '<a href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener" class="font-bold text-brand-800 underline whitespace-nowrap">View original</a>' +
-        '</div></article>';
-    }).join('');
-  }
-  $('reviewsGrid').addEventListener('click', function (e) {
-    var b = e.target.closest('.more'); if (!b) return;
-    var t = b.previousElementSibling; var open = t.classList.toggle('open');
-    b.textContent = open ? 'Show less' : 'Read more';
-  });
-  render();
+  fetch('data/google-reviews.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (g) { start(REVIEWS.concat((g && g.reviews) || []), g); })
+    .catch(function () { start(REVIEWS, null); });
 
   // ===== Video reviews =====
   // Loaded from data/video-reviews.json, which only the site admin can change (through admin.html,

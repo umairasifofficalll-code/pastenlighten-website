@@ -2106,12 +2106,41 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-8">
         <span class="text-accent-gold font-bold tracking-widest text-[11px] uppercase">Guest Feedback</span>
-        <h2 class="font-cinzel text-2xl font-extrabold text-brand-900 mt-0.5">Guest Feedback & Review References</h2>
+        <h2 class="font-cinzel text-2xl font-extrabold text-brand-900 mt-0.5">What our guests say</h2>
         <div class="w-16 h-1 bg-accent-gold mx-auto my-2 rounded-full"></div>
-        <p class="text-slate-600 text-xs sm:text-sm">We are confirming public review-source links before showing review ratings or labeling feedback as verified. Ask us for the latest independently viewable references.</p>
-        <a class="inline-flex mt-4 items-center gap-2 bg-brand-800 text-white font-bold text-sm px-5 py-3 rounded-full" href="reviews.html">Read guest reviews</a>
+        <a id="homeGoogleBadge" href="reviews.html" class="inline-flex items-center gap-3 mt-2 bg-white border border-stone-200 rounded-full pl-3 pr-5 py-2 shadow-sm hover:border-brand-800 transition">
+          <i class="fa-brands fa-google text-xl text-brand-800" aria-hidden="true"></i>
+          <span class="font-cinzel text-2xl font-extrabold text-brand-900" data-g-rating>5.0</span>
+          <span class="text-amber-500 text-lg" aria-hidden="true">★★★★★</span>
+          <span class="text-xs text-slate-600 text-left leading-tight"><strong class="block text-slate-800" data-g-count>39 reviews</strong>on Google</span>
+        </a>
+      </div>
+      <div id="homeReviews" class="grid md:grid-cols-3 gap-4"></div>
+      <div class="text-center mt-6">
+        <a class="inline-flex items-center gap-2 bg-brand-800 text-white font-bold text-sm px-5 py-3 rounded-full" href="reviews.html">Read all guest reviews</a>
       </div>
     </div>
+    <script>
+    (function () {
+      // Three Google reviews for the home page, read from data/google-reviews.json (the same file as reviews.html).
+      var PICK = ['Derek Homsher', 'ravinder dhesi', 'A V'];
+      function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+      fetch('data/google-reviews.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (g) {
+        if (!g || !g.reviews) return;
+        var sec = document.getElementById('testimonials');
+        sec.querySelector('[data-g-rating]').textContent = Number(g.rating).toFixed(1);
+        sec.querySelector('[data-g-count]').textContent = g.count + ' reviews';
+        var list = PICK.map(function (n) { return g.reviews.filter(function (r) { return r.name === n; })[0]; }).filter(Boolean);
+        document.getElementById('homeReviews').innerHTML = list.map(function (r) {
+          var t = r.text.length > 260 ? r.text.slice(0, 250).replace(/\s+\S*$/, '') + '…' : r.text;
+          return '<figure class="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm flex flex-col">' +
+            '<div class="flex items-center justify-between"><span class="text-amber-500" aria-label="5 out of 5 stars">★★★★★</span><i class="fa-brands fa-google text-slate-400" aria-label="Google review"></i></div>' +
+            '<blockquote class="text-sm text-slate-700 leading-relaxed mt-2 flex-1">“' + esc(t) + '”</blockquote>' +
+            '<figcaption class="mt-3 text-sm font-bold text-slate-800">' + esc(r.name) + '</figcaption></figure>';
+        }).join('');
+      }).catch(function () {});
+    })();
+    </script>
   </section>
 
   <section id="about" class="py-12 bg-white">
