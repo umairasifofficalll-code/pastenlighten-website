@@ -41,9 +41,10 @@ const listing = read('tours/index.html');
 const cards = [];
 for (const m of listing.matchAll(/<article id="([^"]+)"[\s\S]*?<img src="\.\.\/([^"]+)"[\s\S]*?<h3[^>]*>([^<]*)<\/h3>\s*<p[^>]*>([^<]*)<\/p>[\s\S]*?data-pe-price="([^"]+)"([\s\S]*?)<\/article>/g)) {
   const guide = /href="\.\.\/([^"]+)"[^>]*>Read the guide/.exec(m[6]);
+  const book = /booking\.html\?tour=([a-z0-9-]+)/.exec(m[6]);
   const section = listing.lastIndexOf('<section id="', m.index);
   const region = /<section id="([^"]+)"/.exec(listing.slice(section))[1];
-  cards.push({ slug: m[1], image: m[2], summary: m[4], id: m[5], guide: guide ? guide[1] : '', section: region });
+  cards.push({ slug: m[1], book: book ? book[1] : m[1], image: m[2], summary: m[4], id: m[5], guide: guide ? guide[1] : '', section: region });
 }
 
 // ---------------------------------------------------------------- helpers
@@ -81,7 +82,7 @@ function page(card) {
     itinerary: (d.highlights || []).map((h) => ({ '@type': 'TouristAttraction', name: h })),
     provider: { '@type': 'TravelAgency', name: 'Past Enlighten', url: 'https://pastenlighten.com/', telephone: '+92 334 4770455',
       address: { '@type': 'PostalAddress', streetAddress: 'Fort Road, Walled City', addressLocality: 'Lahore', addressCountry: 'PK' } },
-    offers: { '@type': 'Offer', price: String(p.solo), priceCurrency: 'USD', url: 'https://pastenlighten.com/booking.html?tour=' + card.slug,
+    offers: { '@type': 'Offer', price: String(p.solo), priceCurrency: 'USD', url: 'https://pastenlighten.com/booking.html?tour=' + card.book,
       availability: 'https://schema.org/InStock', description: 'Per person for a solo traveller; groups pay less per person.' },
   };
   const crumbs = {
@@ -134,7 +135,7 @@ function page(card) {
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
       <a href="../index.html" class="flex items-center gap-2 font-cinzel text-lg sm:text-xl font-bold tracking-wider text-brand-900"><picture><source srcset="../images/logo-mark.webp" type="image/webp"><img src="../images/logo-mark.png" alt="" width="52" height="44" class="h-11 w-auto"></picture>Past Enlighten</a>
       <nav class="hidden md:flex gap-5 text-sm font-medium text-slate-700" aria-label="Main"><a href="../index.html" class="hover:text-brand-800">Home</a><a href="index.html" class="text-brand-800 font-bold border-b-2 border-brand-800">Tours</a><a href="../blog/index.html" class="hover:text-brand-800">Travel Blog</a><a href="../guide.html" class="hover:text-brand-800">About Guide</a><a href="../reviews.html" class="hover:text-brand-800">Reviews</a><a href="../booking.html" class="hover:text-brand-800">Book</a></nav>
-      <a href="../booking.html?tour=${card.slug}" class="hidden sm:inline-flex items-center gap-2 bg-brand-800 text-white text-sm font-semibold px-4 py-2 rounded-full"><i class="fa-solid fa-calendar-check text-amber-400"></i> Book this tour</a>
+      <a href="../booking.html?tour=${card.book}" class="hidden sm:inline-flex items-center gap-2 bg-brand-800 text-white text-sm font-semibold px-4 py-2 rounded-full"><i class="fa-solid fa-calendar-check text-amber-400"></i> Book this tour</a>
       <button id="menuBtn" class="md:hidden p-2 rounded-lg text-slate-700" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav"><i class="fa-solid fa-bars text-lg"></i></button>
     </div>
     <nav id="mobileNav" class="hidden md:hidden border-t border-stone-200 px-4 py-3 space-y-2 text-sm font-medium flex flex-col" aria-label="Mobile"><a href="../index.html" class="block">Home</a><a href="index.html" class="block font-bold text-brand-800">Tours</a><a href="../blog/index.html" class="block">Travel Blog</a><a href="../guide.html" class="block">About Guide</a><a href="../reviews.html" class="block">Reviews</a><a href="../booking.html" class="block">Book</a></nav>
@@ -198,7 +199,7 @@ function page(card) {
           </tbody>
         </table>
         <p class="mt-2 text-[11px] text-slate-500">Per person, in US$. Entry tickets included.</p>
-        <a href="../booking.html?tour=${card.slug}" class="mt-4 w-full inline-flex justify-center items-center gap-2 bg-brand-800 hover:bg-brand-900 text-white font-bold px-4 py-3 rounded-full"><i class="fa-solid fa-calendar-check text-amber-400"></i> Book this tour</a>
+        <a href="../booking.html?tour=${card.book}" class="mt-4 w-full inline-flex justify-center items-center gap-2 bg-brand-800 hover:bg-brand-900 text-white font-bold px-4 py-3 rounded-full"><i class="fa-solid fa-calendar-check text-amber-400"></i> Book this tour</a>
         <a href="${esc(wa)}" class="mt-2 w-full inline-flex justify-center items-center gap-2 border border-emerald-600 text-emerald-700 font-bold px-4 py-3 rounded-full hover:bg-emerald-50" rel="noopener" target="_blank"><i class="fa-brands fa-whatsapp"></i> Ask on WhatsApp</a>
       </aside>
     </div>
