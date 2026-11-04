@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://pastenlighten.com/</loc><lastmod>2026-10-11</lastmod></url>
-  <url><loc>https://pastenlighten.com/blog/index.html</loc><lastmod>2026-10-11</lastmod></url>
+  <url><loc>https://pastenlighten.com/</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://pastenlighten.com/blog/index.html</loc><lastmod>2026-10-31</lastmod></url>
   <url><loc>https://pastenlighten.com/privacy.html</loc><lastmod>2026-10-14</lastmod></url>
   <url><loc>https://pastenlighten.com/booking.html</loc><lastmod>2026-10-14</lastmod></url>
   <url><loc>https://pastenlighten.com/booking-payment.html</loc><lastmod>2026-10-24</lastmod></url>
-  <url><loc>https://pastenlighten.com/reviews.html</loc><lastmod>2026-10-14</lastmod></url>
+  <url><loc>https://pastenlighten.com/reviews.html</loc><lastmod>2026-10-31</lastmod></url>
   <url><loc>https://pastenlighten.com/guide.html</loc><lastmod>2026-10-15</lastmod></url>
   <url><loc>https://pastenlighten.com/tours/index.html</loc><lastmod>2026-10-31</lastmod></url>
   <url><loc>https://pastenlighten.com/tours/lahore-heritage-walk.html</loc><lastmod>2026-10-31</lastmod></url>
@@ -48,4 +48,8 @@
   <url><loc>https://pastenlighten.com/blog/lahore-food-guide-traditional-dishes-local-experiences.html</loc><lastmod>2026-10-11</lastmod></url>
   <url><loc>https://pastenlighten.com/blog/lahore-tonga-rangeela-rickshaw-sightseeing-guide.html</loc><lastmod>2026-10-11</lastmod></url>
   <url><loc>https://pastenlighten.com/blog/lahore-travel-guide-essential-tips.html</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://pastenlighten.com/blog/lahore-hiran-minar-taxila-guest-journey.html</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://pastenlighten.com/blog/islamabad-faisal-mosque-pakistan-monument.html</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://pastenlighten.com/blog/kaghan-valley-lulusar-lake-road-trip.html</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://pastenlighten.com/blog/hunza-attabad-lake-passu-cones-hussaini-bridge.html</loc><lastmod>2026-10-31</lastmod></url>
 </urlset>

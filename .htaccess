@@ -12,8 +12,9 @@ RewriteRule (^|/)\.git(/|$) - [F,L]
 RewriteRule ^(ADMIN-VIDEO-REVIEWS-GUIDE|GITHUB-UPLOAD-README)\.txt$ - [F,L]
 RewriteRule ^tools/ - [F,L]
 
-# Old WordPress addresses -> home page
-RewriteRule ^(wp-admin|wp-login\.php|wp-content|wp-includes)(/.*)?$ https://pastenlighten.com/ [R=301,L]
+# Old WordPress system files: gone for good (410 tells Google to drop them quickly)
+RewriteRule ^(wp-admin|wp-login\.php|wp-content|wp-includes|wp-json|xmlrpc\.php|wp-cron\.php)(/.*)?$ - [G,L]
+RewriteRule ^(wp-sitemap.*\.xml|sitemap_index\.xml|.*-sitemap[0-9]*\.xml|feed|comments/feed)/?$ - [G,L]
 
 # Old WordPress tour and info pages -> the matching page on the new site
 # (these addresses are still in Google results and old links shared by guests)
@@ -43,6 +44,28 @@ RewriteRule ^introduction/?$ https://pastenlighten.com/guide.html [R=301,L]
 RewriteRule ^testimonials/?$ https://pastenlighten.com/reviews.html [R=301,L]
 RewriteRule ^contact-us/?$ https://pastenlighten.com/booking.html [R=301,L]
 RewriteRule ^photo-gallery/?$ https://pastenlighten.com/ [R=301,L]
+
+# Blog posts written in the admin that also have their own page (blog/<slug>.html): send visitors there,
+# so Google indexes one address per article
+RewriteCond %{QUERY_STRING} (?:^|&)slug=([a-z0-9-]{1,60})(?:&|$)
+RewriteCond %{DOCUMENT_ROOT}/blog/%1.html -f
+RewriteRule ^blog/post\.html$ https://pastenlighten.com/blog/%1.html? [R=301,L]
+
+# The old WordPress site was hacked and filled with casino/gambling spam pages
+# (e.g. /casino-2026-suisse/, /?p=3027). Everything left over from it is answered
+# with 410 Gone so Google removes those pages from its results.
+# 1) old WordPress post links like /?p=123 or /?page_id=5
+RewriteCond %{QUERY_STRING} (^|&)(p|page_id|attachment_id|cat|tag|author|feed)=[^&]+ [NC]
+RewriteRule ^$ - [G,L]
+# 2) any other old-style address ending in "/" that is not a real folder on the new site
+#    (real folders: /, /tours/, /blog/ ... keep working; new pages all end in .html)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)/$ - [G,L]
+# 3) old WordPress archive pages
+RewriteRule ^(category|tag|author|page|product|shop|portfolio|wp-content)/ - [G,L]
+
+ErrorDocument 410 /410.html
 
 # Browser caching (files use ?v= version strings)
 <IfModule mod_expires.c>
