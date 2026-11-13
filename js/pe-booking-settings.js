@@ -11,7 +11,7 @@
  */
 (function () {
   'use strict';
-  var API = 'https://umairasifofficalll.pythonanywhere.com/api/booking-settings';
+  var API = 'https://pastenlighten.com/pe-api/api/booking-settings';
   var KEY = 'pe_booking_settings_v1';
   var DEFAULT = {
     meeting_point: 'Fort Road Food Street, Gate No. 4, Lahore', child_age: 5, child_discount: 50, min_days_ahead: 1,

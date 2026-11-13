@@ -11,7 +11,7 @@
  */
 (function () {
   'use strict';
-  var API = 'https://umairasifofficalll.pythonanywhere.com/api/tours';
+  var API = 'https://pastenlighten.com/pe-api/api/tours';
   var CACHE_KEY = 'pe_catalog_tours_v1';
   var CACHE_MAX_AGE = 7 * 864e5;
   var script = document.currentScript;

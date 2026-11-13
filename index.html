@@ -395,10 +395,10 @@ html.dark-mode .bg-accent-gold.text-brand-900,html.dark-mode .bg-accent-amber.te
 
 
 <script src="js/prices.js?v=20261028-2"></script>
-<script src="js/pe-booking-settings.js?v=20261030-1"></script>
-<script src="js/pe-catalog.js?v=20261031-1"></script>
+<script src="js/pe-booking-settings.js?v=20261113-1"></script>
+<script src="js/pe-catalog.js?v=20261113-1"></script>
 <script src="js/noor-knowledge.js?v=20261025-2"></script>
-<script src="js/pe-backend.js?v=20261025-1"></script>
+<script src="js/pe-backend.js?v=20261113-1"></script>
 <script src="js/booking-confirm.js?v=20261027-1" defer></script>
 <style>.pe-hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;opacity:0}</style>
 <style id="map-render-fix">
@@ -443,7 +443,7 @@ main article a:hover { color: #92400e; }
 .pe-vid-ph{display:flex;align-items:center;justify-content:center;height:100%;color:#fde68a;font-size:11px;font-weight:700}
 html.dark-mode .pe-intro-points li{color:#e5e7eb}
 </style>
-<script src="js/pe-theme.js?v=20261027-1"></script>
+<script src="js/pe-theme.js?v=20261113-1"></script>
 </head>
 
 <body class="font-sans text-slate-800 bg-[#faf8f5] antialiased selection:bg-brand-700 selection:text-white overflow-x-hidden m-0 p-0">
@@ -736,7 +736,7 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
     </div>
   </section>
 
-  <!-- ================= INTRODUCTION (managed in Admin → Introduction; js/pe-intro.js) ================= -->
+  <!-- ================= INTRODUCTION (managed in Admin → Introduction; js/pe-intro.js?v=20261113-1) ================= -->
   <section id="introduction" class="py-14 bg-white border-b border-stone-200 scroll-mt-24" aria-labelledby="introTitle">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
       <div>
@@ -3141,8 +3141,8 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
     }
 
 
-    // Noor AI integration: uses the existing Flask backend; never put API keys in this file.
-    const CHAT_API_URL = "https://umairasifofficalll.pythonanywhere.com/api/chat";
+    // Noor AI integration: no AI service is connected right now, so Noor uses its built-in answers. Never put API keys in this file.
+    const CHAT_API_URL = "";
     const WHATSAPP = "923344770455";
     const CONTACT_EMAIL = "infopastenlighten@gmail.com";
     const WEBSITE_URL = "https://pastenlighten.com/";
@@ -3156,7 +3156,7 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
         locality: [t.region, t.start ? 'starts from ' + t.start : ''].filter(Boolean).join(', '), language: 'English and Urdu',
         summary: t.summary, highlights: t.highlights && t.highlights.length ? t.highlights : [t.summary], includes: t.includes };
     }
-    // Live tours & prices from the admin dashboard (js/pe-catalog.js): keep Noor, the itinerary pop-up and the booking pop-up in step.
+    // Live tours & prices from the admin dashboard (js/pe-catalog.js?v=20261113-1): keep Noor, the itinerary pop-up and the booking pop-up in step.
     if (window.PECatalog) PECatalog.onChange(function (P) {
       TOUR_DATA.pricing = Object.entries(P).map(([id, t]) => ({ id, tour: t.name, duration: t.duration, solo_price_usd_per_person: t.solo, includes: t.includes, season: t.season }));
       Object.entries(P).forEach(([id, t]) => {
@@ -3588,7 +3588,7 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
       handleUserMessage({ preventDefault() {} });
     }
 
-    // Save each question for the team (js/pe-backend.js → backend /api/noor-log). No names; contact details are removed.
+    // Save each question for the team (js/pe-backend.js?v=20261113-1 → backend /api/noor-log). No names; contact details are removed.
     function noorLog(question, topic, answered, answer) {
       try { if (window.PEBackend && PEBackend.logNoor) PEBackend.logNoor({ question, topic, answered, answer }); } catch (_) {}
     }
@@ -3664,6 +3664,7 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
           noorLog(text, kbSoft.topic, true, kbSoft.answer);
           return false;
         }
+        if (!CHAT_API_URL) throw new Error('No AI service configured');
         const response = await fetch(CHAT_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -4204,7 +4205,7 @@ document.addEventListener('keydown',function(event){if(event.key==='Escape')clos
 </script>
 
 
-  <script src="js/pe-intro.js?v=20261031-1" defer></script>
+  <script src="js/pe-intro.js?v=20261113-1" defer></script>
   <script src="js/pe-3d.js?v=20261026-4" defer></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
  */
 (function () {
   'use strict';
-  var API = 'https://umairasifofficalll.pythonanywhere.com/api/blog';
+  var API = 'https://pastenlighten.com/pe-api/api/blog';
   var CACHE_KEY = 'pe_blog_list_v1';
   var script = document.currentScript;
   var ROOT = script ? script.src.replace(/js\/pe-blog\.js.*$/, '') : '../';

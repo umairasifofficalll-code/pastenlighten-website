@@ -7,7 +7,7 @@
  */
 (function () {
   'use strict';
-  var API = 'https://umairasifofficalll.pythonanywhere.com/api/theme';
+  var API = 'https://pastenlighten.com/pe-api/api/theme';
   var KEY = 'pe_theme_v1';
   var script = document.currentScript;
   var ROOT = script ? script.src.replace(/js\/pe-theme\.js.*$/, '') : '';

@@ -7,7 +7,7 @@
  */
 (function () {
   'use strict';
-  var API = 'https://umairasifofficalll.pythonanywhere.com/api/intro';
+  var API = 'https://pastenlighten.com/pe-api/api/intro';
   var KEY = 'pe_intro_v1';
   var script = document.currentScript;
   var ROOT = script ? script.src.replace(/js\/pe-intro\.js.*$/, '') : '';

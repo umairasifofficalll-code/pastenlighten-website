@@ -2,7 +2,7 @@
  * Past Enlighten — saves form submissions to the admin database.
  *
  * SETUP: after deploying the backend, put its address below, e.g.
- *   var API_BASE = 'https://pastenlighten.pythonanywhere.com';
+ *   var API_BASE = 'https://pastenlighten.com/pe-api';
  * While it is empty, forms work exactly as before (WhatsApp/email only).
  *
  * save() returns a Promise of the server reply (or null on failure).
@@ -11,7 +11,7 @@
  */
 (function () {
   'use strict';
-  var API_BASE = 'https://umairasifofficalll.pythonanywhere.com';
+  var API_BASE = 'https://pastenlighten.com/pe-api';
 
   function save(kind, data, form) {
     if (!API_BASE) return Promise.resolve(null);

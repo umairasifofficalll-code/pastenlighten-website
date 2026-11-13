@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /pe-api/admin
 
 Sitemap: https://pastenlighten.com/sitemap.xml
