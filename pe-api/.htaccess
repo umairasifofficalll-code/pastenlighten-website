@@ -1,0 +1,13 @@
+# Past Enlighten backend: every request goes to index.php, except the admin CSS/JS in static/.
+Options -Indexes
+DirectoryIndex index.php
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  RewriteRule ^index\.php$ - [L]
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^static/ - [L]
+  RewriteRule ^ index.php [L,QSA]
+</IfModule>
