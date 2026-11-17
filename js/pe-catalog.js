@@ -77,7 +77,7 @@
         '<h3 class="font-cinzel text-base font-bold text-brand-900 mb-1 group-hover:text-accent-gold transition">' + esc(t.shortName) + '</h3>' +
         '<p class="text-slate-600 text-xs leading-relaxed line-clamp-2">' + esc(t.summary) + '</p>' +
       '</div><div class="pt-3 border-t border-stone-100 mt-3 flex items-center justify-between"><div>' +
-        '<span class="text-[10px] uppercase font-bold text-slate-400 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="' + esc(id) + '">' + usd(t.solo) + '</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>' +
+        '<span class="text-[10px] uppercase font-bold text-slate-600 block">Solo traveller</span><span class="block font-extrabold text-brand-900 text-base leading-tight"><span data-pe-price="' + esc(id) + '">' + usd(t.solo) + '</span> <span class="text-[10px] font-semibold text-slate-500">per person</span></span><span class="block text-[10px] text-emerald-700 font-semibold">Groups pay less per person</span>' +
       '</div><button onclick="openTourDetails(\'' + id + '\')" class="btn-shine bg-brand-800 hover:bg-brand-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">View Itinerary</button></div></div>';
     return div;
   }
