@@ -12,8 +12,8 @@ module.exports = {
         warmgray: '#f8faf9'
       },
       fontFamily: {
-        cinzel: ['"Cinzel"', 'serif'],
-        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        cinzel: ['"Cinzel"', '"Cinzel Fallback"', 'serif'],
+        sans: ['"Plus Jakarta Sans"', '"Jakarta Fallback"', 'sans-serif'],
         urdu: ['"Noto Nastaliq Urdu"', '"Jameel Noori Nastaleeq"', 'serif']
       }
     }
