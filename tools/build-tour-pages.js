@@ -129,6 +129,7 @@ function page(card) {
   <script src="../js/pe-theme.js?v=20261027-1"></script>
   <script type="application/ld+json">${JSON.stringify(ld)}</script>
   <script type="application/ld+json">${JSON.stringify(crumbs)}</script>
+<script src="../js/pe-analytics.js?v=20261117-1" defer></script>
 </head>
 <body class="font-sans antialiased">
   <header class="bg-white border-b border-stone-200 sticky top-0 z-40">
@@ -208,7 +209,7 @@ function page(card) {
       <h2 class="font-cinzel text-2xl font-bold text-brand-900">More ${esc(regionName)} tours</h2>
       <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         ${related.map((r) => { const rp = PRICES.tours[r.id]; return `<a href="${r.slug}.html" class="block bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm hover:shadow-md transition">
-          <img src="../${r.image}" alt="" class="w-full aspect-[16/10] object-cover" loading="lazy" decoding="async">
+          <img src="../${r.image}" alt="${esc(rp.name)}" class="w-full aspect-[16/10] object-cover" loading="lazy" decoding="async">
           <span class="block p-4"><span class="block text-xs text-slate-500">${esc(cap(rp.duration))}</span><span class="block font-cinzel font-bold text-brand-900 mt-1">${esc(rp.name)}</span><span class="block mt-2 text-sm">From <span class="font-bold text-brand-900" data-pe-price="${r.id}">${usd(rp.solo)}</span> per person</span></span>
         </a>`; }).join('\n        ')}
       </div>
