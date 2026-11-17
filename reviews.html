@@ -274,6 +274,7 @@
   </footer>
 
 <script src="js/pe-backend.js?v=20261113-1"></script>
+<script src="js/pe-google-reviews.js?v=20261117-1"></script>
 <script>
 (function () {
   'use strict';
@@ -368,7 +369,9 @@
           '<p class="review-text text-sm text-slate-700 leading-relaxed mt-2" style="white-space:pre-line">' + esc(r.text) + '</p>' +
           (String(r.text).length > 320 ? '<button type="button" class="more self-start text-xs font-bold text-brand-800 mt-1">Read more</button>' : '') +
           '<div class="mt-auto pt-4 flex items-end justify-between gap-2 text-xs text-slate-500">' +
-            '<span><strong class="block text-slate-800 text-sm">' + esc(r.name) + '</strong>' + esc([r.country, r.tour].filter(Boolean).join(' · ')) + (r.date ? '<br>' + esc(month(r.date)) : '') + (r.translated ? '<br><em>Translated by Google</em>' : '') + '</span>' +
+            '<span class="flex items-start gap-2">' + (safeUrl(r.photo) ? '<img src="' + esc(r.photo) + '" alt="" width="32" height="32" class="w-8 h-8 rounded-full flex-shrink-0" loading="lazy" referrerpolicy="no-referrer">' : '') +
+            '<span>' + (safeUrl(r.author_url) ? '<a href="' + esc(r.author_url) + '" target="_blank" rel="noopener" class="block text-slate-800 text-sm font-bold">' + esc(r.name) + '</a>' : '<strong class="block text-slate-800 text-sm">' + esc(r.name) + '</strong>') +
+            esc([r.country, r.tour].filter(Boolean).join(' · ')) + (r.when ? esc(r.when) : (r.date ? '<br>' + esc(month(r.date)) : '')) + (r.translated ? '<br><em>Translated by Google</em>' : '') + '</span></span>' +
             '<a href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener" class="font-bold text-brand-800 underline whitespace-nowrap">View original</a>' +
           '</div></article>';
       }).join('');
@@ -380,7 +383,8 @@
     });
     render();
   }
-  fetch('data/google-reviews.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
+  // Google reviews: live from Google (through our backend) plus the saved copy, see js/pe-google-reviews.js.
+  window.PEGoogleReviews.load()
     .then(function (g) { start(REVIEWS.concat((g && g.reviews) || []), g); })
     .catch(function () { start(REVIEWS, null); });
 

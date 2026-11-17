@@ -2120,12 +2120,13 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
         <p class="mt-3 text-xs text-slate-500"><i class="fa-solid fa-newspaper text-amber-600" aria-hidden="true"></i> Featured on Peek: <a class="underline font-semibold text-brand-800" href="https://www.peek.com/lahore-punjab-pakistan/r0wjag/exploring-lahores-cultural-heritage-a-journey-through-time/ar0em8d6m" target="_blank" rel="noopener">“Exploring Lahore’s Cultural Heritage: A Journey Through Time”</a></p>
       </div>
     </div>
+    <script src="js/pe-google-reviews.js?v=20261117-1"></script>
     <script>
     (function () {
-      // Three Google reviews for the home page, read from data/google-reviews.json (the same file as reviews.html).
+      // Google rating, count and three reviews for the home page: live from Google plus the saved copy (js/pe-google-reviews.js).
       var PICK = ['Derek Homsher', 'ravinder dhesi', 'A V'];
       function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-      fetch('data/google-reviews.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (g) {
+      window.PEGoogleReviews.load().then(function (g) {
         if (!g || !g.reviews) return;
         var sec = document.getElementById('testimonials');
         sec.querySelector('[data-g-rating]').textContent = Number(g.rating).toFixed(1);
