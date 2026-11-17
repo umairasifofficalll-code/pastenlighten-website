@@ -4,7 +4,7 @@
    The site's own code already sends these events once this is on:
    whatsapp_click, booking_form_submit, booking_request, review_feedback. */
 (function () {
-  var GA_ID = '';
+  var GA_ID = 'G-0J0531TNEE';
   if (!/^G-[A-Z0-9]{6,}$/.test(GA_ID)) return;
   if (navigator.doNotTrack === '1') return;
   window.dataLayer = window.dataLayer || [];
