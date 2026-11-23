@@ -184,6 +184,7 @@ function page(card) {
           <ul class="mt-4 space-y-2 text-slate-700 list-disc pl-5">
             <li>Private for just you and your group by default${p.prices.shared != null ? ', or join a shared small group at the shared price' : ''}. Ask us to adjust the route or timing.</li>
             ${/Lahore|Islamabad|South Punjab/.test(p.region) ? '<li>Dress modestly for mosques and shrines (shoulders and knees covered); women may want a light scarf. Shoes come off inside.</li>' : '<li>Mountain roads can close for weather or landslides; we keep a flexible plan and tell you early about any change.</li>'}
+            <li>Meeting point: we confirm your exact meeting point or hotel pickup in your written quote. Our base is on Fort Road in Lahore's Walled City (<a class="font-semibold text-brand-800 underline" href="https://maps.google.com/?cid=13829944828917755770" target="_blank" rel="noopener">see us on Google Maps</a>).</li>
             ${card.guide ? `<li>Read our free guide before you go: <a class="font-semibold text-brand-800 underline" href="../${card.guide}">travel tips for this trip</a>.</li>` : ''}
           </ul>
         </section>
