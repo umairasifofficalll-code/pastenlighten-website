@@ -466,9 +466,9 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
             <i class="fa-solid fa-envelope text-accent-amber text-xs"></i>
             <span>infopastenlighten@gmail.com</span>
           </a>
-          <span class="hidden md:inline-flex items-center gap-1 text-slate-400">
-            <i class="fa-solid fa-location-dot text-accent-amber text-xs"></i> Fort Road, Walled City, Lahore, Pakistan
-          </span>
+          <a href="https://maps.google.com/?cid=13829944828917755770" target="_blank" rel="noopener" class="hidden md:inline-flex items-center gap-1 text-slate-300 hover:text-white" aria-label="Past Enlighten on Google Maps (opens in a new tab)">
+            <i class="fa-solid fa-location-dot text-accent-amber text-xs" role="img" aria-hidden="true"></i> Fort Road, Walled City, Lahore, Pakistan
+          </a>
         </div>
 
         <div class="flex items-center gap-3 ml-auto">
@@ -3507,7 +3507,14 @@ html.dark-mode .pe-intro-points li{color:#e5e7eb}
 
       // 1. Specific topics that win even when a tour is named ("is lunch included in the full day tour?")
       const strong = noorKnowledge(q, top, true);
-      if (strong) return strong;
+      if (strong) {
+        // A question with two parts ("how much for 3 people, and what is the cancellation policy?"): answer the price too
+        if (priceAsk && top && !/^(pricecurrency|discount)$/.test(strong.topic)) {
+          const [base, group] = noorPriceLine(top, size);
+          return { answer: [base, group, 'Children under 5 pay 50% of the adult price.'].filter(Boolean).join('\n') + '\n\n' + strong.answer, actions: strong.actions, topic: strong.topic };
+        }
+        return strong;
+      }
 
       // 2. Prices
       if (priceAsk && top) {
