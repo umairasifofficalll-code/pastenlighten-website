@@ -129,7 +129,7 @@ function page(card) {
   <script src="../js/pe-theme.js?v=20261027-1"></script>
   <script type="application/ld+json">${JSON.stringify(ld)}</script>
   <script type="application/ld+json">${JSON.stringify(crumbs)}</script>
-<script src="../js/pe-analytics.js?v=20261117-1" defer></script>
+<script src="../js/pe-analytics.js?v=20261123-1" defer></script>
 </head>
 <body class="font-sans antialiased">
   <header class="bg-white border-b border-stone-200 sticky top-0 z-40">
