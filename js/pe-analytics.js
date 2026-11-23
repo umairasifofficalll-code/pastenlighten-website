@@ -15,4 +15,21 @@
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
   document.head.appendChild(s);
+
+  // Count WhatsApp, phone and email clicks on every page. The home page and booking page already send their own
+  // whatsapp_click / booking_request events, so those two are skipped here to avoid counting twice.
+  var path = location.pathname.replace(/\/index\.html$/, '/');
+  if (path === '/' || /\/booking\.html$/.test(path)) return;
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || typeof window.gtag !== 'function') return;
+    var href = a.getAttribute('href') || '';
+    if (/^https?:\/\/(wa\.me|api\.whatsapp\.com|web\.whatsapp\.com)\//i.test(href)) {
+      window.gtag('event', 'whatsapp_click', { link_url: href.split('?')[0], page_path: path });
+    } else if (/^tel:/i.test(href)) {
+      window.gtag('event', 'phone_click', { page_path: path });
+    } else if (/^mailto:/i.test(href)) {
+      window.gtag('event', 'email_click', { page_path: path });
+    }
+  }, true);
 })();
